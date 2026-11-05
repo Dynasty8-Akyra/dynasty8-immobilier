@@ -1358,3 +1358,87 @@ header.header .hero-banner {
     animation: none;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — NAVIGATION PREMIUM
+   ========================================== */
+
+.d8-nav-premium {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  min-height: 88px;
+}
+
+/* Bouton agent complètement à gauche */
+.d8-nav-premium .d8-agent-access {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  padding: 12px 22px;
+  border: 1px solid rgba(219, 143, 255, .8);
+  border-radius: 40px;
+
+  background: rgba(63, 20, 91, .35);
+  color: #f5ddff;
+
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: .5px;
+  text-decoration: none;
+
+  box-shadow: 0 0 16px rgba(175, 67, 255, .25);
+  transition: .3s ease;
+}
+
+.d8-nav-premium .d8-agent-access:hover {
+  background: rgba(152, 54, 217, .45);
+  box-shadow: 0 0 24px rgba(197, 91, 255, .65);
+  transform: translateY(-2px);
+}
+
+/* Catégories plus grandes */
+.d8-nav-premium #navlinks {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(12px, 2vw, 32px);
+  margin-left: auto;
+}
+
+.d8-nav-premium #navlinks a {
+  font-size: clamp(14px, 1.15vw, 18px);
+  font-weight: 800;
+  white-space: nowrap;
+  letter-spacing: .15px;
+  transition: color .25s, text-shadow .25s;
+}
+
+.d8-nav-premium #navlinks a:hover {
+  color: #edb8ff;
+  text-shadow: 0 0 12px rgba(205, 106, 255, .85);
+}
+
+/* Adaptation mobile */
+@media (max-width: 900px) {
+  .d8-nav-premium {
+    min-height: 75px;
+    gap: 12px;
+  }
+
+  .d8-nav-premium .d8-agent-access {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .d8-nav-premium #navlinks {
+    gap: 12px;
+  }
+
+  .d8-nav-premium #navlinks a {
+    font-size: 13px;
+  }
+}
