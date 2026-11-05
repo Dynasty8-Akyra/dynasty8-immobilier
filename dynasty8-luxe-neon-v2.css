@@ -1200,3 +1200,161 @@ header.header .hero-banner {
     animation: none;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — GLASS NEON PREMIUM V2
+   ========================================== */
+
+/* Verre plus transparent */
+.d8-glass-logo {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  background: rgba(25, 8, 42, 0.08) !important;
+
+  backdrop-filter: blur(2px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(2px) saturate(125%) !important;
+
+  border: 1px solid rgba(231, 166, 255, 0.85);
+
+  box-shadow:
+    0 0 12px rgba(218, 92, 255, 0.65),
+    0 0 32px rgba(169, 53, 255, 0.28),
+    inset 0 0 20px rgba(224, 137, 255, 0.06);
+}
+
+/* Reflet mobile sur la bordure */
+.d8-glass-logo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 2px;
+  pointer-events: none;
+
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 55deg,
+    rgba(255, 255, 255, 0.95) 82deg,
+    #ff82ec 90deg,
+    #bd4dff 102deg,
+    transparent 125deg,
+    transparent 360deg
+  );
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  animation: d8BorderOrbit 8s linear infinite;
+}
+
+/* Rotation du reflet électrique */
+@keyframes d8BorderOrbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Logo au-dessus du reflet du verre */
+.d8-glass-logo > img {
+  position: relative;
+  z-index: 3;
+}
+
+/* Sécurité : masquer l'ancien bouton */
+.replay-intro {
+  display: none !important;
+}
+
+/* Respect des préférences d'animation */
+@media (prefers-reduced-motion: reduce) {
+  .d8-glass-logo::after {
+    animation: none;
+  }
+}
+
+/* ==========================================
+   DYNASTY 8 — GLASS NEON PREMIUM V2
+   ========================================== */
+
+/* Verre plus transparent */
+.d8-glass-logo {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  background: rgba(25, 8, 42, 0.08) !important;
+
+  backdrop-filter: blur(2px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(2px) saturate(125%) !important;
+
+  border: 1px solid rgba(231, 166, 255, 0.85);
+
+  box-shadow:
+    0 0 12px rgba(218, 92, 255, 0.65),
+    0 0 32px rgba(169, 53, 255, 0.28),
+    inset 0 0 20px rgba(224, 137, 255, 0.06);
+}
+
+/* Reflet mobile sur la bordure */
+.d8-glass-logo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 2px;
+  pointer-events: none;
+
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 55deg,
+    rgba(255, 255, 255, 0.95) 82deg,
+    #ff82ec 90deg,
+    #bd4dff 102deg,
+    transparent 125deg,
+    transparent 360deg
+  );
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  animation: d8BorderOrbit 8s linear infinite;
+}
+
+/* Rotation du reflet électrique */
+@keyframes d8BorderOrbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Logo au-dessus du reflet du verre */
+.d8-glass-logo > img {
+  position: relative;
+  z-index: 3;
+}
+
+/* Sécurité : masquer l'ancien bouton */
+.replay-intro {
+  display: none !important;
+}
+
+/* Respect des préférences d'animation */
+@media (prefers-reduced-motion: reduce) {
+  .d8-glass-logo::after {
+    animation: none;
+  }
+}
