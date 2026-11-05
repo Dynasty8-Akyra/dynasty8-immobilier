@@ -275,43 +275,19 @@
 
     polygon.on("click", () => select(id));
 
-    // MARQUEUR CENTRAL
-    const icon = L.divIcon({
-      className: "",
-      html: `
-        <div class="d8-zone-marker"
-             style="--zone-color:${color}"></div>
-      `,
-      iconSize: [22, 22],
-      iconAnchor: [11, 11]
-    });
 
-    const marker = L.marker(z[5], {
-      icon: icon,
-      keyboard: true,
-      title: z[0]
-    }).addTo(map);
-
-    markers[id] = marker;
-
-    marker.bindTooltip(
+    // NOM DU QUARTIER AU SURVOL UNIQUEMENT
+    polygon.bindTooltip(
       `<span class="d8-zone-label">${escapeHTML(z[0])}</span>`,
       {
-        permanent: true,
+        permanent: false,
+        sticky: true,
         direction: "top",
-        offset: [0, -10],
+        opacity: 1,
         className: "d8-label-tooltip"
       }
     );
 
-    marker.on("mouseover", () => preview(id));
-
-    marker.on("click", () => select(id));
-  }
-
-  panel.addEventListener("click", e => {
-    if (e.target.closest(".d8-close")) close();
-  });
 
   // FILTRES
   document.getElementById("filters")
@@ -328,7 +304,7 @@
         const visible =
           currentFilter === "all" || z[4] === currentFilter;
 
-        for (const layer of [markers[id], polygons[id]]) {
+        for (const layer of [polygons[id]]) {
           if (visible) {
             if (!map.hasLayer(layer)) layer.addTo(map);
           } else {
