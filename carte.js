@@ -594,8 +594,27 @@ if (!root) {
     reset.onclick = () => map.fitBounds(bounds);
   }
 
-  map.whenReady(() => {
-    map.setView([5350,4500],3);
-  });
+  
+map.whenReady(() => {
+  map.setView([5350, 4500], 3);
 
-})();
+  setTimeout(() => {
+    map.invalidateSize();
+
+    const element = document.getElementById("viewport");
+
+    console.log("=== DIAGNOSTIC DYNASTY 8 ===");
+    console.log("Largeur carte :", element.clientWidth);
+    console.log("Hauteur carte :", element.clientHeight);
+    console.log("Zoom :", map.getZoom());
+    console.log("Centre :", map.getCenter());
+    console.log(
+      "Images satellites :",
+      document.querySelectorAll(".leaflet-tile").length
+    );
+    console.log(
+      "Images chargées :",
+      document.querySelectorAll(".leaflet-tile-loaded").length
+    );
+  }, 1000);
+});
