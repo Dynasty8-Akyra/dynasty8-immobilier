@@ -886,3 +886,27 @@ header.header .hero-banner canvas {
   opacity: 1;
   visibility: visible;
 }
+
+/* ========================================
+   DYNASTY 8 — HEADER PANORAMIQUE
+   ======================================== */
+
+/* Retirer le fond opaque du grand header */
+header.header {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Retirer le fond opaque derrière le logo */
+header.header .hero-banner {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Conserver le logo et ses animations */
+header.header .hero-banner img {
+  opacity: 1;
+  visibility: visible;
+}
