@@ -16,7 +16,7 @@ async function token(){
 }
 async function secured(action,method='GET',body=null,id=''){
  const t=await token();if(!t)throw Error('Connectez-vous avec Discord.');
- const r=await fetch('/.netlify/functions/discord-access?action='+encodeURIComponent(action)+(id?'&id='+encodeURIComponent(id):''),{method,headers:{authorization:'Bearer '+t,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
+ const r=await fetch('/api/discord-access?action='+encodeURIComponent(action)+(id?'&id='+encodeURIComponent(id):''),{method,headers:{authorization:'Bearer '+t,...(body?{'content-type':'application/json'}:{})},...(body?{body:JSON.stringify(body)}:{})});
  const text=await r.text();let data;try{data=text?JSON.parse(text):{}}catch{throw Error('Réponse serveur incorrecte')}
  if(!r.ok)throw Error(data.error||'Accès refusé.');return data;
 }
