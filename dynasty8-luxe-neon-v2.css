@@ -485,6 +485,122 @@ main {
   }
 
   .d8-prestige-content {
-    padding: 36px 25px;
+    padding: 36px 25px;  
+  }
+}
+
+/* =========================================
+   DYNASTY 8 — BANNIERE INTERACTIVE
+   ========================================= */
+
+/* Structure de la bannière */
+.d8-prestige {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  /* On retire l'ancienne photo provisoire */
+  background: #100819 !important;
+}
+
+/* Conteneur de toutes les images */
+.d8-interactive-backgrounds {
+  position: absolute;
+  inset: 4px;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: 31px;
+  pointer-events: none;
+}
+
+/* Chaque image occupe toute la bannière */
+.d8-bg {
+  position: absolute;
+  inset: 0;
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  opacity: 0;
+  transform: scale(1);
+
+  transition:
+    opacity 1.1s ease-in-out,
+    transform 8s ease;
+
+  will-change: opacity, transform;
+}
+
+/* Image actuellement affichée */
+.d8-bg.d8-bg-active {
+  opacity: 1;
+}
+
+/* Animation lente de la carte */
+.d8-bg-map.d8-map-moving {
+  transform: scale(1.08) translate(1%, -1%);
+}
+
+/* Verre fumé au-dessus des images */
+.d8-prestige::after {
+  z-index: 1;
+
+  background: linear-gradient(
+    90deg,
+    rgba(12, 5, 24, 0.94) 0%,
+    rgba(19, 8, 34, 0.78) 38%,
+    rgba(21, 9, 36, 0.32) 72%,
+    rgba(12, 5, 24, 0.15) 100%
+  );
+}
+
+/* Texte et boutons toujours visibles */
+.d8-prestige-content {
+  position: relative;
+  z-index: 3;
+}
+
+/* Reflets sur les boutons */
+.d8-prestige-actions a {
+  position: relative;
+  overflow: hidden;
+  transition:
+    background 0.35s ease,
+    box-shadow 0.35s ease,
+    border-color 0.35s ease,
+    transform 0.35s ease;
+}
+
+.d8-prestige-actions a:hover {
+  transform: translateY(-3px);
+  border-color: #e4b7ff;
+  box-shadow:
+    0 0 18px rgba(191, 96, 255, 0.55),
+    0 0 38px rgba(141, 46, 255, 0.28);
+}
+
+/* Version mobile */
+@media (max-width: 780px) {
+  .d8-interactive-backgrounds {
+    border-radius: 21px;
+  }
+
+  .d8-prestige::after {
+    background: linear-gradient(
+      90deg,
+      rgba(12, 5, 24, 0.9),
+      rgba(19, 8, 34, 0.65)
+    );
+  }
+}
+
+/* Respect des préférences d'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  .d8-bg,
+  .d8-prestige-actions a {
+    transition: none;
   }
 }
