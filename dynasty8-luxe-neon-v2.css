@@ -1065,3 +1065,138 @@ header.header::before {
     animation: none;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — LOGO GLASS NEON
+   ========================================== */
+
+/* Zone du logo */
+header.header .hero-banner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 35px 20px 65px;
+  background: transparent !important;
+}
+
+/* Rectangle de verre */
+.d8-glass-logo {
+  position: relative;
+  isolation: isolate;
+  width: min(920px, 94%);
+  min-height: 270px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  border-radius: 34px;
+  border: 2px solid rgba(224, 149, 255, .85);
+
+  background: rgba(55, 20, 85, .13);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  box-shadow:
+    0 0 12px rgba(240, 120, 255, .85),
+    0 0 35px rgba(170, 55, 255, .45),
+    inset 0 0 25px rgba(220, 130, 255, .12);
+
+  animation: d8GlassGlow 5s ease-in-out infinite;
+}
+
+/* Reflet qui traverse le verre */
+.d8-glass-logo::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -80%;
+  pointer-events: none;
+
+  background: linear-gradient(
+    115deg,
+    transparent 44%,
+    rgba(255, 255, 255, .04) 47%,
+    rgba(255, 220, 255, .20) 50%,
+    rgba(255, 255, 255, .04) 53%,
+    transparent 56%
+  );
+
+  transform: translateX(-45%);
+  animation: d8GlassReflection 8s ease-in-out infinite;
+}
+
+/* Logo métallique sans fond */
+.d8-glass-logo > img {
+  position: relative;
+  z-index: 1;
+
+  display: block;
+  width: 94%;
+  max-width: 850px;
+  height: auto;
+  object-fit: contain;
+
+  /* Annule l'ancien effet de fondu */
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+
+  filter: drop-shadow(
+    0 0 18px rgba(185, 65, 255, .55)
+  );
+}
+
+/* Respiration lumineuse du cadre */
+@keyframes d8GlassGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 12px rgba(240, 120, 255, .65),
+      0 0 35px rgba(170, 55, 255, .35),
+      inset 0 0 25px rgba(220, 130, 255, .10);
+  }
+
+  50% {
+    box-shadow:
+      0 0 20px rgba(255, 135, 245, .95),
+      0 0 55px rgba(180, 65, 255, .55),
+      inset 0 0 35px rgba(220, 130, 255, .18);
+  }
+}
+
+/* Balayage du reflet */
+@keyframes d8GlassReflection {
+  0%, 20% {
+    transform: translateX(-45%);
+  }
+
+  65%, 100% {
+    transform: translateX(45%);
+  }
+}
+
+/* Adaptation téléphone */
+@media (max-width: 780px) {
+  header.header .hero-banner {
+    padding: 25px 12px 55px;
+  }
+
+  .d8-glass-logo {
+    width: 100%;
+    min-height: 170px;
+    border-radius: 22px;
+  }
+
+  .d8-glass-logo > img {
+    width: 96%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d8-glass-logo,
+  .d8-glass-logo::before {
+    animation: none;
+  }
+}
