@@ -1,7 +1,46 @@
-(()=>{const root=document.querySelector('.map-page');if(!root)return;const zones={paleto:['Paleto Bay','Résidentiel','Petite ville côtière du nord de San Andreas.',['Maisons individuelles','Appartements','Commerces de proximité']],grapeseed:['Grapeseed','Rural','Secteur agricole et rural de Blaine County.',['Fermes','Maisons rurales','Terrains agricoles']],blaine:['Blaine County','Rural','Grands espaces naturels et terrains isolés.',['Chalets','Maisons rurales','Terrains']],sandy:['Sandy Shores','Résidentiel','Secteur désertique avec habitations et activités locales.',['Maisons','Mobil-homes','Petits commerces']],vinewood:['Vinewood Hills','Luxe','Résidences prestigieuses sur les hauteurs de Los Santos.',['Villas de luxe','Maisons avec piscine','Résidences privées']],downtown:['Downtown Los Santos','Commerces','Quartier central adapté aux activités professionnelles.',['Bureaux','Commerces','Locaux professionnels']],delperro:['Del Perro','Résidentiel','Quartier côtier proche de la plage.',['Appartements','Penthouses','Maisons']],industrial:['Zone industrielle','Garages','Secteur adapté aux activités techniques et au stockage.',['Garages','Ateliers','Entrepôts']]};try{const saved=JSON.parse(localStorage.getItem('dynasty8_zones_v11')||'null');if(saved){for(const [id,val] of Object.entries(saved)){if(zones[id]&&Array.isArray(val)&&val.length===4)zones[id]=val}}}catch(e){}const shapes=[...root.querySelectorAll('.zone')],panel=document.getElementById('zonePanel');let pinned=null,preview=null;
-function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function render(id){const z=zones[id];if(!z)return;shapes.forEach(s=>s.classList.toggle('selected',s.dataset.id===id));panel.innerHTML=`<div class="d8-panel-top"><div><div class="d8-kicker">DYNASTY 8 · ZONE IMMOBILIÈRE</div><h2>${escapeHTML(z[0])}</h2><div class="type">${escapeHTML(z[1])}</div></div><button class="d8-close" type="button" aria-label="Fermer le catalogue">×</button></div><div class="d8-panel-photo"><span>Catalogue de la zone · Photos à ajouter</span></div><p>${escapeHTML(z[2])}</p><h3>Catégories autorisées</h3><div class="d8-categories">${z[3].map(s=>`<div class="chip"><span class="d8-pin">⌂</span>${escapeHTML(s)}</div>`).join('')}</div><small class="d8-note">Les annonces, photos et prix apparaîtront ici après connexion à la liste de biens. Règles indicatives à adapter au serveur RP.</small>`;panel.classList.add('is-open');}
-function select(id){pinned=id;preview=null;render(id)}
-function closePanel(){pinned=null;preview=null;panel.classList.remove('is-open');shapes.forEach(s=>s.classList.remove('selected'))}
-panel.addEventListener('click',e=>{if(e.target.closest('.d8-close'))closePanel()});
-shapes.forEach(s=>{s.addEventListener('mouseenter',()=>{if(!pinned){preview=s.dataset.id;render(preview)}});s.addEventListener('mouseleave',()=>{if(!pinned){preview=null;panel.classList.remove('is-open');shapes.forEach(t=>t.classList.remove('selected'))}});s.addEventListener('focus',()=>{if(!pinned)render(s.dataset.id)});s.addEventListener('click',()=>select(s.dataset.id));s.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();select(s.dataset.id)}})});document.getElementById('filters').addEventListener('click',e=>{const b=e.target.closest('button[data-type]');if(!b)return;root.querySelectorAll('.map-toolbar button').forEach(x=>x.classList.toggle('on',x===b));shapes.forEach(s=>s.classList.toggle('muted',b.dataset.type!=='all'&&s.dataset.type!==b.dataset.type))});const view=document.getElementById('viewport'),world=document.getElementById('world');let zoom=1,x=0,y=0,drag=false,startX=0,startY=0;function update(){world.style.transform=`translate(${x}px,${y}px) scale(${zoom})`}function setZoom(v){zoom=Math.max(1,Math.min(3.5,v));if(zoom===1)x=y=0;update()}document.getElementById('zoomIn').onclick=()=>setZoom(zoom+.3);document.getElementById('zoomOut').onclick=()=>setZoom(zoom-.3);document.getElementById('reset').onclick=()=>{x=y=0;setZoom(1)};view.addEventListener('wheel',e=>{e.preventDefault();setZoom(zoom+(e.deltaY<0?.15:-.15))},{passive:false});view.addEventListener('pointerdown',e=>{if(e.target.closest('.map-buttons, .zone-panel'))return;drag=true;startX=e.clientX-x;startY=e.clientY-y;view.setPointerCapture(e.pointerId)});view.addEventListener('pointermove',e=>{if(!drag)return;x=e.clientX-startX;y=e.clientY-startY;update()});view.addEventListener('pointerup',()=>drag=false);view.addEventListener('pointercancel',()=>drag=false);})();
+(()=>{
+'use strict';
+const root=document.querySelector('.map-page');if(!root)return;
+if(typeof L==='undefined'){document.getElementById('viewport').textContent='Impossible de charger la carte : vérifiez votre connexion internet.';return;}
+const zones={
+ paleto:['Paleto Bay','Résidentiel','Petite ville côtière du nord de San Andreas.',['Maisons individuelles','Appartements','Commerces de proximité'],'res',[1450,4250]],
+ grapeseed:['Grapeseed','Rural','Secteur agricole et rural de Blaine County.',['Fermes','Maisons rurales','Terrains agricoles'],'rural',[3000,5550]],
+ blaine:['Blaine County','Rural','Grands espaces naturels et terrains isolés.',['Chalets','Maisons rurales','Terrains'],'rural',[3100,3400]],
+ sandy:['Sandy Shores','Résidentiel','Secteur désertique avec habitations et activités locales.',['Maisons','Mobil-homes','Petits commerces'],'res',[3550,4450]],
+ vinewood:['Vinewood Hills','Luxe','Résidences prestigieuses sur les hauteurs de Los Santos.',['Villas de luxe','Maisons avec piscine','Résidences privées'],'lux',[5350,4050]],
+ downtown:['Downtown Los Santos','Commerces','Quartier central adapté aux activités professionnelles.',['Bureaux','Commerces','Locaux professionnels'],'biz',[6350,4650]],
+ delperro:['Del Perro','Résidentiel','Quartier côtier proche de la plage.',['Appartements','Penthouses','Maisons'],'res',[5900,3250]],
+ industrial:['Zone industrielle','Garages','Secteur adapté aux activités techniques et au stockage.',['Garages','Ateliers','Entrepôts'],'ind',[6800,5150]]
+};
+// Les positions ci-dessus sont des repères initiaux indicatifs en pixels sur la carte 8192x8192.
+// Elles devront être ajustées après contrôle visuel. Elles ne sont pas des contours officiels.
+try{const saved=JSON.parse(localStorage.getItem('dynasty8_zones_v11')||'null');if(saved)for(const [id,val] of Object.entries(saved))if(zones[id]&&Array.isArray(val)&&val.length===4)zones[id].splice(0,4,...val)}catch(e){}
+const colors={lux:'#bb65ff',res:'#4daeff',biz:'#ff69b9',ind:'#efb54c',rural:'#56d78c'};
+const CRS=L.extend({},L.CRS.Simple,{transformation:new L.Transformation(1/32,0,1/32,0)});
+const map=L.map('viewport',{crs:CRS,minZoom:0,maxZoom:5,zoomControl:false,attributionControl:false,preferCanvas:true,zoomSnap:.25,zoomDelta:.5});
+const bounds=[[0,0],[8192,8192]];
+L.tileLayer('https://viruxe.github.io/gtav-map-tiles/satelite/{z}/{x}-{y}.webp',{minZoom:0,maxZoom:5,noWrap:true,bounds:bounds,tileSize:256,keepBuffer:3,errorTileUrl:''}).addTo(map);
+map.fitBounds(bounds,{padding:[10,10]});
+const panel=document.getElementById('zonePanel');let pinned=null,preview=null,currentFilter='all';
+const markers={};
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function render(id){const z=zones[id];if(!z)return;Object.entries(markers).forEach(([k,m])=>{const el=m.getElement();if(el)el.querySelector('.d8-zone-marker')?.classList.toggle('active',k===id)});
+panel.innerHTML=`<div class="d8-panel-top"><div><div class="d8-kicker">DYNASTY 8 · ZONE IMMOBILIÈRE</div><h2>${escapeHTML(z[0])}</h2><div class="type">${escapeHTML(z[1])}</div></div><button class="d8-close" type="button" aria-label="Fermer le catalogue">×</button></div><div class="d8-panel-photo"><span>Catalogue de la zone · Photos à ajouter</span></div><p>${escapeHTML(z[2])}</p><h3>Catégories autorisées</h3><div class="d8-categories">${z[3].map(s=>`<div class="chip"><span class="d8-pin">⌂</span>${escapeHTML(s)}</div>`).join('')}</div><small class="d8-note">Les annonces, photos et prix apparaîtront ici après connexion à la liste de biens. Les repères sur la carte sont provisoires et doivent être recalés sur les quartiers exacts.</small>`;
+panel.classList.add('is-open');}
+function close(){pinned=null;preview=null;panel.classList.remove('is-open');Object.values(markers).forEach(m=>m.getElement()?.querySelector('.d8-zone-marker')?.classList.remove('active'));}
+for(const [id,z] of Object.entries(zones)){
+ const icon=L.divIcon({className:'',html:`<div class="d8-zone-marker" style="--zone-color:${colors[z[4]]}"></div>`,iconSize:[22,22],iconAnchor:[11,11]});
+ const marker=L.marker(z[5],{icon,keyboard:true,title:z[0]}).addTo(map);markers[id]=marker;
+ marker.bindTooltip(`<span class="d8-zone-label">${escapeHTML(z[0])}</span>`,{permanent:true,direction:'top',offset:[0,-10],className:'d8-label-tooltip'});
+ marker.on('mouseover',()=>{if(!pinned){preview=id;render(id)}});
+ marker.on('mouseout',()=>{if(!pinned){preview=null;panel.classList.remove('is-open')}});
+ marker.on('click',()=>{pinned=id;preview=null;render(id)});
+}
+panel.addEventListener('click',e=>{if(e.target.closest('.d8-close'))close()});
+document.getElementById('filters').addEventListener('click',e=>{const btn=e.target.closest('button[data-type]');if(!btn)return;currentFilter=btn.dataset.type;document.querySelectorAll('.map-toolbar button').forEach(b=>b.classList.toggle('on',b===btn));for(const [id,m] of Object.entries(markers)){const visible=currentFilter==='all'||zones[id][4]===currentFilter;if(visible){if(!map.hasLayer(m))m.addTo(map)}else{if(map.hasLayer(m))map.removeLayer(m);if(pinned===id)close()}}});
+document.getElementById('zoomIn').onclick=()=>map.zoomIn(.5);
+document.getElementById('zoomOut').onclick=()=>map.zoomOut(.5);
+document.getElementById('reset').onclick=()=>map.fitBounds(bounds,{padding:[10,10]});
+// Centre la vue sur Los Santos pour montrer les quartiers dès l'ouverture.
+map.whenReady(()=>{map.setView([5350,4500],3);});
+})();
