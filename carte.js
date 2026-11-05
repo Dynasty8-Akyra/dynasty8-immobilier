@@ -2,8 +2,11 @@
 (() => {
   "use strict";
 
-  const root = document.querySelector(".map-page");
-  if (!root) return;
+const root = document.getElementById("viewport");
+if (!root) {
+  console.error("DYNASTY 8 : conteneur de carte introuvable");
+  return;
+}
 
   const viewport = document.getElementById("viewport");
 
