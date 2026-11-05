@@ -751,3 +751,45 @@ main {
     background-attachment: scroll;
   }
 }
+
+/* DYNASTY 8 — PANORAMA LOS SANTOS */
+
+html {
+  background: #0b0613;
+}
+
+body {
+  background-color: #0b0613 !important;
+
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(12, 5, 22, 0.30),
+      rgba(12, 5, 22, 0.55)
+    ),
+    url("./los-santos-background.png") !important;
+
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+/* Afficher le panorama derrière les sections */
+main,
+.cards-area {
+  background: transparent !important;
+}
+
+/* Conserver les panneaux en verre */
+.cards-area .box {
+  background: rgba(22, 9, 37, 0.60) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+@media (max-width: 780px) {
+  body {
+    background-attachment: scroll !important;
+  }
+}
