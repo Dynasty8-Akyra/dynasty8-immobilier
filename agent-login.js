@@ -1,0 +1,1 @@
+const msg=document.getElementById('message');document.getElementById('discord').onclick=()=>D8Cloud.startDiscord();(async()=>{try{D8Cloud.consumeCallback();if(await D8Cloud.authenticated()){msg.textContent='Vérification des rôles Discord…';await D8Cloud.role();location.replace('agent-dashboard.html')}}catch(e){msg.textContent=e.message}})();

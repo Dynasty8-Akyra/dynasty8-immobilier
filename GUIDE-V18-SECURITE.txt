@@ -1,0 +1,27 @@
+DYNASTY 8 V18 — CONNEXION DISCORD ET RÔLES (VERSION À DÉPLOYER EN PLUSIEURS ÉTAPES)
+
+ATTENTION : UNE PUBLICATION PAR GLISSER-DÉPOSER SUR NETLIFY NE DÉPLOIE PAS FIABLEMENT LES NETLIFY FUNCTIONS.
+Il faut connecter un dépôt GitHub à Netlify et déployer le dossier dynasty8_site comme racine du dépôt (netlify.toml inclus).
+Ne remplacez PAS le site V17 tant que le déploiement des fonctions et les variables ne sont pas prêts.
+
+1. Dans Netlify > Environment variables, pour les Functions :
+   DISCORD_BOT_TOKEN : déjà configuré
+   SUPABASE_URL = https://slowpbnhjlaeelctrutu.supabase.co
+   SUPABASE_PUBLISHABLE_KEY = sb_publishable_gCVuSvMANbE5GzpACbXVZQ_fmR4dqwx
+   SUPABASE_SERVICE_ROLE_KEY = clé secrète service_role du projet Supabase (jamais dans le site ni dans une conversation).
+   ATTENTION : la clé service_role a des privilèges élevés ; la mettre uniquement dans les variables secrètes Netlify.
+2. Dans Supabase > Authentication > URL Configuration, ajouter https://VOTRE-DOMAINE/agent-login.html à Redirect URLs.
+3. Dans Discord Developer Portal > OAuth2, le redirect de l'application doit être https://slowpbnhjlaeelctrutu.supabase.co/auth/v1/callback.
+4. Déployer via GitHub/Netlify (pas Netlify Drop). Tester https://VOTRE-DOMAINE/.netlify/functions/discord-access : sans token, réponse 401 JSON attendue.
+5. Se connecter avec Discord sur /agent-login.html, puis vérifier l'accès Direction/Agent confirmé.
+6. ENSUITE SEULEMENT exécuter SECURITE-SUPABASE-V18.sql dans Supabase SQL Editor pour bloquer les anciennes écritures directes.
+7. Tester une création, modification et suppression d'annonce en tant qu'agent confirmé et un refus pour un autre rôle.
+
+ROLES :
+Serveur : 1567889374836957286
+Direction : 1567889789569728583
+Agent confirmé : 1567889964639723631
+
+La fonction interroge Discord à chaque action sensible ; si Discord ou le serveur est indisponible, elle refuse l'écriture.
+Ne partagez ni Client Secret Discord, ni token du bot, ni clé service_role.
+Les anciens comptes e-mail ne sont plus utilisés pour se connecter via l'interface V18.

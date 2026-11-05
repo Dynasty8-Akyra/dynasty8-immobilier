@@ -1,0 +1,9 @@
+DYNASTY 8 V15 — CONNEXION AGENT
+1. Supabase > SQL Editor > New query : coller ETAPE-SECURITE-V15.sql et cliquer Run.
+2. Vérifier que l'utilisateur administrateur est inscrit dans public.admin_users.
+3. Netlify > Deploys : glisser le dossier dynasty8_site (qui contient index.html).
+4. Ouvrir le site, cliquer CONNEXION AGENT, saisir email/mot de passe Supabase.
+5. Après connexion, l'éditeur d'annonces s'ouvre. Les biens sont publiés sur Supabase.
+6. Vérifier biens.html dans une autre fenêtre.
+L'éditeur des zones admin.html reste local et n'est pas sécurisé pour la publication.
+Ne jamais mettre une clé service_role ou sb_secret dans les fichiers publics.

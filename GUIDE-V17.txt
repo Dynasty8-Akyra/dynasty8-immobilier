@@ -1,0 +1,12 @@
+DYNASTY 8 V17 — TABLEAU DE BORD AGENT
+
+1. Décompresser l'archive.
+2. Dans Netlify > Deploys, déposer le dossier dynasty8_site (avec index.html à sa racine).
+3. Ouvrir le site, cliquer Connexion Agent, saisir les identifiants du compte autorisé.
+4. Le tableau de bord agent-dashboard.html s'ouvre avec les statistiques réelles des annonces.
+5. Cliquer CRÉER UNE ANNONCE pour accéder à l'éditeur.
+6. Cliquer MODIFIER sur une ligne pour ouvrir la fiche correspondante dans l'éditeur.
+
+Les statistiques sont calculées à partir des annonces existantes dans Supabase.
+La version V17 ne gère pas encore le statut disponible/vendu : aucun chiffre fictif n'est présenté.
+Aucun nouveau SQL à exécuter si la V16 fonctionne déjà.

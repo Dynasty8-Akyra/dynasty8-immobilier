@@ -1,0 +1,10 @@
+DYNASTY 8 V12 — GESTION LOCALE DES ANNONCES
+
+Ouvrir index.html pour le site.
+Ouvrir admin-annonces.html pour créer, modifier, supprimer et exporter des annonces.
+Ouvrir biens.html pour voir les annonces.
+Ouvrir admin.html pour les règles des zones.
+
+ATTENTION : les annonces sont enregistrées dans localStorage, uniquement dans le navigateur et sur le même domaine. Elles ne sont pas partagées avec les autres visiteurs. L’éditeur admin-annonces.html n’est PAS sécurisé. Ne pas utiliser pour une administration publique. La publication partagée nécessitera une base de données et une authentification côté serveur.
+
+Sur Netlify, déposer le dossier dynasty8_site dans Deploys.

@@ -1,0 +1,1 @@
+V16 : corrige la lecture des réponses Supabase vides après enregistrement/suppression. Une réponse HTTP 201 ou 200 sans corps est maintenant traitée comme un succès. Après déploiement, vérifier la table properties pour éviter les doublons.

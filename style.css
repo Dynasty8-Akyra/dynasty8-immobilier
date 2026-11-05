@@ -1,0 +1,92 @@
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;padding:0;font-family:'Nunito',sans-serif;background:#17131d;color:#fff}a{color:inherit}.container{width:90%;max-width:1250px;margin:auto;position:relative;z-index:5}
+.header{height:450px;width:100%;background:#16072f;position:relative;overflow:hidden}.header-texture{position:absolute;inset:0;background:linear-gradient(115deg,rgba(20,5,48,.88),rgba(5,5,12,.62)),url('https://stalityrp.github.io/Dynasty8/header.png') center/cover no-repeat;opacity:.95}
+.nav{height:105px;display:flex;align-items:center;justify-content:space-between}.brand img{width:130px;height:76px;object-fit:cover;object-position:center;filter:drop-shadow(0 0 9px #a64dff);animation:logoPulse 3s ease-in-out infinite}.nav nav{display:flex;gap:34px}.nav nav a{text-decoration:none;font-weight:800;color:#fff;text-shadow:0 2px 5px #000;transition:.2s}.nav nav a:hover{color:#e4c8ff;text-shadow:0 0 12px #a34dff}.menu-toggle{display:none;background:none;border:0;color:white;font-size:28px}
+.slogan{position:relative;z-index:3;text-align:center;margin-top:20px}.slogan h1,.sub-title h1{font-family:'Anton',sans-serif;font-size:83px;letter-spacing:4px;font-style:italic;margin:0;text-shadow:0 4px 15px #000}.slogan h2{display:inline-block;font-size:25px;margin:0;border-bottom:3px solid #b86cff;padding-bottom:8px}.wave{position:absolute;z-index:4;bottom:-1px;left:0;width:100%;height:85px;background:linear-gradient(175deg,transparent 48%,#17131d 49%);filter:drop-shadow(0 -4px 7px rgba(166,77,255,.42))}
+.welcome{display:flex;align-items:center;gap:35px;padding:32px 20px 40px;min-height:260px}.welcome-copy{flex:1}.welcome h2{font-size:34px;margin:0 0 10px}.question{font-size:22px;padding:10px;border-bottom:2px solid #68458b;margin:0 0 14px}.welcome p{font-size:16px;line-height:1.7}.welcome-logo{width:32%;display:flex;justify-content:center}.welcome-logo img{width:100%;max-width:330px;filter:drop-shadow(0 0 18px rgba(166,77,255,.6));animation:logoPulse 3.5s ease-in-out infinite}
+.cards-area{background:#0e0b13;padding:42px 0 55px;position:relative}.cards{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:18px}.box{position:relative;width:320px;min-height:400px;color:#fff;background:#08060c;display:flex;justify-content:center;align-items:center;margin:18px 15px;transition:.5s;isolation:isolate}.box:hover{transform:translateY(-20px)}.box:before,.box:after{content:'';position:absolute;inset:0;background:linear-gradient(45deg,#8f35f5,#f4eaff,#a64dff);z-index:-1}.box:after{filter:blur(30px);opacity:.75}.box span{position:absolute;inset:6px;background:rgba(0,0,0,.76);z-index:0}.box span:before{content:'';position:absolute;inset:0 auto 0 0;width:50%;background:rgba(255,255,255,.1);pointer-events:none}.content{position:relative;z-index:2;padding:24px 34px;text-align:center}.content h2{font-size:29px;color:#b86cff;margin:0 0 18px}.content p{font-size:16px;line-height:1.5;margin:14px 0;color:#fff}.content img{height:110px;max-width:160px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(166,77,255,.45))}.start{display:inline-block;margin-top:16px;padding:11px 20px;border:1px solid #b86cff;color:#b86cff;text-decoration:none;font-weight:800;letter-spacing:1px;transition:.25s}.start:hover{background:#b86cff;color:#111;box-shadow:0 0 22px #b86cff}.featured .content{padding:34px 40px}.featured .content h2{font-size:34px}
+.contact{text-align:center;padding:48px 20px}.contact h2{font-family:'Anton';letter-spacing:2px;font-size:28px}.contact a{display:inline-block;color:#b86cff;text-decoration:none;border-bottom:1px solid #b86cff;padding:8px}
+footer{border-top:1px solid #55376f;text-align:center;color:#ccc;padding:22px 10px;font-size:14px}.subhead{min-height:285px;background:linear-gradient(120deg,rgba(20,5,48,.96),rgba(8,8,18,.9)),url('https://stalityrp.github.io/Dynasty8/header.png') center/cover;position:relative}.subnav{height:95px;display:flex;align-items:center;justify-content:space-between}.back{text-decoration:none;font-weight:800}.mini-brand img{width:95px;height:55px;object-fit:cover;filter:drop-shadow(0 0 8px #a64dff)}.subnav span{font-weight:800;letter-spacing:2px}.sub-title{text-align:center;padding:18px 10px 50px}.sub-title h1{font-size:52px}.sub-title p{margin:5px 0;font-size:17px}.catalog-area{min-height:65vh;background:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2)),url('https://stalityrp.github.io/Dynasty8/photo.png') center/cover fixed}.category-grid .box{min-height:390px}.category-grid .content h2{font-size:27px}.intro{position:fixed;inset:0;background:#030108;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;animation:introOut 2.6s forwards;pointer-events:none}.intro img{width:min(78vw,680px);height:auto;filter:drop-shadow(0 0 16px #a64dff);animation:introLogo 2.2s ease forwards}.intro span{font-size:12px;letter-spacing:4px;color:#d9c6ff;opacity:0;animation:tagIn .8s 1s forwards}@keyframes introOut{0%,75%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}@keyframes introLogo{0%{opacity:0;transform:scale(.78);filter:brightness(2) drop-shadow(0 0 40px #c084fc)}35%{opacity:1;transform:scale(1.04)}70%{transform:scale(1);filter:brightness(1.2) drop-shadow(0 0 28px #a64dff)}100%{filter:brightness(1) drop-shadow(0 0 12px #a64dff)}}@keyframes tagIn{to{opacity:1}}@keyframes logoPulse{0%,100%{filter:drop-shadow(0 0 7px #913cff) brightness(1)}50%{filter:drop-shadow(0 0 20px #c084fc) brightness(1.25)}}
+@media(max-width:760px){.header{height:390px}.nav{height:85px}.brand img{width:100px;height:58px}.menu-toggle{display:block;z-index:8}.nav nav{display:none;position:absolute;top:78px;right:0;left:0;background:#080b22;padding:22px;flex-direction:column;gap:20px;text-align:center}.nav nav.open{display:flex}.slogan{margin-top:35px}.slogan h1{font-size:54px}.slogan h2{font-size:18px}.welcome{display:block;padding:30px 10px}.welcome-logo{width:100%;margin-top:20px}.welcome-logo img{max-width:220px}.welcome h2{font-size:28px}.question{font-size:18px}.box{width:min(320px,88vw);margin:16px 0}.sub-title h1{font-size:36px}.subnav span{font-size:11px}.mini-brand img{width:70px;height:42px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* Palette Dynasty 8 : chrome argent et énergie violette */
+.header-texture{background-image:linear-gradient(115deg,rgba(17,4,39,.88),rgba(3,3,9,.72)),url('https://stalityrp.github.io/Dynasty8/header.png')}
+.slogan h1,.sub-title h1{background:linear-gradient(180deg,#fff 8%,#d8d2e1 38%,#8f879b 53%,#fff 72%,#b88cff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 5px 18px rgba(0,0,0,.85),0 0 18px rgba(166,77,255,.35)}
+.slogan h2{border-color:#b86cff;text-shadow:0 0 12px rgba(184,108,255,.7)}
+.box:before,.box:after{background:linear-gradient(135deg,#6e22bf 0%,#e8d9ff 26%,#8f35f5 52%,#f8f4ff 74%,#6e22bf 100%)}
+.box:after{filter:blur(27px);opacity:.65}
+.box:hover:after{opacity:1;filter:blur(34px)}
+.content h2{color:#d9b8ff;text-shadow:0 0 13px rgba(166,77,255,.55)}
+.start{border-color:#b86cff;color:#e1c9ff;text-shadow:0 0 8px rgba(166,77,255,.5)}
+.start:hover{background:#a64dff;color:#fff;box-shadow:0 0 26px #a64dff}
+.contact a{color:#d9b8ff;border-color:#a64dff}
+.catalog-area{background-color:#100b17}
+.welcome{background:radial-gradient(ellipse at 82% 50%,rgba(120,42,190,.12),transparent 42%)}
+
+/* Bannière officielle Dynasty 8 : logo chrome/violet intégré une seule fois */
+.header {height:455px;background:#100819}
+.header-texture {display:none}
+.hero-banner {position:absolute;inset:0;z-index:1;overflow:hidden;background:#160d20}
+.hero-banner img {width:100%;height:100%;display:block;object-fit:cover;object-position:center 49%;filter:saturate(1.08) brightness(.92)}
+.nav {z-index:6}
+.brand-text {font-family:'Anton',sans-serif;font-size:22px;letter-spacing:2px;text-decoration:none;color:#eee4ff;text-shadow:0 0 12px rgba(166,77,255,.8)}
+.brand-text b,.mini-brand-text b {color:#c18aff;text-shadow:0 0 14px #a64dff}
+.slogan {display:none}
+.welcome-logo {display:none}
+.mini-brand-text {font-family:'Anton',sans-serif;font-size:22px;letter-spacing:2px;text-decoration:none;color:#eee4ff;text-shadow:0 0 12px rgba(166,77,255,.8)}
+@media(max-width:760px) {
+  .header {height:340px}
+  .hero-banner img {object-position:center center}
+  .brand-text {font-size:18px}
+}
+
+/* Version V7 : logo principal unique, animation subtile du halo */
+.hero-banner img{animation:neonBreath 5s ease-in-out infinite;transform-origin:center}
+@keyframes neonBreath{0%,100%{filter:saturate(1.06) brightness(.92) drop-shadow(0 0 0 rgba(166,77,255,0))}50%{filter:saturate(1.18) brightness(1.06) drop-shadow(0 0 8px rgba(166,77,255,.22))}}
+@media(prefers-reduced-motion:reduce){.hero-banner img{animation:none}}
+
+/* V8 — écran d'ouverture cinématique reprenant exactement la bannière principale */
+body.intro-active{overflow:hidden}
+.intro-screen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#08030e;isolation:isolate}
+.intro-screen:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,#3c155d 0%,#100718 52%,#05020a 100%);z-index:-2}
+.intro-aura{position:absolute;inset:-30%;background:radial-gradient(ellipse,rgba(162,57,255,.27),transparent 50%);animation:introAura 2.6s ease-in-out infinite alternate;pointer-events:none}
+.intro-art{display:block;width:min(95vw,1300px);height:auto;max-height:78vh;object-fit:contain;filter:brightness(.2) saturate(.5);opacity:0;transform:scale(.87);animation:introReveal 2.4s cubic-bezier(.16,1,.3,1) forwards;box-shadow:0 0 90px rgba(129,37,201,.13)}
+.intro-flash{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,rgba(226,191,255,.82),rgba(156,58,255,.3) 28%,transparent 62%);mix-blend-mode:screen;opacity:0;animation:introFlash 2.3s ease-out forwards}
+.intro-caption{position:absolute;bottom:12%;font-size:clamp(9px,1.1vw,13px);letter-spacing:.34em;color:#e7d5ff;text-shadow:0 0 15px #a64dff;opacity:0;animation:introCaption .8s 1.25s forwards;text-align:center;padding:0 24px}
+.intro-skip{position:absolute;right:24px;bottom:24px;z-index:2;border:1px solid rgba(200,157,255,.5);border-radius:24px;padding:10px 16px;background:rgba(16,5,31,.75);color:#e9dcff;font:700 11px 'Nunito',sans-serif;letter-spacing:.1em;cursor:pointer}
+.intro-skip:hover{background:#6b22a4;box-shadow:0 0 20px rgba(166,77,255,.6)}
+.intro-screen.is-closing{opacity:0;pointer-events:none;transition:opacity .55s ease}
+@keyframes introReveal{0%{opacity:0;filter:brightness(.12) saturate(.4);transform:scale(.87)}32%{opacity:1;filter:brightness(1.8) saturate(1.5) drop-shadow(0 0 22px #b35cff);transform:scale(1.035)}60%{filter:brightness(.82) saturate(1.1);transform:scale(1)}100%{opacity:1;filter:brightness(1.05) saturate(1.18) drop-shadow(0 0 15px rgba(180,82,255,.45));transform:scale(1)}}
+@keyframes introFlash{0%,15%{opacity:0}26%{opacity:.9}35%{opacity:0}48%{opacity:.28}58%,100%{opacity:0}}
+@keyframes introAura{from{opacity:.4;transform:scale(.9)}to{opacity:1;transform:scale(1.1)}}
+@keyframes introCaption{to{opacity:1}}
+@media(max-width:760px){.intro-art{width:115vw;max-width:none}.intro-caption{bottom:17%;letter-spacing:.2em}.intro-skip{bottom:18px;right:18px}}
+@media(prefers-reduced-motion:reduce){.intro-art{opacity:1;filter:none;transform:none;animation:none}.intro-flash,.intro-aura{animation:none;opacity:0}.intro-caption{opacity:1;animation:none}}
+
+/* V9 : éclairs, impacts, balayage chromé, ondes et replay */
+.intro-screen{background:#030106}
+.intro-screen:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(190,116,255,.022) 4px 5px);opacity:.65}
+.intro-art{position:relative;z-index:3;animation:v9Reveal 4.3s cubic-bezier(.16,1,.3,1) both;box-shadow:none}
+.intro-aura{z-index:0;animation:introAura 1.6s ease-in-out infinite alternate}
+.intro-stars{position:absolute;inset:0;z-index:1;opacity:.55;background-image:radial-gradient(#e9baff 1px,transparent 1px),radial-gradient(#9e52fc 1px,transparent 1px);background-size:91px 79px,143px 129px;background-position:12px 34px,65px 19px;animation:starDrift 4.7s ease-out both}
+.intro-bolts{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible}
+.bolt{fill:none;stroke:#dbadff;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 12px #a64dff) drop-shadow(0 0 23px #8721ec);stroke-dasharray:900;stroke-dashoffset:900;opacity:0;animation:boltStrike 4.3s linear both}
+.bolt-b{animation-delay:.15s;stroke-width:4}
+.bolt-c{animation-delay:.36s;stroke-width:2.5}
+.bolt-d{animation-delay:.57s;stroke-width:3}
+.intro-shockwave{position:absolute;z-index:5;width:12vmin;height:12vmin;border:2px solid rgba(215,162,255,.8);border-radius:50%;box-shadow:0 0 35px #a64dff,inset 0 0 35px #a64dff;opacity:0;animation:shockwave 4.3s ease-out both;pointer-events:none}
+.intro-scan{position:absolute;z-index:5;top:0;bottom:0;left:-60%;width:32%;transform:skewX(-22deg);background:linear-gradient(90deg,transparent,rgba(229,193,255,.06),rgba(255,255,255,.35),rgba(195,108,255,.12),transparent);filter:blur(13px);animation:chromeScan 4.3s ease-in-out both;pointer-events:none}
+.intro-flash{z-index:5;animation:v9Flash 4.3s linear both}
+.intro-caption{z-index:7;animation:introCaption .65s 1.6s forwards}
+.intro-skip{z-index:8}
+.replay-intro{position:absolute;z-index:7;right:3%;bottom:95px;padding:10px 15px;border:1px solid #b779ee;background:rgba(12,4,23,.76);color:#f2e4ff;font-size:11px;font-weight:800;letter-spacing:.1em;cursor:pointer;border-radius:20px;box-shadow:0 0 18px rgba(166,77,255,.3)}
+.replay-intro:hover{background:#4a177b;box-shadow:0 0 23px #a64dff}
+@keyframes v9Reveal{0%{opacity:0;transform:scale(.84);filter:brightness(.07) saturate(.3)}15%{opacity:.65;filter:brightness(.28)}29%{opacity:1;transform:scale(1.055);filter:brightness(2.1) saturate(1.6) drop-shadow(0 0 25px #a64dff)}40%{transform:scale(1);filter:brightness(.65) saturate(1.1)}54%{filter:brightness(1.4) drop-shadow(0 0 24px #c486ff)}70%,100%{opacity:1;transform:scale(1);filter:brightness(1.05) saturate(1.2) drop-shadow(0 0 15px #a64dff)}}
+@keyframes boltStrike{0%,14%,33%,43%,58%,100%{opacity:0;stroke-dashoffset:900}19%{opacity:1;stroke-dashoffset:0}23%{opacity:.12;stroke-dashoffset:0}27%{opacity:.95;stroke-dashoffset:0}30%{opacity:0;stroke-dashoffset:0}49%{opacity:.8;stroke-dashoffset:0}53%{opacity:0;stroke-dashoffset:0}}
+@keyframes v9Flash{0%,15%,23%,31%,46%,54%,100%{opacity:0}19%{opacity:.85}27%{opacity:.5}50%{opacity:.3}}
+@keyframes shockwave{0%,21%{opacity:0;transform:scale(.15)}26%{opacity:.85}43%,100%{opacity:0;transform:scale(12)}}
+@keyframes chromeScan{0%,30%{left:-60%;opacity:0}37%{opacity:1}63%{left:135%;opacity:0}100%{opacity:0}}
+@keyframes starDrift{from{transform:translateY(20px);opacity:0}to{transform:translateY(-16px);opacity:.5}}
+@media(max-width:760px){.replay-intro{bottom:65px;right:12px;font-size:9px}.intro-bolts{width:140%;left:-20%}}
+@media(prefers-reduced-motion:reduce){.intro-art{animation:none;opacity:1;filter:none;transform:none}.bolt,.intro-shockwave,.intro-scan,.intro-stars,.intro-flash{animation:none;opacity:0}}
+.agent-link{border:1px solid #b971f4!important;border-radius:8px;padding:10px 14px!important;background:#5b238a77;color:#f1d3ff!important;box-shadow:0 0 15px #9b40db55}.agent-cta{margin:48px auto;padding:35px 24px;text-align:center;background:linear-gradient(120deg,#160a26,#32114a,#160a26);border:1px solid #a866df88;border-radius:14px;box-shadow:0 0 28px #8d2cc53b}.agent-cta h2{color:#e8bdff}.agent-cta p{color:#d5b8e8}.agent-cta a{display:inline-block;margin-top:14px;background:linear-gradient(110deg,#68319d,#a957dc);border:1px solid #e2a8ff;border-radius:8px;color:white;text-decoration:none;padding:15px 25px;font-weight:800;box-shadow:0 0 18px #a65beb70}

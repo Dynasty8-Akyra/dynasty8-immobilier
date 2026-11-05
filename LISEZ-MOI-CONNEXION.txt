@@ -1,0 +1,15 @@
+DYNASTY 8 V14 — SUPABASE CONFIGURÉ
+
+Le projet Supabase et la clé publique sont déjà intégrés.
+
+1. Décompresse le ZIP.
+2. Glisse le dossier dynasty8_site dans Netlify > Deploys.
+3. Ouvre admin-annonces.html sur ton site Netlify.
+4. Connecte-toi avec le compte créé dans Supabase > Authentication > Users.
+5. Ajoute un bien et enregistre.
+6. Ouvre biens.html dans un autre navigateur : le bien doit être visible.
+
+Si la connexion échoue, vérifie les règles SQL et le compte administrateur.
+Les anciennes annonces locales ne sont pas automatiquement transférées.
+La gestion des zones reste locale.
+Ne publie jamais de clé Supabase secret ou service_role.
