@@ -1,6 +1,19 @@
 
 (() => {
   "use strict";
+  console.log("DYNASTY 8 : démarrage de carte.js");
+
+console.log("Leaflet :", typeof L);
+
+console.log(
+  "Conteneur viewport :",
+  document.getElementById("viewport")
+);
+
+console.log(
+  "Page carte :",
+  document.querySelector(".map-page")
+);
 
 const root = document.getElementById("viewport");
 if (!root) {
