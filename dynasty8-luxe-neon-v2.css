@@ -979,3 +979,89 @@ body {
 .cards-area {
   background: transparent !important;
 }
+
+/* =========================================
+   DYNASTY 8 — SEPARATION ELECTRIQUE
+   VIOLET & ROSE NEON
+   ========================================= */
+
+/* Bande lumineuse sous le grand logo */
+header.header {
+  position: relative;
+  isolation: isolate;
+  margin-bottom: 0 !important;
+}
+
+/* Remplace la séparation par une bande néon */
+header.header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12px;
+  z-index: 5;
+  pointer-events: none;
+
+  background: linear-gradient(
+    90deg,
+    #5d16a3 0%,
+    #a73cff 20%,
+    #ff70e9 40%,
+    #e6a2ff 50%,
+    #ff70e9 60%,
+    #9a32f5 80%,
+    #5d16a3 100%
+  );
+
+  background-size: 250% 100%;
+
+  box-shadow:
+    0 0 12px rgba(193, 77, 255, .95),
+    0 0 30px rgba(191, 63, 255, .65),
+    0 0 65px rgba(255, 76, 221, .30);
+
+  animation: d8ElectricSeparator 5s linear infinite;
+}
+
+/* Déplacement de l'énergie */
+@keyframes d8ElectricSeparator {
+  0% {
+    background-position: 0% 50%;
+    opacity: .85;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    background-position: 250% 50%;
+    opacity: .85;
+  }
+}
+
+/* Petite lueur au-dessus de la séparation */
+header.header::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 55px;
+  z-index: 4;
+  pointer-events: none;
+
+  background: linear-gradient(
+    to top,
+    rgba(175, 54, 255, .24),
+    transparent
+  );
+}
+
+/* Réduction des animations si nécessaire */
+@media (prefers-reduced-motion: reduce) {
+  header.header::after {
+    animation: none;
+  }
+}
