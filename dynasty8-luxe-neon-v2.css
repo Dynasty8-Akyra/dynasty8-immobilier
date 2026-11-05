@@ -793,3 +793,60 @@ main,
     background-attachment: scroll !important;
   }
 }
+
+/* =========================================
+   DYNASTY 8 — PANORAMA SUR TOUTE LA PAGE
+   ========================================= */
+
+/* Panorama fixe derrière l'ensemble du site */
+html {
+  min-height: 100%;
+  background: #0b0613;
+}
+
+body {
+  min-height: 100vh;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(12, 5, 22, 0.35),
+      rgba(12, 5, 22, 0.65)
+    ),
+    url("./los-santos-background.png")
+      center center / cover fixed no-repeat
+    !important;
+}
+
+/* Retirer les fonds opaques des grands conteneurs */
+body > main,
+main,
+.hero,
+.hero-section,
+.banner,
+.banner-area,
+.cards-area,
+.welcome {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Conserver le fond des cartes en verre */
+.cards-area .box {
+  background: rgba(22, 9, 37, 0.65) !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Le logo conserve ses effets lumineux */
+header,
+nav {
+  position: relative;
+}
+
+/* Version mobile */
+@media (max-width: 780px) {
+  body {
+    background-attachment: scroll !important;
+  }
+}
