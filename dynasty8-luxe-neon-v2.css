@@ -604,3 +604,46 @@ main {
     transition: none;
   }
 }
+
+/* DYNASTY 8 — BANNIERE CENTREE */
+
+.d8-prestige {
+  justify-content: center !important;
+}
+
+/* Centrer le bloc de texte */
+.d8-prestige-content {
+  width: min(650px, 100%);
+  margin: 0 auto;
+  text-align: center !important;
+}
+
+/* Titre droit et centré */
+.d8-prestige h2,
+.d8-prestige h2 em {
+  font-family: 'Cinzel', Georgia, serif;
+  font-style: normal !important;
+  text-align: center !important;
+}
+
+/* Description centrée */
+.d8-prestige p {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* Boutons centrés */
+.d8-prestige-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+/* Sous-titre centré */
+.d8-prestige .d8-eyebrow {
+  display: block;
+  text-align: center;
+}
