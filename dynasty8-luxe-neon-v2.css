@@ -941,3 +941,41 @@ header.header::before,
 header.header::after {
   background-color: transparent !important;
 }
+
+/* =========================================
+   DYNASTY 8 — TRANSITION PANORAMIQUE
+   ========================================= */
+
+/* Supprimer les fonds opaques des zones principales */
+body > main {
+  background: transparent !important;
+}
+
+/* Éviter une bande sombre sous le grand logo */
+header.header {
+  margin-bottom: 0 !important;
+}
+
+/* Conserver le panorama derrière les sections */
+body {
+  background-image:
+    linear-gradient(
+      rgba(12, 5, 22, 0.30),
+      rgba(12, 5, 22, 0.55)
+    ),
+    url("./los-santos-background.png") !important;
+
+  background-size: cover !important;
+  background-position: center !important;
+  background-attachment: fixed !important;
+}
+
+/* Réduire l'espace au-dessus de la bannière */
+.d8-prestige {
+  margin-top: 20px !important;
+}
+
+/* Éviter une séparation opaque sur la section des cartes */
+.cards-area {
+  background: transparent !important;
+}
