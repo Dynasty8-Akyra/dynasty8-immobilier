@@ -1,0 +1,44 @@
+
+/* DYNASTY 8 — Luxe & Neon | Couche visuelle uniquement */
+:root{--d8-night:#0d0915;--d8-panel:#1c122b;--d8-purple:#aa6bff;--d8-lilac:#ead8ff;--d8-border:rgba(194,139,255,.27)}
+body{background:var(--d8-night);color:#f8f3ff}
+.header{min-height:530px;height:auto;background:#10091c}
+.header-texture{background:linear-gradient(90deg,rgba(9,6,17,.9),rgba(33,12,55,.45)),url('https://stalityrp.github.io/Dynasty8/header.png') center/cover no-repeat}
+.nav{min-height:100px;height:auto;gap:18px;padding-block:16px}
+.nav nav{gap:clamp(10px,2vw,30px);align-items:center;flex-wrap:wrap}
+.nav nav a{font-size:13px;letter-spacing:.045em}
+.nav nav a:hover{color:#f2dfff;text-shadow:0 0 18px #a46aff}
+.brand-text{font-family:'Anton',sans-serif;font-size:32px;letter-spacing:2px;text-decoration:none;white-space:nowrap;text-shadow:0 0 22px rgba(171,100,255,.65)}
+.brand-text b{color:#cf9cff}
+.agent-link{border:1px solid rgba(206,156,255,.55);border-radius:999px;padding:12px 17px;background:rgba(99,43,147,.25);box-shadow:0 0 22px rgba(159,82,255,.15)}
+.hero-banner{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;padding:35px 16px 70px}
+.hero-banner img{display:block;max-width:min(900px,95%);width:100%;height:auto;filter:drop-shadow(0 0 26px rgba(171,91,255,.65));animation:d8Breath 5s ease-in-out infinite}
+.wave{background:linear-gradient(177deg,transparent 48%,var(--d8-night) 49%)}
+.welcome{padding-top:72px;padding-bottom:72px}
+.welcome-copy{max-width:1000px;margin:auto;text-align:center}
+.welcome h2{font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.04em;font-size:clamp(35px,5vw,62px);text-shadow:0 0 28px rgba(177,106,255,.25)}
+.welcome .question{color:var(--d8-lilac);font-size:clamp(18px,2.3vw,25px);border-color:var(--d8-border);padding-bottom:22px}
+.welcome p{color:#cbbdd7;font-size:17px}
+.cards-area{background:radial-gradient(ellipse at 50% 0,rgba(112,51,168,.18),transparent 65%),#100b18;padding:70px 18px 90px}
+.cards{gap:32px}
+.cards .box{width:min(420px,100%);min-height:360px;margin:0;border:1px solid var(--d8-border);border-radius:22px;overflow:visible;background:linear-gradient(150deg,#251536,#100b18);box-shadow:0 20px 55px rgba(0,0,0,.35);transition:transform .3s,box-shadow .3s}
+.cards .box::before{inset:-1px;border-radius:22px;background:linear-gradient(145deg,rgba(203,150,255,.7),transparent 50%,rgba(144,69,232,.45));opacity:.35}
+.cards .box::after{inset:12px;border-radius:24px;filter:blur(38px);opacity:.12}
+.cards .box:hover{transform:translateY(-8px);box-shadow:0 28px 70px rgba(122,54,193,.3)}
+.cards .box>span{border-radius:19px;inset:1px;background:linear-gradient(155deg,rgba(32,18,48,.95),rgba(13,9,22,.97))}
+.cards .box>span::before{border-radius:19px;opacity:.28}
+.cards .content h2{color:#e3c4ff;font-family:'Anton',sans-serif;font-weight:400;letter-spacing:.04em}
+.cards .content p{color:#c8bad4}
+.start,.agent-cta a{border-radius:999px;background:linear-gradient(120deg,#7e3cc6,#b477f2);border:1px solid #bd8cf6;color:#fff!important;padding:13px 25px;text-decoration:none;box-shadow:0 8px 28px rgba(143,64,216,.25);transition:transform .2s,box-shadow .2s}
+.start:hover,.agent-cta a:hover{transform:translateY(-2px);background:linear-gradient(120deg,#9956e8,#ca99ff);box-shadow:0 12px 34px rgba(168,84,249,.42)}
+.agent-cta{margin-top:65px;margin-bottom:65px;padding:55px 28px;text-align:center;border:1px solid var(--d8-border);border-radius:25px;background:radial-gradient(circle at 50% 0,rgba(144,69,232,.2),transparent 70%),#1b1127}
+.agent-cta h2,.contact h2{color:#f1dfff;letter-spacing:.09em}
+.agent-cta p,.contact p{color:#cbbdd7}
+.agent-cta a{display:inline-block;margin-top:15px}
+.contact{padding-bottom:85px}
+.contact a{color:#dfbaff}
+footer{background:#0a0711;border-color:var(--d8-border)}
+:focus-visible{outline:2px solid #d7a6ff;outline-offset:4px}
+@keyframes d8Breath{0%,100%{filter:drop-shadow(0 0 20px rgba(171,91,255,.48))}50%{filter:drop-shadow(0 0 42px rgba(186,110,255,.9))}}
+@media(max-width:780px){.header{min-height:390px}.hero-banner{padding-top:35px;padding-bottom:60px}.welcome{padding-top:45px;padding-bottom:45px}.cards-area{padding:48px 15px}.agent-cta{margin-top:35px;margin-bottom:35px}}
+@media(prefers-reduced-motion:reduce){.hero-banner img{animation:none}.cards .box,.start,.agent-cta a{transition:none}}
