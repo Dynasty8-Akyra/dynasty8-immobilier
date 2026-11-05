@@ -44,3 +44,113 @@ document.getElementById('reset').onclick=()=>map.fitBounds(bounds,{padding:[10,1
 // Centre la vue sur Los Santos pour montrer les quartiers dès l'ouverture.
 map.whenReady(()=>{map.setView([5350,4500],3);});
 })();
+
+/* DYNASTY 8 — ZONES IMMOBILIÈRES NÉON */
+
+(() => {
+  // Récupère la carte Leaflet existante.
+  // La carte doit être accessible via window.dynastyMap.
+  const map = window.dynastyMap;
+
+  if (!map || typeof L === "undefined") {
+    console.warn("Carte Leaflet non accessible.");
+    return;
+  }
+
+  const zones = [
+    {
+      name: "Paleto Bay",
+      color: "#4daeff",
+      points: [
+        [-29, 39], [-26, 44], [-21, 45],
+        [-18, 40], [-20, 34], [-26, 33]
+      ]
+    },
+    {
+      name: "Grapeseed",
+      color: "#56d78c",
+      points: [
+        [-45, 67], [-42, 75], [-49, 80],
+        [-55, 74], [-54, 67]
+      ]
+    },
+    {
+      name: "Blaine County",
+      color: "#56d78c",
+      points: [
+        [-35, 32], [-29, 50], [-35, 65],
+        [-46, 67], [-53, 54], [-47, 35]
+      ]
+    },
+    {
+      name: "Sandy Shores",
+      color: "#4daeff",
+      points: [
+        [-52, 60], [-48, 70], [-52, 79],
+        [-59, 77], [-62, 65]
+      ]
+    },
+    {
+      name: "Vinewood Hills",
+      color: "#bb65ff",
+      points: [
+        [-67, 39], [-63, 53], [-67, 65],
+        [-73, 62], [-76, 46]
+      ]
+    },
+    {
+      name: "Downtown Los Santos",
+      color: "#ff69b9",
+      points: [
+        [-78, 56], [-74, 69], [-81, 77],
+        [-89, 71], [-89, 60]
+      ]
+    },
+    {
+      name: "Del Perro",
+      color: "#4daeff",
+      points: [
+        [-77, 32], [-73, 43], [-80, 49],
+        [-88, 42], [-87, 33]
+      ]
+    },
+    {
+      name: "Zone industrielle",
+      color: "#efb54c",
+      points: [
+        [-89, 69], [-85, 79], [-93, 85],
+        [-99, 77], [-98, 66]
+      ]
+    }
+  ];
+
+  zones.forEach(zone => {
+    const polygon = L.polygon(zone.points, {
+      color: zone.color,
+      weight: 3,
+      opacity: 0.95,
+      fillColor: zone.color,
+      fillOpacity: 0.13,
+      interactive: true
+    }).addTo(map);
+
+    polygon.bindTooltip(zone.name, {
+      sticky: true,
+      direction: "top"
+    });
+
+    polygon.on("mouseover", () => {
+      polygon.setStyle({
+        weight: 5,
+        fillOpacity: 0.28
+      });
+    });
+
+    polygon.on("mouseout", () => {
+      polygon.setStyle({
+        weight: 3,
+        fillOpacity: 0.13
+      });
+    });
+  });
+})();
