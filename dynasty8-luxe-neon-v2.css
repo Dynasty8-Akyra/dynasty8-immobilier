@@ -910,3 +910,34 @@ header.header .hero-banner img {
   opacity: 1;
   visibility: visible;
 }
+
+/* =========================================
+   DYNASTY 8 — PANORAMA DERRIERE LE LOGO
+   ========================================= */
+
+/* Panorama sur toute la zone supérieure */
+header.header {
+  background-image:
+    linear-gradient(
+      rgba(12, 5, 22, 0.40),
+      rgba(12, 5, 22, 0.60)
+    ),
+    url("./los-santos-background.png") !important;
+
+  background-color: #10091b !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Conserver le logo et ses effets */
+header.header .hero-banner {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Éviter une bande opaque entre les sections */
+header.header::before,
+header.header::after {
+  background-color: transparent !important;
+}
