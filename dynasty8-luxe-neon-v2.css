@@ -430,3 +430,61 @@ main {
     animation: none;
   }
 }
+
+/* DYNASTY 8 — BANNIERE PANORAMIQUE GTA RP */
+
+/* L'image occupe maintenant toute la bannière */
+.d8-prestige {
+  display: flex;
+  grid-template-columns: none;
+  align-items: center;
+  justify-content: flex-start;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(12, 5, 23, .25),
+      rgba(12, 5, 23, .08)
+    ),
+    url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1800&q=90')
+    center / cover no-repeat;
+}
+
+/* On masque l'ancien bloc photo de gauche */
+.d8-prestige-visual {
+  display: none;
+}
+
+/* Verre fumé transparent sur le côté gauche */
+.d8-prestige::after {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(15, 7, 28, .94) 0%,
+      rgba(20, 9, 36, .86) 34%,
+      rgba(21, 9, 36, .43) 65%,
+      rgba(16, 7, 29, .12) 100%
+    );
+}
+
+/* Texte au-dessus du décor */
+.d8-prestige-content {
+  width: min(720px, 100%);
+  max-width: 100%;
+  padding: clamp(35px, 5vw, 75px);
+}
+
+/* Sur mobile, le texte reste lisible */
+@media (max-width: 780px) {
+  .d8-prestige {
+    min-height: 560px;
+    background-position: 60% center;
+  }
+
+  .d8-prestige::after {
+    background: rgba(15, 7, 28, .77);
+  }
+
+  .d8-prestige-content {
+    padding: 36px 25px;
+  }
+}
