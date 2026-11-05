@@ -1608,3 +1608,12 @@ header.header .d8-glass-logo > img {
   margin: 0 auto !important;
   max-width: 100% !important;
 }
+
+/* ==========================================
+   DYNASTY 8 — CENTRAGE DEFINITIF DU LOGO
+   ========================================== */
+
+header.header .hero-banner .d8-glass-logo {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
