@@ -214,7 +214,7 @@
     panel.classList.add("is-open");
   }
 
-  function highlight(id) {
+    function highlight(id) {
     for (const [key, polygon] of Object.entries(polygons)) {
       const active = key === id;
 
@@ -222,6 +222,8 @@
         weight: active ? 5 : 3,
         fillOpacity: active ? 0.25 : 0.10
       });
+    }
+  }
 
       const markerElement = markers[key]?.getElement();
 
@@ -287,7 +289,15 @@
         className: "d8-label-tooltip"
       }
     );
+  
+  }
 
+  // FERMETURE DU CATALOGUE
+  panel.addEventListener("click", e => {
+    if (e.target.closest(".d8-close")) {
+      close();
+    }
+  });
 
   // FILTRES
   document.getElementById("filters")
