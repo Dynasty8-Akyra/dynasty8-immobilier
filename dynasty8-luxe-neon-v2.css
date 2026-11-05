@@ -1565,3 +1565,46 @@ header.header .d8-nav-premium #navlinks a {
     flex-direction: column !important;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — CENTRAGE DU GRAND LOGO
+   ========================================== */
+
+/* La zone du logo occupe toute la largeur */
+header.header > .hero-banner {
+  position: relative !important;
+  inset: auto !important;
+  transform: none !important;
+
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 35px 20px 65px !important;
+  box-sizing: border-box;
+}
+
+/* Le rectangle en verre reste centré */
+header.header > .hero-banner > .d8-glass-logo {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+
+  flex: 0 1 920px !important;
+  width: min(920px, 100%) !important;
+  max-width: 920px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Le logo métallique reste au centre du verre */
+header.header .d8-glass-logo > img {
+  display: block !important;
+  margin: 0 auto !important;
+  max-width: 100% !important;
+}
