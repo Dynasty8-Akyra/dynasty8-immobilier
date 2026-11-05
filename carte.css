@@ -132,3 +132,46 @@ body > footer {
     width: min(360px, calc(100% - 24px)) !important;
   }
 }
+
+/* DYNASTY 8 — GRANDE FENÊTRE FLOTTANTE */
+
+.map-layout .zone-panel {
+  position: absolute !important;
+  top: 50% !important;
+  right: 25px !important;
+  left: auto !important;
+
+  transform: translateY(-50%) !important;
+
+  width: 550px !important;
+  max-width: calc(100vw - 50px) !important;
+
+  height: 90vh !important;
+  height: 90dvh !important;
+  max-height: 90dvh !important;
+
+  box-sizing: border-box !important;
+  overflow-y: auto !important;
+
+  background: rgba(25, 12, 42, 0.18) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+
+  border: 1px solid rgba(210, 135, 255, 0.5) !important;
+  border-radius: 22px !important;
+
+  box-shadow:
+    0 0 30px rgba(170, 70, 255, 0.22),
+    inset 0 0 20px rgba(200, 120, 255, 0.06) !important;
+
+  z-index: 20 !important;
+}
+
+@media (max-width: 790px) {
+  .map-layout .zone-panel {
+    right: 12px !important;
+    width: calc(100vw - 24px) !important;
+    height: 75dvh !important;
+    max-height: 75dvh !important;
+  }
+}
