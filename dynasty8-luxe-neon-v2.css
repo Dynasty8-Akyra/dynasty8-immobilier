@@ -850,3 +850,22 @@ nav {
     background-attachment: scroll !important;
   }
 }
+
+/* ========================================
+   DYNASTY 8 — CORRECTION DU HERO
+   ======================================== */
+
+/* Retirer le fond opaque derrière le logo */
+.hero-banner {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Garder les animations du logo visibles */
+.hero-banner img,
+.hero-banner video,
+.hero-banner canvas {
+  visibility: visible;
+  opacity: 1;
+}
