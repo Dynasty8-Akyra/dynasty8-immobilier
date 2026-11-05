@@ -1489,3 +1489,79 @@ header.header .d8-glass-logo > img {
     min-width: 0;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — MENU SUR UNE SEULE LIGNE
+   ========================================== */
+
+header.header .d8-nav-premium {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 88px;
+  padding: 0 20px !important;
+  box-sizing: border-box;
+}
+
+/* Connexion Agent : bord gauche de l'écran */
+header.header .d8-nav-premium .d8-agent-access {
+  position: absolute !important;
+  left: 20px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+}
+
+/* Les catégories sont centrées sur l'écran */
+header.header .d8-nav-premium #navlinks {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  position: static !important;
+  width: max-content !important;
+  margin: 0 auto !important;
+  gap: clamp(14px, 1.8vw, 30px) !important;
+}
+
+/* Taille des écritures */
+header.header .d8-nav-premium #navlinks a {
+  font-size: clamp(15px, 1.1vw, 18px);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Préserver la ligne sur les écrans de bureau */
+@media (min-width: 901px) {
+  header.header .d8-nav-premium .menu-toggle {
+    display: none !important;
+  }
+}
+
+/* Sur téléphone, conserver le menu mobile existant */
+@media (max-width: 900px) {
+  header.header .d8-nav-premium {
+    justify-content: space-between !important;
+  }
+
+  header.header .d8-nav-premium .d8-agent-access {
+    position: static !important;
+    transform: none !important;
+  }
+
+  header.header .d8-nav-premium #navlinks {
+    display: none !important;
+  }
+
+  header.header .d8-nav-premium #navlinks.open,
+  header.header .d8-nav-premium #navlinks.active {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
