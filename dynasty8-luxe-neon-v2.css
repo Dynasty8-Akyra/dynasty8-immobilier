@@ -1442,3 +1442,50 @@ header.header .hero-banner {
     font-size: 13px;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — CORRECTION CENTRAGE LOGO
+   ========================================== */
+
+/* Centrer la zone du grand logo */
+header.header .hero-banner {
+  position: relative !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+
+  box-sizing: border-box;
+}
+
+/* Centrer le panneau en verre */
+header.header .hero-banner .d8-glass-logo {
+  flex: 0 1 920px;
+  width: min(920px, 94%) !important;
+  max-width: 920px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  transform: none !important;
+}
+
+/* Garder le logo centré dans son verre */
+header.header .d8-glass-logo > img {
+  display: block;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 780px) {
+  header.header .hero-banner .d8-glass-logo {
+    width: 100% !important;
+    min-width: 0;
+  }
+}
