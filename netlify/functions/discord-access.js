@@ -2,6 +2,8 @@
 const GUILD='1567889374836957286';
 const DIRECTOR='1567889789569728583';
 const CONFIRMED='1567889964639723631';
+// Discord role ID for Agent en formation, configured in Netlify.
+const TRAINING=process.env.DISCORD_TRAINING_ROLE_ID||'';
 const json=(code,obj)=>({statusCode:code,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','access-control-allow-origin':'*'},body:JSON.stringify(obj)});
 async function api(url,options={}){
  const r=await fetch(url,options);
@@ -30,10 +32,12 @@ exports.handler=async(event)=>{
   try{member=await api('https://discord.com/api/v10/guilds/'+GUILD+'/members/'+discordId,{headers:{authorization:'Bot '+bot}})}
   catch(e){if(e.status===404)return json(403,{error:'Vous ne faites pas partie du Discord Dynasty 8.'});throw e}
   const roles=member.roles||[];
-  const role=roles.includes(DIRECTOR)?'direction':roles.includes(CONFIRMED)?'confirme':'lecture';
+  const role=roles.includes(DIRECTOR)?'direction':roles.includes(CONFIRMED)?'confirme':(TRAINING && /^\d{17,22}$/.test(TRAINING) && roles.includes(TRAINING))?'formation':'aucun';
+  const canWrite=role==='direction'||role==='confirme';
+  const canViewDashboard=canWrite||role==='formation';
   const action=event.queryStringParameters?.action||'status';
-  if(action==='status'&&event.httpMethod==='GET')return json(200,{role,canWrite:role!=='lecture'});
-  if(role==='lecture')return json(403,{error:'Seuls la Direction et les Agents confirmés peuvent gérer les annonces.'});
+  if(action==='status'&&event.httpMethod==='GET')return json(200,{role,canWrite,canViewDashboard});
+  if(!canWrite)return json(403,{error:'Seuls la Direction et les Agents confirmés peuvent gérer les annonces.'});
   const endpoint=url+'/rest/v1/properties';
   const serviceHeaders={apikey:serviceKey,authorization:'Bearer '+serviceKey,'content-type':'application/json'};
   if(action==='save'&&event.httpMethod==='POST'){
