@@ -156,3 +156,79 @@ html, body {
   height: 100% !important;
   min-height: 100vh !important;
 }
+
+/* =====================================
+   DYNASTY 8 — OUTILS DE DESSIN
+   ===================================== */
+
+#d8-draw-tools {
+  position: fixed;
+  top: 110px;
+  right: 20px;
+  z-index: 9999;
+
+  width: 230px;
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+
+  background: rgba(17, 9, 32, 0.94);
+  border: 1px solid #bb65ff;
+  border-radius: 16px;
+
+  box-shadow:
+    0 0 20px rgba(187, 101, 255, 0.35);
+
+  backdrop-filter: blur(15px);
+}
+
+.d8-draw-title {
+  color: #d7a7ff;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 7px;
+}
+
+#d8-draw-tools button {
+  padding: 11px 10px;
+  border-radius: 9px;
+
+  background: rgba(187, 101, 255, 0.12);
+  border: 1px solid rgba(187, 101, 255, 0.45);
+
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+#d8-draw-tools button:hover {
+  background: #8738cf;
+  box-shadow: 0 0 12px #8738cf;
+}
+
+#d8-draw-tools.drawing-active {
+  border-color: #28e6ed;
+  box-shadow: 0 0 20px rgba(40, 230, 237, 0.4);
+}
+
+#d8-draw-count {
+  text-align: center;
+  font-size: 12px;
+  color: #d7a7ff;
+  padding-top: 5px;
+}
+
+@media (max-width: 700px) {
+  #d8-draw-tools {
+    top: auto;
+    bottom: 70px;
+    right: 10px;
+    width: 200px;
+  }
+}
