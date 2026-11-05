@@ -25,3 +25,110 @@ body{background:#080610;color:#f5eaff}.map-page{max-width:1240px;margin:26px aut
 .zone-panel .d8-pin{color:#e6b4ff;margin-right:7px}
 @media(max-width:790px){.map-page{padding:0 10px 35px}.map-viewport{height:78vh;min-height:520px}.zone-panel{top:auto;bottom:12px;right:12px;left:12px;width:auto;max-height:55%;padding:15px;border-radius:18px}.zone-panel .d8-panel-photo{height:75px}.map-hint{bottom:auto;top:15px;left:70px;font-size:10px}.zone-panel h2{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.zone-panel{transition:none}}
+
+/* DYNASTY 8 — CARTE IMMERSIVE PLEIN ÉCRAN */
+
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  min-height: 100% !important;
+}
+
+body {
+  overflow-x: hidden;
+  background: #080610;
+}
+
+/* Supprime la bannière supérieure */
+body > header.subhead {
+  display: none !important;
+}
+
+/* La carte occupe toute la fenêtre */
+.map-page {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.map-layout {
+  display: block !important;
+  position: relative !important;
+  width: 100% !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  margin: 0 !important;
+}
+
+/* Aucun cadre ni contour */
+.map-viewport {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+/* Fenêtre catalogue flottante à droite */
+.zone-panel {
+  position: absolute !important;
+  top: 50% !important;
+  right: 24px !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  width: min(390px, calc(100% - 48px)) !important;
+  max-height: 85% !important;
+  overflow-y: auto !important;
+  z-index: 20 !important;
+
+  background: rgba(25, 12, 42, 0.18) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+
+  border: 1px solid rgba(210, 135, 255, 0.5) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 0 30px rgba(170, 70, 255, 0.18) !important;
+}
+
+/* Filtres flottants sur la carte */
+.map-toolbar {
+  position: absolute !important;
+  top: 18px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 30 !important;
+  width: max-content;
+  max-width: calc(100% - 30px);
+  justify-content: center;
+}
+
+/* Contrôles de zoom */
+.map-buttons {
+  z-index: 25 !important;
+}
+
+/* Masque les éléments de démonstration */
+.map-legend,
+.map-disclaimer,
+body > footer {
+  display: none !important;
+}
+
+@media (max-width: 790px) {
+  .map-toolbar {
+    top: 12px !important;
+    width: calc(100% - 24px);
+  }
+
+  .zone-panel {
+    right: 12px !important;
+    width: min(360px, calc(100% - 24px)) !important;
+  }
+}
