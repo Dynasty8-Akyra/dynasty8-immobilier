@@ -120,4 +120,110 @@
 </main>
 <footer><p>© 2026 <b>DYNASTY 8</b> · Agence immobilière de Los Santos</p></footer>
 <script src="app.js"></script>
+  
+<!-- DYNASTY 8 — INTERACTIONS DE LA BANNIERE -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const banner = document.querySelector(".d8-prestige");
+  if (!banner) return;
+
+  const shells = Array.from(
+    banner.querySelectorAll(".d8-bg-shell")
+  );
+  const map = banner.querySelector(".d8-bg-map");
+
+  const buttons = banner.querySelectorAll(
+    ".d8-prestige-actions a"
+  );
+
+  const propertiesButton = buttons[0];
+  const mapButton = buttons[1];
+
+  if (!shells.length || !map ||
+      !propertiesButton || !mapButton) return;
+
+  let slideshow = null;
+  let currentIndex = 0;
+
+  function stopSlideshow() {
+    if (slideshow !== null) {
+      clearInterval(slideshow);
+      slideshow = null;
+    }
+  }
+
+  function showBackground(element) {
+    banner.querySelectorAll(".d8-bg").forEach(bg => {
+      bg.classList.toggle(
+        "d8-bg-active",
+        bg === element
+      );
+    });
+  }
+
+  function resetBanner() {
+    stopSlideshow();
+    map.classList.remove("d8-map-moving");
+    currentIndex = 0;
+    showBackground(shells[0]);
+  }
+
+  function startProperties() {
+    stopSlideshow();
+    map.classList.remove("d8-map-moving");
+
+    currentIndex = 0;
+    showBackground(shells[currentIndex]);
+
+    if (shells.length > 1) {
+      slideshow = setInterval(function () {
+        currentIndex = (currentIndex + 1) % shells.length;
+        showBackground(shells[currentIndex]);
+      }, 3000);
+    }
+  }
+
+  function startMap() {
+    stopSlideshow();
+    showBackground(map);
+
+    map.classList.remove("d8-map-moving");
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        map.classList.add("d8-map-moving");
+      });
+    });
+  }
+
+  propertiesButton.addEventListener(
+    "mouseenter", startProperties
+  );
+
+  mapButton.addEventListener(
+    "mouseenter", startMap
+  );
+
+  propertiesButton.addEventListener(
+    "focus", startProperties
+  );
+
+  mapButton.addEventListener(
+    "focus", startMap
+  );
+
+  banner.addEventListener(
+    "mouseleave", resetBanner
+  );
+
+  banner.addEventListener("focusout", function (event) {
+    if (!banner.contains(event.relatedTarget)) {
+      resetBanner();
+    }
+  });
+
+  resetBanner();
+});
+</script>
+
 </body></html>
