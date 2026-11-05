@@ -225,13 +225,6 @@
     }
   }
 
-      const markerElement = markers[key]?.getElement();
-
-      markerElement?.querySelector(".d8-zone-marker")
-        ?.classList.toggle("active", active);
-    }
-  }
-
   function preview(id) {
     if (pinned) return;
     render(id);
