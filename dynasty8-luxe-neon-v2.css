@@ -869,3 +869,20 @@ nav {
   visibility: visible;
   opacity: 1;
 }
+
+/* DYNASTY 8 — HERO TRANSPARENT */
+
+/* Zone contenant le grand logo */
+header.header .hero-banner {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Conserver le logo et ses animations */
+header.header .hero-banner img,
+header.header .hero-banner video,
+header.header .hero-banner canvas {
+  opacity: 1;
+  visibility: visible;
+}
