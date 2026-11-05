@@ -338,6 +338,16 @@ if (!root) {
     )
   });
 
+console.log("DYNASTY 8 — AVANT INITIALISATION");
+
+const mapElement = document.getElementById("viewport");
+
+console.log(
+  "Dimensions viewport :",
+  mapElement.getBoundingClientRect().width,
+  mapElement.getBoundingClientRect().height
+);
+
   const map = L.map("viewport", {
     crs: CRS,
     minZoom: 0,
@@ -350,6 +360,14 @@ if (!root) {
   });
 
   const bounds = [[0,0],[8192,8192]];
+  
+console.log("DYNASTY 8 — CARTE INITIALISÉE");
+
+map.setView([5350, 4500], 3);
+
+console.log("Centre :", map.getCenter());
+console.log("Zoom :", map.getZoom());
+
 
   L.tileLayer(
     "https://viruxe.github.io/gtav-map-tiles/satelite/{z}/{x}-{y}.webp",
