@@ -1,0 +1,278 @@
+
+/* DYNASTY 8 — LUXE & NEON V2 */
+/* Design uniquement : Discord et Supabase inchanges */
+
+:root {
+  --d8-bg: #0d0815;
+  --d8-panel: #1b1029;
+  --d8-purple: #ad6bff;
+  --d8-light: #ead5ff;
+  --d8-border: rgba(192, 135, 255, .32);
+}
+
+/* Ambiance generale */
+body {
+  background: var(--d8-bg);
+  color: #f8f2ff;
+}
+
+main {
+  background:
+    radial-gradient(ellipse at 50% 12%,
+      rgba(114, 43, 182, .13),
+      transparent 48%),
+    var(--d8-bg);
+}
+
+/* Barre de navigation */
+.nav {
+  border-bottom: 1px solid rgba(190, 125, 255, .15);
+}
+
+.brand-text {
+  text-shadow: 0 0 22px rgba(174, 94, 255, .65);
+}
+
+.nav nav a {
+  transition: color .25s, text-shadow .25s;
+}
+
+.nav nav a:hover {
+  color: #e9caff;
+  text-shadow: 0 0 18px rgba(180, 100, 255, .8);
+}
+
+/* Bannière Dynasty 8 */
+.header {
+  background: #10091b;
+}
+
+.hero-banner img {
+  filter: saturate(1.08) brightness(.98);
+}
+
+.replay-intro {
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+}
+
+/* Presentation de l'agence */
+.welcome {
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+.welcome-copy {
+  max-width: 1080px;
+  margin: auto;
+  text-align: center;
+}
+
+.welcome h2 {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(38px, 5vw, 66px);
+  font-weight: 400;
+  letter-spacing: .035em;
+  color: #fff;
+  text-shadow: 0 0 28px rgba(169, 88, 255, .4);
+}
+
+.welcome .question {
+  color: #dfc3ff;
+  font-size: clamp(18px, 2.3vw, 25px);
+  border-color: var(--d8-border);
+}
+
+.welcome p {
+  max-width: 850px;
+  margin: 22px auto;
+  color: #cbbbd9;
+  line-height: 1.85;
+}
+
+/* Nouveau bloc prestige */
+.d8-prestige {
+  width: min(1180px, 92%);
+  margin: 0 auto 90px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  border: 1px solid var(--d8-border);
+  border-radius: 28px;
+  background: linear-gradient(135deg, #251437, #100b1b);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, .35);
+}
+
+.d8-prestige-visual {
+  min-height: 390px;
+  background:
+    linear-gradient(90deg, transparent, rgba(25, 9, 40, .25)),
+    url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1400&q=85')
+    center / cover;
+}
+
+.d8-prestige-content {
+  padding: clamp(28px, 5vw, 65px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.d8-eyebrow {
+  color: #c89aff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.d8-prestige h2 {
+  margin: 18px 0;
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(35px, 4vw, 55px);
+  font-weight: 400;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.d8-prestige h2 em {
+  color: #ca9cff;
+  font-style: normal;
+}
+
+.d8-prestige p {
+  color: #d3c3df;
+  line-height: 1.8;
+}
+
+.d8-prestige-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.d8-prestige-actions a {
+  display: inline-block;
+  padding: 13px 20px;
+  border-radius: 999px;
+  border: 1px solid #ad70ec;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+  transition: transform .25s, box-shadow .25s;
+}
+
+.d8-prestige-actions a:first-child {
+  background: linear-gradient(110deg, #7435b9, #b477ef);
+  box-shadow: 0 8px 25px rgba(160, 73, 255, .25);
+}
+
+.d8-prestige-actions a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 25px rgba(170, 91, 255, .4);
+}
+
+/* Cartes de navigation */
+.cards-area {
+  background:
+    radial-gradient(ellipse at 50% 0,
+      rgba(120, 47, 195, .16),
+      transparent 65%),
+    #100a19;
+  padding: 85px 20px;
+}
+
+.cards {
+  gap: 30px;
+}
+
+.cards .box {
+  width: min(420px, 100%);
+  min-height: 340px;
+  margin: 0;
+  border: 1px solid var(--d8-border);
+  border-radius: 24px;
+  background: linear-gradient(145deg, #271638, #100a19);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, .3);
+  transition: transform .3s, box-shadow .3s;
+}
+
+.cards .box:hover {
+  transform: translateY(-9px);
+  box-shadow: 0 25px 70px rgba(140, 58, 225, .3);
+}
+
+.cards .box > span {
+  inset: 2px;
+  border-radius: 21px;
+  background: linear-gradient(145deg, #241432, #110b1c);
+}
+
+.cards .box::before {
+  border-radius: 24px;
+  opacity: .3;
+}
+
+.cards .box::after {
+  border-radius: 24px;
+  opacity: .1;
+}
+
+.cards .content h2 {
+  color: #e2bdff;
+}
+
+.cards .content p {
+  color: #cdbed8;
+}
+
+.start,
+.agent-cta a {
+  border-radius: 999px;
+  background: linear-gradient(110deg, #7939bd, #b477f0);
+  color: #fff;
+  border: 1px solid #bd8aff;
+}
+
+/* Espace agent */
+.agent-cta {
+  border-radius: 26px;
+  padding: 55px 28px;
+  background:
+    radial-gradient(circle at 50% 0,
+      rgba(155, 75, 240, .2),
+      transparent 70%),
+    #1b1029;
+}
+
+/* Mobile */
+@media (max-width: 780px) {
+  .welcome {
+    padding-top: 45px;
+    padding-bottom: 45px;
+  }
+
+  .d8-prestige {
+    grid-template-columns: 1fr;
+  }
+
+  .d8-prestige-visual {
+    min-height: 260px;
+  }
+
+  .d8-prestige-content {
+    padding: 32px 24px;
+  }
+
+  .cards-area {
+    padding: 55px 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cards .box,
+  .d8-prestige-actions a {
+    transition: none;
+  }
+}
