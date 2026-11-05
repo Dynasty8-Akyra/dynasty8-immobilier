@@ -107,3 +107,32 @@ html,body{margin:0!important;padding:0!important;width:100%;height:100%;overflow
   color: #fff;
   letter-spacing: 0.5px;
 }
+
+/* DYNASTY 8 — TEST AFFICHAGE CARTE */
+
+#viewport {
+  position: relative !important;
+  min-height: 600px !important;
+  background: #151020 !important;
+}
+
+#viewport .leaflet-map-pane {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#viewport .leaflet-tile-pane {
+  visibility: visible !important;
+  opacity: 1 !important;
+  z-index: 200 !important;
+}
+
+#viewport .leaflet-tile {
+  visibility: visible !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+#viewport .leaflet-overlay-pane {
+  z-index: 400 !important;
+}
