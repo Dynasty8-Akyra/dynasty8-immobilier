@@ -212,3 +212,27 @@ body > footer {
     max-height: 75dvh !important;
   }
 }
+
+/* DYNASTY 8 — VERRE TRANSPARENT PREMIUM */
+
+.map-layout .zone-panel {
+  background: rgba(25, 12, 42, 0.12) !important;
+
+  backdrop-filter: blur(2px) !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+
+  border: 1px solid rgba(210, 135, 255, 0.55) !important;
+
+  box-shadow:
+    0 0 25px rgba(180, 75, 255, 0.22),
+    inset 0 0 18px rgba(220, 140, 255, 0.04) !important;
+}
+
+/* Améliore la lisibilité des catégories */
+.map-layout .zone-panel .chip {
+  background: rgba(30, 14, 49, 0.30) !important;
+  border: 1px solid rgba(200, 125, 255, 0.45) !important;
+  backdrop-filter: blur(3px);
+  padding: 16px 18px !important;
+  font-size: 15px;
+}
