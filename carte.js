@@ -1035,11 +1035,15 @@ console.log("Zoom :", map.getZoom());
                 aria-label="Fermer">×</button>
       </div>
 
-      <div class="d8-luxury-banner">
-        <span>✦ DYNASTY 8</span>
-        <strong>${escapeHTML(z.name)}</strong>
-        <small>LOS SANTOS · SAN ANDREAS</small>
-      </div>
+      
+<div class="d8-luxury-banner d8-prestige-banner">
+  <div class="d8-prestige-banner-content">
+    <span>♛ DYNASTY 8 — COLLECTION PRESTIGE</span>
+    <strong>${escapeHTML(z.name)}</strong>
+    <small>LOS SANTOS · SAN ANDREAS</small>
+  </div>
+</div>
+
 
       <div class="d8-luxury-section">
         <div class="d8-luxury-heading">
