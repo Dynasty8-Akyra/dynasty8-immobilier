@@ -158,6 +158,41 @@ drawing.points.forEach((point, index) => {
         (drawing.points.length > 1 ? " points" : " point");
     }
 
+zoneNew.addEventListener("click", () => {
+  if (!confirm("Commencer la création d'un nouveau quartier ?")) {
+    return;
+  }
+
+  // Quitter le mode sélection
+  selectingZone = false;
+  selectedZoneId = null;
+
+  document.body.classList.remove("d8-selecting-zone");
+
+  zoneSelect.textContent = "📍 Sélectionner un quartier";
+
+  // Effacer uniquement le tracé de travail
+  drawing.points = [];
+  drawing.color = "#bb65ff";
+  refreshDrawing();
+
+  // Préparer les informations
+  zoneName.value = "";
+  zoneType.value = "";
+  zoneCategory.value = "res";
+  zoneDescription.value = "";
+  zoneForm.hidden = false;
+
+  // Activer le dessin
+  if (!drawing.enabled) {
+    drawToggle.click();
+  }
+
+  alert(
+    "Nouveau quartier : clique sur la carte pour dessiner ses contours."
+  );
+});
+
 zoneSelect.addEventListener("click", () => {
   selectingZone = !selectingZone;
 
