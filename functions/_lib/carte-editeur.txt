@@ -136,6 +136,50 @@ prestigeHalo.innerHTML = `
   focusable="false">
 
   <defs>
+
+<!-- DYNASTY 8 — FILTRE FUMEE PRESTIGE -->
+<filter id="d8-smoke-filter"
+        x="-60%" y="-60%"
+        width="220%" height="220%"
+        color-interpolation-filters="sRGB">
+
+  <feTurbulence
+    type="fractalNoise"
+    baseFrequency="0.012 0.022"
+    numOctaves="3"
+    seed="8"
+    result="noise">
+
+    <animate
+      attributeName="baseFrequency"
+      values="0.012 0.022;0.017 0.015;0.012 0.022"
+      dur="18s"
+      repeatCount="indefinite"/>
+  </feTurbulence>
+
+  <feDisplacementMap
+    in="SourceGraphic"
+    in2="noise"
+    scale="38"
+    xChannelSelector="R"
+    yChannelSelector="G"/>
+</filter>
+
+<filter id="d8-smoke-soften"
+        x="-80%" y="-80%"
+        width="260%" height="260%">
+  <feGaussianBlur stdDeviation="13"/>
+</filter>
+
+<linearGradient id="d8-smoke-gradient"
+                x1="0%" y1="0%"
+                x2="100%" y2="100%">
+  <stop offset="0%" stop-color="#7b2ce3" stop-opacity=".05"/>
+  <stop offset="30%" stop-color="#c16aff" stop-opacity=".55"/>
+  <stop offset="65%" stop-color="#f1b4ff" stop-opacity=".32"/>
+  <stop offset="100%" stop-color="#7522c9" stop-opacity=".04"/>
+</linearGradient>
+
     <linearGradient id="d8-sculpted-light"
       x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#9d4aff"/>
@@ -155,6 +199,49 @@ prestigeHalo.innerHTML = `
       <feGaussianBlur stdDeviation="3"/>
     </filter>
   </defs>
+
+<!-- FUMEE VIOLETTE EXTERIEURE -->
+<g class="d8-prestige-smoke"
+   fill="none"
+   pointer-events="none">
+
+  <!-- Volute supérieure -->
+  <path
+    d="M 62 205 C 85 115, 180 35, 315 28
+       C 400 22, 465 70, 525 155"
+    stroke="url(#d8-smoke-gradient)"
+    stroke-width="35"
+    stroke-linecap="round"
+    filter="url(#d8-smoke-filter)"
+    opacity=".65"/>
+
+  <!-- Volute sur le côté droit -->
+  <path
+    d="M 545 155 C 595 240, 595 355, 540 455"
+    stroke="#b94fff"
+    stroke-width="45"
+    stroke-linecap="round"
+    filter="url(#d8-smoke-soften)"
+    opacity=".22"/>
+
+  <!-- Volute inférieure -->
+  <path
+    d="M 100 475 C 175 575, 325 605, 455 545"
+    stroke="url(#d8-smoke-gradient)"
+    stroke-width="48"
+    stroke-linecap="round"
+    filter="url(#d8-smoke-filter)"
+    opacity=".5"/>
+
+  <!-- Brume latérale gauche -->
+  <path
+    d="M 65 180 C 15 280, 30 395, 105 480"
+    stroke="#a64cff"
+    stroke-width="50"
+    stroke-linecap="round"
+    filter="url(#d8-smoke-soften)"
+    opacity=".18"/>
+</g>
 
   <!-- Halo circulaire diffus -->
   <circle cx="300" cy="300" r="274"
