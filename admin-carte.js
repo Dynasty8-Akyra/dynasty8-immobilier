@@ -17,6 +17,14 @@
     }
 
     const status = await D8Cloud.role();
+    
+console.log("DYNASTY 8 - Diagnostic des rôles :", {
+  role: status.role,
+  canWrite: status.canWrite,
+  canViewDashboard: status.canViewDashboard,
+  canEditZones: status.canEditZones
+});
+
 
     if (status.canEditZones !== true) {
       message.textContent =
