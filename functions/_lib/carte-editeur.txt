@@ -26,6 +26,7 @@
 
     drawTools.innerHTML = `
       <div class="d8-draw-title">✦ ÉDITION DES ZONES</div>
+<button id="d8-zone-select" type="button">📍 Sélectionner un quartier</button>
       <button id="d8-draw-toggle" type="button">✏️ Activer le dessin</button>
       <button id="d8-draw-undo" type="button">↶ Annuler un point</button>
       <button id="d8-draw-copy" type="button">📋 Copier les coordonnées</button>
