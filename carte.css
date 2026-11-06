@@ -2871,3 +2871,66 @@ body[data-map-mode="admin"] #d8-prestige-halo::after {
   transform-origin: center center;
 }
 
+
+/* ==========================================
+   DYNASTY 8 — HALO ROSE PRESTIGE
+   ========================================== */
+
+/* Désactiver les anciennes fumées et décorations */
+body[data-map-mode="admin"] .d8-prestige-smoke,
+body[data-map-mode="admin"] #d8-prestige-halo {
+  display: none !important;
+}
+
+/* Garder le cadran sombre, sans anciens reflets */
+body[data-map-mode="admin"] #d8-draw-tools {
+  border: 1px solid rgba(166, 61, 113, .38) !important;
+  box-shadow: none !important;
+  isolation: isolate;
+}
+
+/* Supprimer les anciens anneaux */
+body[data-map-mode="admin"] #d8-draw-tools::before,
+body[data-map-mode="admin"] #d8-draw-tools::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Le halo rose tourne autour du cercle */
+body[data-map-mode="admin"] #d8-draw-tools {
+  border: 2px solid transparent !important;
+
+  background:
+    linear-gradient(#190b29, #190b29) padding-box,
+    conic-gradient(
+      from var(--d8-halo-angle),
+      #42152e 0deg,
+      #632044 100deg,
+      #b34580 155deg,
+      #f08bbb 180deg,
+      #b34580 205deg,
+      #632044 260deg,
+      #42152e 360deg
+    ) border-box !important;
+
+  animation: d8-halo-rotation 10s linear infinite !important;
+}
+
+@property --d8-halo-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes d8-halo-rotation {
+  to {
+    --d8-halo-angle: 360deg;
+  }
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="admin"] #d8-draw-tools {
+    animation: none !important;
+  }
+}
