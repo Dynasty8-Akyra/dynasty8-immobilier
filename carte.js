@@ -1293,7 +1293,31 @@ if (panel && typeof ResizeObserver !== "undefined") {
   // CREATION DES POLYGONES
   // =====================================
 
+  function rebuildZoneLayers() {
+    for (const layer of Object.values(polygons)) {
+      map.removeLayer(layer);
+    }
+
+    for (const label of Object.values(zoneLabels)) {
+      map.removeLayer(label);
+    }
+
+    for (const id of Object.keys(polygons)) {
+      delete polygons[id];
+    }
+
+    for (const id of Object.keys(zoneLabels)) {
+      delete zoneLabels[id];
+    }
+
+    pinned = null;
+
+    if (panel) {
+      panel.classList.remove("is-open");
+    }
+
   for (const [id, z] of Object.entries(zones)) {
+    
     const color = COLORS[z.category];
 
     const polygon = L.polygon(z.points, {
@@ -1316,9 +1340,17 @@ if (panel && typeof ResizeObserver !== "undefined") {
     ? "7 6"
     : null
 
-}).addTo(map);
+});
 
-    polygons[id] = polygon;
+if (
+  currentFilter === "all" ||
+  z.category === currentFilter
+) {
+  polygon.addTo(map);
+}
+
+polygons[id] = polygon;
+
 // =====================================
 // ETIQUETTE DU NOM DU QUARTIER
 // =====================================
@@ -1369,9 +1401,74 @@ zoneLabels[id] = label;
       }
     });
 
+   
     polygon.on("click", () => select(id));
   }
-updateZoneLabels();
+
+  updateZoneLabels();
+}
+
+// Afficher les quartiers au chargement de la carte
+rebuildZoneLayers();
+
+async function refreshZones() {
+  const response = await fetch(
+    "/api/discord-access?action=zones-list",
+    { cache: "no-store" }
+  );
+
+  if (!response.ok) {
+    throw new Error("Impossible de charger les quartiers.");
+  }
+
+  const data = await response.json();
+
+  if (!Array.isArray(data.zones)) {
+    throw new Error("Liste des quartiers invalide.");
+  }
+
+  const updatedZones = {};
+
+  for (const zone of data.zones) {
+    if (
+      !zone ||
+      typeof zone.id !== "string" ||
+      !Array.isArray(zone.points) ||
+      zone.points.length < 3
+    ) {
+      throw new Error("Un quartier Supabase est invalide.");
+    }
+
+    updatedZones[zone.id] = zone;
+  }
+
+  // Mettre à jour les quartiers existants
+  for (const id of Object.keys(zones)) {
+    delete zones[id];
+  }
+
+  Object.assign(zones, updatedZones);
+
+  // Reconstruire la carte avec les nouvelles données
+  rebuildZoneLayers();
+
+  return zones;
+}
+
+// Permettre à l'éditeur Direction d'accéder aux quartiers
+window.D8Zones = {
+  zones: zones,
+  refresh: refreshZones,
+  colors: COLORS
+};
+
+// Charger les quartiers depuis Supabase
+refreshZones().catch(error => {
+  console.warn(
+    "Dynasty 8 : utilisation des quartiers locaux.",
+    error
+  );
+});
 
   // =====================================
   // FERMETURE DU CATALOGUE
