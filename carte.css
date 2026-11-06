@@ -2175,3 +2175,70 @@ body[data-map-mode="admin"] .d8-halo-spark {
     animation: none !important;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — REFLETS SCULPTÉS PRESTIGE
+   ========================================== */
+
+body[data-map-mode="admin"] #d8-prestige-halo {
+  pointer-events: none !important;
+}
+
+body[data-map-mode="admin"] .d8-sculpted-arc {
+  filter:
+    drop-shadow(0 0 3px #ffffff)
+    drop-shadow(0 0 8px #d76aff);
+
+  animation: d8-sculpted-shimmer 7s ease-in-out infinite;
+}
+
+body[data-map-mode="admin"] .d8-sculpted-arc-two {
+  animation-delay: -2.5s;
+}
+
+body[data-map-mode="admin"] .d8-sculpted-arc-three {
+  animation-delay: -5s;
+}
+
+@keyframes d8-sculpted-shimmer {
+  0%, 100% {
+    opacity: .35;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+body[data-map-mode="admin"] .d8-sculpted-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: d8-sculpted-pulse 5s ease-in-out infinite;
+}
+
+body[data-map-mode="admin"] .d8-sculpted-spark-two {
+  animation-delay: -1.7s;
+}
+
+body[data-map-mode="admin"] .d8-sculpted-spark-three {
+  animation-delay: -3.4s;
+}
+
+@keyframes d8-sculpted-pulse {
+  0%, 100% {
+    opacity: .5;
+    transform: scale(.85);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.35);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="admin"] .d8-sculpted-arc,
+  body[data-map-mode="admin"] .d8-sculpted-spark {
+    animation: none !important;
+  }
+}
