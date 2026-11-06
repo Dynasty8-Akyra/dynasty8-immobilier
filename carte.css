@@ -2510,87 +2510,165 @@ body[data-map-mode="admin"] .d8-sculpted-spark {
   animation: none !important;
 }
 
+  body[data-map-mode="admin"] #d8-prestige-halo::before {
+    animation: none !important;
+  }
+}
+
 /* ==========================================
-   DYNASTY 8 — CERCLE BRUMEUX ANIME
-   Version légère sans filtres SVG
+   DYNASTY 8 — MIDNIGHT PRESTIGE
+   CERCLE FONDU DANS LA BRUME
    ========================================== */
 
-/* Le cadran conserve son contenu net */
+/* Le cadran conserve ses outils et son contenu */
 body[data-map-mode="admin"] #d8-draw-tools {
-  border: 1px solid transparent !important;
+  position: fixed !important;
+  isolation: isolate;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  animation: none !important;
+  overflow: hidden !important;
+}
+
+/* Fond sombre indépendant des boutons */
+body[data-map-mode="admin"] #d8-draw-tools::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border: none !important;
+  border-radius: 50% !important;
 
   background:
     radial-gradient(
       ellipse at 35% 25%,
-      rgba(88, 37, 128, .92),
-      rgba(25, 10, 47, .96) 55%,
-      rgba(13, 6, 29, .90) 82%,
-      rgba(13, 6, 29, .55) 96%,
-      rgba(13, 6, 29, .15) 100%
-    ) !important;
+      rgba(74, 29, 111, .95) 0%,
+      rgba(29, 12, 51, .96) 48%,
+      rgba(18, 7, 35, .93) 72%,
+      rgba(20, 8, 39, .65) 88%,
+      rgba(20, 8, 39, 0) 100%
+    );
 
-  box-shadow: none !important;
-  animation: none !important;
+  -webkit-mask-image:
+    radial-gradient(
+      circle,
+      #000 0%,
+      #000 68%,
+      rgba(0,0,0,.85) 79%,
+      rgba(0,0,0,.35) 91%,
+      transparent 100%
+    );
+
+  mask-image:
+    radial-gradient(
+      circle,
+      #000 0%,
+      #000 68%,
+      rgba(0,0,0,.85) 79%,
+      rgba(0,0,0,.35) 91%,
+      transparent 100%
+    );
+
+  pointer-events: none !important;
+  z-index: -1;
 }
 
-/* Supprime l'anneau intérieur trop géométrique */
-body[data-map-mode="admin"] #d8-draw-tools::before {
+/* Supprime le second anneau */
+body[data-map-mode="admin"] #d8-draw-tools::after {
+  content: none !important;
   display: none !important;
 }
 
-/* Atténue le contour SVG */
+/* Les outils restent au-dessus du fond */
+body[data-map-mode="admin"] #d8-draw-tools > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================
+   BRUME EXTERIEURE IRREGULIERE
+   ========================================== */
+
+/* Uniquement des dégradés, aucun filtre coûteux */
+body[data-map-mode="admin"] #d8-prestige-halo::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: -4% !important;
+  border-radius: 50%;
+  pointer-events: none !important;
+  z-index: -1;
+
+  background:
+    radial-gradient(
+      ellipse 31% 15% at 24% 19%,
+      rgba(202, 111, 255, .34),
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 19% 35% at 90% 43%,
+      rgba(160, 60, 240, .28),
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 38% 17% at 50% 91%,
+      rgba(197, 91, 255, .30),
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 20% 25% at 9% 67%,
+      rgba(134, 45, 215, .20),
+      transparent 100%
+    );
+
+  opacity: .8;
+
+  animation: d8-mist-soft-motion 18s ease-in-out infinite;
+}
+
+/* Animation légère : opacité uniquement */
+@keyframes d8-mist-soft-motion {
+  0%, 100% {
+    opacity: .55;
+  }
+
+  50% {
+    opacity: .9;
+  }
+}
+
+/* ==========================================
+   CONTOUR ET REFLETS
+   ========================================== */
+
+/* Plus de contour circulaire continu */
 body[data-map-mode="admin"] #d8-sculpted-outline {
   opacity: 0 !important;
 }
 
-/* Brume légère autour du cadran */
-body[data-map-mode="admin"] #d8-prestige-halo::before {
-  content: "";
-  position: absolute;
-  inset: -5%;
-  border-radius: 50%;
-  pointer-events: none;
-
-  background:
-    radial-gradient(
-      ellipse 30% 17% at 25% 15%,
-      rgba(194, 99, 255, .45),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 20% 35% at 95% 45%,
-      rgba(154, 57, 241, .38),
-      transparent 100%
-    ),
-    radial-gradient(
-      ellipse 38% 18% at 55% 92%,
-      rgba(209, 111, 255, .42),
-      transparent 100%
-    );
-
+/* On garde seulement les arcs lumineux localisés */
+body[data-map-mode="admin"] .d8-sculpted-arc {
   opacity: .65;
-  animation: d8-fog-breathe 14s ease-in-out infinite;
 }
 
-/* Animation lente, sans blur animé */
-@keyframes d8-fog-breathe {
-  0%, 100% {
-    opacity: .4;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: .75;
-    transform: scale(1.025);
-  }
-}
-
-/* On conserve les éclats lumineux */
+/* Les éclats blancs restent visibles */
 body[data-map-mode="admin"] .d8-sculpted-spark {
-  opacity: .85;
+  opacity: .9;
 }
 
-/* Réduction des animations si nécessaire */
+/* Ancienne fumée SVG désactivée */
+body[data-map-mode="admin"] .d8-prestige-smoke {
+  display: none !important;
+}
+
+/* Pas de filtres ni d'animations sur le SVG entier */
+body[data-map-mode="admin"] #d8-prestige-halo {
+  filter: none !important;
+  animation: none !important;
+  pointer-events: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   body[data-map-mode="admin"] #d8-prestige-halo::before {
     animation: none !important;
