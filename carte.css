@@ -818,3 +818,209 @@ background: linear-gradient(
   }
 }
 </CodeBlock>
+
+/* =========================================
+   DYNASTY 8 — PRESTIGE IMMERSIF
+   ========================================= */
+
+/* Fond sombre qui reste fondu dans la carte */
+#zonePanel.zone-panel.is-open {
+  background: linear-gradient(
+    90deg,
+    rgba(14, 9, 28, .74) 0%,
+    rgba(16, 10, 31, .94) 25%,
+    rgba(13, 8, 27, .98) 100%
+  ) !important;
+
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+
+/* Espacement intérieur */
+#zonePanel .d8-luxury-card {
+  --zone-accent: #bb65ff;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  color: #f8efff;
+}
+
+/* Bannière */
+#zonePanel .d8-luxury-banner {
+  background: linear-gradient(
+    125deg,
+    #39204d 0%,
+    #191127 100%
+  ) !important;
+  border: 1px solid rgba(202, 132, 255, .5);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+/* Sections */
+#zonePanel .d8-luxury-section {
+  margin: 0;
+  padding: 0;
+}
+
+#zonePanel .d8-luxury-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  color: #f7eaff;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+#zonePanel .d8-luxury-heading span {
+  color: var(--zone-accent);
+}
+
+/* Cartes de propriétés */
+#zonePanel .d8-categories {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+#zonePanel .d8-categories .chip {
+  background: #281b3b !important;
+  border: 1px solid rgba(191, 112, 255, .45);
+  border-radius: 13px;
+  padding: 16px;
+  color: white;
+  box-shadow: inset 0 1px rgba(255,255,255,.06);
+}
+
+/* Galerie photo */
+#zonePanel .d8-gallery-placeholder {
+  position: relative;
+  min-height: 185px;
+  box-sizing: border-box;
+  padding: 25px 20px 38px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  text-align: center;
+  border-radius: 17px;
+  border: 1px dashed rgba(196, 130, 255, .65);
+
+  background: linear-gradient(
+    135deg,
+    #322045,
+    #171122 85%
+  );
+}
+
+#zonePanel .d8-gallery-symbol {
+  color: #d3a0ff;
+  font-size: 35px;
+}
+
+#zonePanel .d8-gallery-placeholder strong {
+  display: block;
+  color: white;
+  font-size: 16px;
+}
+
+#zonePanel .d8-gallery-placeholder small {
+  display: block;
+  max-width: 350px;
+  color: #c9b7d7;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+#zonePanel .d8-gallery-counter {
+  position: absolute;
+  right: 16px;
+  bottom: 13px;
+  color: #ab95bd;
+  font-size: 10px;
+}
+
+/* L'art de vivre */
+#zonePanel .d8-lifestyle-section {
+  background: #20172f !important;
+  border: 1px solid rgba(183, 125, 229, .35);
+  border-radius: 16px;
+  padding: 20px !important;
+}
+
+#zonePanel .d8-lifestyle-section p {
+  margin: 0 0 15px;
+  color: #e6d9ee;
+  line-height: 1.65;
+}
+
+#zonePanel .d8-lifestyle-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+#zonePanel .d8-lifestyle-tags span {
+  display: inline-flex;
+  padding: 8px 13px;
+  border-radius: 30px;
+  border: 1px solid rgba(195, 126, 255, .4);
+  background: #38234c;
+  color: #f6e8ff;
+  font-size: 11px;
+}
+
+/* Contact Prestige */
+#zonePanel .d8-contact-teaser {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+
+  padding: 21px;
+  border-radius: 16px;
+
+  background: linear-gradient(
+    110deg,
+    #563079,
+    #281735
+  ) !important;
+
+  border: 1px solid rgba(208, 143, 255, .6);
+
+  box-shadow: 0 0 18px rgba(164, 72, 240, .12);
+}
+
+#zonePanel .d8-contact-teaser span {
+  color: #edc8ff;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+
+#zonePanel .d8-contact-teaser strong {
+  color: #fff;
+  font-size: 17px;
+}
+
+#zonePanel .d8-contact-teaser small {
+  color: #e0c8ed;
+  font-size: 12px;
+}
+
+/* Adaptation petits écrans */
+@media (max-width: 600px) {
+  #zonePanel .d8-categories {
+    grid-template-columns: 1fr;
+  }
+
+  #zonePanel .d8-luxury-card {
+    gap: 14px;
+  }
+}
