@@ -52,27 +52,65 @@
     script.src = "carte.js";
 
     
-script.onload = () => {
+
+script.onload = async () => {
   accessCheck.hidden = true;
 
-  const editorScript = document.createElement("script");
-  editorScript.src = "carte-editeur.js";
+  try {
+    // Demander le code de l'éditeur à Cloudflare.
+    const editorSource =
+      await D8Cloud.zoneEditorSource();
 
-  editorScript.onload = () => {
-    if (
-      typeof window.D8InitZoneEditor === "function" &&
-      window.D8Map
-    ) {
-      window.D8InitZoneEditor(window.D8Map);
-      console.log("DYNASTY 8 - Éditeur initialisé.");
-    }
-  };
+    // Créer un script temporaire à partir du code autorisé.
+    const blob = new Blob(
+      [editorSource],
+      { type: "application/javascript" }
+    );
 
-  editorScript.onerror = () => {
-    console.error("Impossible de charger l'éditeur.");
-  };
+    const editorUrl = URL.createObjectURL(blob);
+    const editorScript = document.createElement("script");
 
-  document.body.appendChild(editorScript);
+    editorScript.onload = () => {
+      URL.revokeObjectURL(editorUrl);
+
+      if (
+        typeof window.D8InitZoneEditor === "function" &&
+        window.D8Map
+      ) {
+        window.D8InitZoneEditor(window.D8Map);
+
+        console.log(
+          "DYNASTY 8 — Éditeur Direction initialisé."
+        );
+      } else {
+        console.error(
+          "Impossible d'initialiser l'éditeur de zones."
+        );
+      }
+    };
+
+    editorScript.onerror = () => {
+      URL.revokeObjectURL(editorUrl);
+
+      console.error(
+        "Impossible d'exécuter l'éditeur sécurisé."
+      );
+    };
+
+    editorScript.src = editorUrl;
+    document.body.appendChild(editorScript);
+
+  } catch (error) {
+    console.error(
+      "DYNASTY 8 — Accès éditeur refusé :",
+      error
+    );
+
+    alert(
+      "Impossible de charger l'éditeur : " +
+      error.message
+    );
+  }
 };
 
 
