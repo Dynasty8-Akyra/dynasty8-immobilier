@@ -8,7 +8,14 @@
 
   <title>Direction — Éditeur Dynasty 8</title>
 
-  <link rel="stylesheet" href="agent.css">
+ 
+<link rel="stylesheet" href="agent.css">
+
+<!-- Style de la carte Dynasty 8 -->
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<link rel="stylesheet" href="carte.css?v=prestige3">
 
   <script src="supabase-config.js"></script>
   <script src="supabase-client.js"></script>
@@ -34,7 +41,59 @@
           Se connecter avec Discord
         </a>
       </div>
+    
     </section>
+
+    <!-- CARTE RÉSERVÉE À LA DIRECTION -->
+    <section id="direction-map" hidden>
+
+    <div class="map-page">
+
+        <div class="map-toolbar" id="filters">
+          <button class="on" data-type="all">Toutes les zones</button>
+          <button data-type="lux">Villas de luxe</button>
+          <button data-type="res">Résidentiel</button>
+          <button data-type="biz">Commerces</button>
+          <button data-type="ind">Garages</button>
+          <button data-type="rural">Rural</button>
+        </div>
+
+        <div class="map-layout">
+
+          <div class="map-viewport"
+               id="viewport"></div>
+
+          <div class="map-buttons">
+            <button id="zoomIn">+</button>
+            <button id="zoomOut">−</button>
+            <button id="reset">⌂</button>
+          </div>
+
+          <div class="map-hint">
+            Survolez ou cliquez sur une zone ·
+            Faites glisser la carte pour vous déplacer
+          </div>
+
+          <aside class="zone-panel"
+                 id="zonePanel"
+                 aria-live="polite"></aside>
+
+          <div class="map-credit">
+            Carte GTA V non officielle ·
+            Images © Rockstar Games ·
+            Tuiles : VIRUXE
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
   </main>
+
+  <!-- BIBLIOTHÈQUE LEAFLET -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 </body>
 </html>
+
