@@ -69,6 +69,7 @@
 </div>
 
 <button id="d8-zone-save" type="button">💾 Enregistrer les modifications</button>
+<button id="d8-zone-delete" type="button">🗑️ Supprimer le quartier</button>
       <button id="d8-draw-clear" type="button">✕ Effacer le tracé</button>
       <div id="d8-draw-count">0 point</div>
     `;
@@ -82,7 +83,7 @@ let creatingNewZone = false;
     const drawToggle = document.getElementById("d8-draw-toggle");
     const drawCount = document.getElementById("d8-draw-count");
 const zoneSave = document.getElementById("d8-zone-save");
-   
+   const zoneDelete = document.getElementById("d8-zone-delete");
 const zoneForm = document.getElementById("d8-zone-form");
 const zoneName = document.getElementById("d8-zone-name");
 const zoneType = document.getElementById("d8-zone-type");
@@ -352,6 +353,86 @@ zoneForm.hidden = false;
     // =====================================
 
     let savingZone = false;
+
+zoneDelete.addEventListener("click", async () => {
+  // Empêcher la suppression pendant un enregistrement
+  if (savingZone || zoneDelete.disabled) return;
+
+  // Vérifier qu'un quartier existant est sélectionné
+  if (!selectedZoneId || creatingNewZone) {
+    alert("Sélectionne d'abord un quartier existant.");
+    return;
+  }
+
+  const zoneId = selectedZoneId;
+  const zone = window.D8Zones?.zones?.[zoneId];
+
+  if (!zone) {
+    alert("Quartier introuvable. Actualise la carte.");
+    return;
+  }
+
+  // Première confirmation
+  if (!confirm(
+    "Voulez-vous supprimer le quartier « " +
+    zone.name +
+    " » ?"
+  )) return;
+
+  // Deuxième confirmation : saisir le nom exact
+  const confirmation = prompt(
+    "Suppression définitive.\n\n" +
+    "Pour confirmer, recopie exactement le nom du quartier :\n" +
+    zone.name
+  );
+
+  if (confirmation !== zone.name) {
+    alert("Suppression annulée : nom incorrect.");
+    return;
+  }
+
+  zoneDelete.disabled = true;
+  zoneDelete.textContent = "⏳ Suppression...";
+
+  try {
+    if (typeof window.D8Cloud?.deleteZone !== "function") {
+      throw new Error("Fonction de suppression indisponible.");
+    }
+
+    await window.D8Cloud.deleteZone(zoneId);
+
+    // Réactualiser les quartiers depuis Supabase
+    await window.D8Zones.refresh();
+
+    // Réinitialiser l'éditeur
+    selectedZoneId = null;
+    creatingNewZone = false;
+    selectingZone = false;
+
+    document.body.classList.remove("d8-selecting-zone");
+
+    zoneSelect.textContent = "📍 Sélectionner un quartier";
+
+    drawing.points = [];
+    drawing.color = "#bb65ff";
+    refreshDrawing();
+
+    zoneForm.hidden = true;
+
+    alert("✅ Quartier supprimé de Supabase !");
+
+  } catch (error) {
+    console.error("Suppression du quartier :", error);
+    alert(
+      "❌ " + error.message +
+      "\nActualise la carte pour vérifier l'état du quartier."
+    );
+
+  } finally {
+    zoneDelete.disabled = false;
+    zoneDelete.textContent = "🗑️ Supprimer le quartier";
+  }
+});
 
     zoneSave.addEventListener("click", async () => {
       if (savingZone) return;
