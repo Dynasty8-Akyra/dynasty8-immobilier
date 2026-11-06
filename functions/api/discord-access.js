@@ -133,6 +133,24 @@ const canEditZones = role === 'direction';
       });
     }
 
+    // DYNASTY 8 — ÉDITEUR RÉSERVÉ À LA DIRECTION
+    if (action === "zone-editor" && method === "GET") {
+      if (!canEditZones) {
+        return json(403, {
+          error: "Accès réservé à la Direction."
+        });
+      }
+
+      return new Response(editorSource, {
+        status: 200,
+        headers: {
+          "content-type": "application/javascript; charset=utf-8",
+          "cache-control": "private, no-store",
+          "x-content-type-options": "nosniff"
+        }
+      });
+    }
+
     // ÉDITEUR DE ZONES — ACCÈS DIRECTION UNIQUEMENT
     if (action === "zone-editor" && method === "GET") {
       if (!canEditZones) {
