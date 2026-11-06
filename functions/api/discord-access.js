@@ -115,6 +115,9 @@ export async function onRequest(context) {
 
     const canWrite =
       role === "direction" || role === "confirme";
+    
+const canEditZones = role === 'direction';
+
 
     const canViewDashboard =
       canWrite || role === "formation";
@@ -124,6 +127,7 @@ export async function onRequest(context) {
         role,
         canWrite,
         canViewDashboard
+        canEditZones
       });
     }
 
