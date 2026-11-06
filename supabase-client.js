@@ -31,6 +31,46 @@ window.D8Cloud={
  async logout(){const t=await token();if(t)try{await req('/auth/v1/logout',{method:'POST'},t)}catch{}set(null)},
  async authenticated(){return !!(await token())},
  async role(){return secured('status')},
+ 
+async zoneEditorSource(){
+  const t = await token();
+
+  if (!t) {
+    throw Error("Connectez-vous avec Discord.");
+  }
+
+  const response = await fetch(
+    "/api/discord-access?action=zone-editor",
+    {
+      method: "GET",
+      headers: {
+        authorization: "Bearer " + t
+      },
+      cache: "no-store"
+    }
+  );
+
+  if (!response.ok) {
+    let error = "Accès à l'éditeur refusé.";
+
+    try {
+      const data = await response.json();
+      error = data.error || error;
+    } catch {}
+
+    throw Error(error);
+  }
+
+  const contentType =
+    response.headers.get("content-type") || "";
+
+  if (!contentType.includes("javascript")) {
+    throw Error("Le serveur n'a pas renvoyé le script attendu.");
+  }
+
+  return await response.text();
+},
+
  async isAgent(){try{return (await secured('status')).canWrite}catch{return false}},
  
 async isDirection(){
