@@ -36,6 +36,10 @@ async saveZone(zone){
   return secured('zones-save','POST',zone);
 },
 
+async deleteZone(id){
+  return secured('zones-delete','DELETE',null,id);
+},
+
 async zoneEditorSource(){
   const t = await token();
 
