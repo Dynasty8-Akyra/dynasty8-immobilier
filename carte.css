@@ -1360,3 +1360,61 @@ background: linear-gradient(
   position: relative;
   z-index: 1;
 }
+
+/* =====================================
+   DYNASTY 8 - PANNEAU EDITEUR DEFILABLE
+   ===================================== */
+
+body[data-map-mode="admin"] #d8-draw-tools {
+  position: fixed;
+  top: 20px;
+  right: 15px;
+  bottom: 20px;
+
+  width: 230px;
+  max-height: calc(100dvh - 40px);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  box-sizing: border-box;
+  z-index: 9999;
+
+  scrollbar-width: thin;
+  scrollbar-color: #a855f7 #180d29;
+}
+
+/* Barre de défilement violette */
+body[data-map-mode="admin"] #d8-draw-tools::-webkit-scrollbar {
+  width: 6px;
+}
+
+body[data-map-mode="admin"] #d8-draw-tools::-webkit-scrollbar-track {
+  background: #180d29;
+}
+
+body[data-map-mode="admin"] #d8-draw-tools::-webkit-scrollbar-thumb {
+  background: #a855f7;
+  border-radius: 10px;
+}
+
+/* Champs du formulaire */
+body[data-map-mode="admin"] #d8-zone-form input,
+body[data-map-mode="admin"] #d8-zone-form select,
+body[data-map-mode="admin"] #d8-zone-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #160c25;
+  color: #ffffff;
+  border: 1px solid #7842a6;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+/* Bouton de suppression */
+body[data-map-mode="admin"] #d8-zone-delete {
+  border: 1px solid #e05279;
+  color: #ff9bb4;
+  background: #301224;
+}
