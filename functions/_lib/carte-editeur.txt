@@ -24,55 +24,99 @@
     const drawTools = document.createElement("div");
     drawTools.id = "d8-draw-tools";
 
-    drawTools.innerHTML = `
-      <div class="d8-draw-title">✦ ÉDITION DES ZONES</div>
-<button id="d8-zone-new" type="button">➕ Nouveau quartier</button>
-<button id="d8-zone-select" type="button">📍 Sélectionner un quartier</button>
-      <button id="d8-draw-toggle" type="button">✏️ Activer le dessin</button>
-      <button id="d8-draw-undo" type="button">↶ Annuler un point</button>
-      <button id="d8-draw-copy" type="button">📋 Copier les coordonnées</button>
+   
+drawTools.innerHTML = `
+  <div class="d8-prestige-editor-head">
+    <span class="d8-prestige-editor-crown">♛</span>
+    <div class="d8-draw-title">ÉDITION DES ZONES</div>
+    <div class="d8-prestige-editor-subtitle">
+      GESTION DES QUARTIERS DE LOS SANTOS
+    </div>
+  </div>
 
-<div id="d8-zone-form" hidden>
-  <div class="d8-draw-title">✦ INFORMATIONS DU QUARTIER</div>
+  <div class="d8-prestige-editor-grid">
 
-  <label for="d8-zone-name">Nom du quartier</label>
-  <input
-    id="d8-zone-name"
-    type="text"
-    maxlength="100"
-    placeholder="Ex : Vinewood Hills"
-  >
+    <div class="d8-prestige-editor-section">
+      <div class="d8-prestige-editor-label">
+        ✦ GESTION DES QUARTIERS
+      </div>
 
-  <label for="d8-zone-type">Type de quartier</label>
-  <input
-    id="d8-zone-type"
-    type="text"
-    maxlength="100"
-    placeholder="Ex : Résidentiel de luxe"
-  >
+      <button id="d8-zone-new" type="button">
+        ➕ Nouveau quartier
+      </button>
 
-  <label for="d8-zone-category">Catégorie</label>
-  <select id="d8-zone-category">
-    <option value="lux">💜 Luxe</option>
-    <option value="res">💙 Résidentiel</option>
-    <option value="rural">🩵 Rural</option>
-    <option value="ind">🩷 Industriel</option>
-    <option value="excluded">🚫 Zone exclue</option>
-  </select>
+      <button id="d8-zone-select" type="button">
+        📍 Sélectionner un quartier
+      </button>
 
-  <label for="d8-zone-description">Description</label>
-  <textarea
-    id="d8-zone-description"
-    rows="4"
-    placeholder="Description du quartier..."
-  ></textarea>
-</div>
+      <button id="d8-draw-toggle" type="button">
+        ✏️ Activer le dessin
+      </button>
 
-<button id="d8-zone-save" type="button">💾 Enregistrer les modifications</button>
-<button id="d8-zone-delete" type="button">🗑️ Supprimer le quartier</button>
-      <button id="d8-draw-clear" type="button">✕ Effacer le tracé</button>
+      <button id="d8-draw-undo" type="button">
+        ↶ Annuler un point
+      </button>
+
+      <button id="d8-draw-copy" type="button">
+        📋 Copier les coordonnées
+      </button>
+
+      <button id="d8-draw-clear" type="button">
+        ✕ Effacer le tracé
+      </button>
+
       <div id="d8-draw-count">0 point</div>
-    `;
+    </div>
+
+    <div class="d8-prestige-editor-section">
+      <div class="d8-prestige-editor-label">
+        ✦ INFORMATIONS DU QUARTIER
+      </div>
+
+      <div id="d8-zone-form" hidden>
+        <label for="d8-zone-name">Nom du quartier</label>
+        <input id="d8-zone-name" type="text"
+          maxlength="100"
+          placeholder="Ex : Vinewood Hills">
+
+        <label for="d8-zone-type">Type de quartier</label>
+        <input id="d8-zone-type" type="text"
+          maxlength="100"
+          placeholder="Ex : Résidentiel de luxe">
+
+        <label for="d8-zone-category">Catégorie</label>
+        <select id="d8-zone-category">
+          <option value="lux">💜 Luxe</option>
+          <option value="res">💙 Résidentiel</option>
+          <option value="rural">🩵 Rural</option>
+          <option value="ind">🩷 Industriel</option>
+          <option value="excluded">🚫 Zone exclue</option>
+        </select>
+
+        <label for="d8-zone-description">Description</label>
+        <textarea id="d8-zone-description"
+          rows="3"
+          placeholder="Description du quartier..."></textarea>
+      </div>
+
+      <div class="d8-prestige-editor-empty">
+        Sélectionnez ou créez un quartier
+        pour modifier ses informations.
+      </div>
+    </div>
+  </div>
+
+  <div class="d8-prestige-editor-actions">
+    <button id="d8-zone-save" type="button">
+      💾 Enregistrer les modifications
+    </button>
+
+    <button id="d8-zone-delete" type="button">
+      🗑️ Supprimer le quartier
+    </button>
+  </div>
+`;
+
 
     document.body.appendChild(drawTools);
 const zoneNew = document.getElementById("d8-zone-new");
