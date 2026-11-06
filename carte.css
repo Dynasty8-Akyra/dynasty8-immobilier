@@ -444,92 +444,76 @@ html, body {
   opacity: 0.65;
 }
 /* =====================================
-   DYNASTY 8 — CADRE NEON ANIME
+   DYNASTY 8 — NEON TOURNANT
    ===================================== */
 
 .d8-luxury-card {
   position: relative;
   isolation: isolate;
-  border: 2px solid var(--zone-accent);
   border-radius: 18px;
   padding: 18px;
+  border: 1px solid color-mix(
+    in srgb,
+    var(--zone-accent) 40%,
+    transparent
+  );
 
   background: rgba(18, 15, 35, 0.12);
-
-  box-shadow:
-    0 0 8px var(--zone-accent),
-    0 0 22px color-mix(
-      in srgb,
-      var(--zone-accent) 55%,
-      transparent
-    ),
-    inset 0 0 15px color-mix(
-      in srgb,
-      var(--zone-accent) 15%,
-      transparent
-    );
-
-  animation: d8NeonPulse 3s ease-in-out infinite;
 }
 
-/* Halo lumineux autour du cadre */
+/* Faisceau qui tourne autour du cadre */
 .d8-luxury-card::before {
   content: "";
   position: absolute;
-  inset: -5px;
-  border-radius: 22px;
-  border: 1px solid var(--zone-accent);
-  opacity: 0.4;
+  inset: -3px;
+  border-radius: 21px;
+  padding: 3px;
+
+  background: conic-gradient(
+    from var(--d8-angle),
+    transparent 0deg,
+    transparent 275deg,
+    var(--zone-accent) 325deg,
+    #ffffff 345deg,
+    transparent 360deg
+  );
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+
+  -webkit-mask-composite: xor;
+
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+
+  mask-composite: exclude;
+
   pointer-events: none;
-
-  filter: blur(6px);
-
-  animation: d8NeonHalo 3s ease-in-out infinite;
+  animation: d8NeonRotate 4s linear infinite;
 }
 
-/* Animation du contour principal */
-@keyframes d8NeonPulse {
-  0%, 100% {
-    box-shadow:
-      0 0 6px var(--zone-accent),
-      0 0 15px color-mix(
-        in srgb,
-        var(--zone-accent) 45%,
-        transparent
-      );
+@property --d8-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes d8NeonRotate {
+  from {
+    --d8-angle: 0deg;
   }
 
-  50% {
-    box-shadow:
-      0 0 14px var(--zone-accent),
-      0 0 35px color-mix(
-        in srgb,
-        var(--zone-accent) 75%,
-        transparent
-      ),
-      inset 0 0 18px color-mix(
-        in srgb,
-        var(--zone-accent) 20%,
-        transparent
-      );
+  to {
+    --d8-angle: 360deg;
   }
 }
 
-/* Animation du halo */
-@keyframes d8NeonHalo {
-  0%, 100% {
-    opacity: 0.25;
-  }
-
-  50% {
-    opacity: 0.7;
-  }
-}
-
-/* Accessibilité : limiter les animations */
+/* Accessibilité */
 @media (prefers-reduced-motion: reduce) {
-  .d8-luxury-card,
   .d8-luxury-card::before {
     animation: none;
   }
+}
 }
