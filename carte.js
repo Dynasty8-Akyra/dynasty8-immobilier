@@ -413,8 +413,8 @@ points: [
 ]
     },
 
-    vinewood: {
-      name: "Vinewood",
+    vinewood_Hills: {
+      name: "Vinewood Hills",
       type: "Prestige / Haut standing",
       category: "lux",
       description: "Villas et demeures d'exception.",
