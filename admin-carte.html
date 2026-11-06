@@ -1,0 +1,40 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+
+  <title>Direction — Éditeur Dynasty 8</title>
+
+  <link rel="stylesheet" href="agent.css">
+
+  <script src="supabase-config.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="admin-carte.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="agent-dashboard.html">← ESPACE AGENT</a>
+    <span>DYNASTY 8 · DIRECTION</span>
+  </header>
+
+  <main>
+    <section class="login" id="access-check">
+      <h1>Éditeur de <em>zones</em></h1>
+
+      <p id="admin-message" role="status">
+        Vérification de vos permissions Discord…
+      </p>
+
+      <div id="admin-actions" hidden>
+        <a href="agent-login.html">
+          Se connecter avec Discord
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
