@@ -1491,24 +1491,17 @@ const isAdminMap =
   `;
 
   
+
 document.body.appendChild(drawTools);
 
-// L'éditeur reste invisible tant que
-// le rôle Direction n'est pas vérifié.
+// Masquer les outils sur la carte publique.
 drawTools.style.display = "none";
 
-(async () => {
-  try {
-    if (
-      window.D8Cloud &&
-      await window.D8Cloud.isDirection()
-    ) {
-      drawTools.style.display = "";
-    }
-  } catch (error) {
-    console.warn("Accès à l'éditeur refusé.");
-  }
-})();
+// Ne jamais activer le dessin sur la page publique.
+if (!isAdminMap) {
+  drawing.enabled = false;
+}
+
 
 
   const drawToggle = document.getElementById("d8-draw-toggle");
