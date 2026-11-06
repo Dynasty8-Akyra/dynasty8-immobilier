@@ -1,4 +1,6 @@
 
+import editorSource from "../_lib/carte-editeur.js";
+
 const GUILD = "1567889374836957286";
 const DIRECTOR = "1567889789569728583";
 const CONFIRMED = "1567889964639723631";
