@@ -78,6 +78,7 @@ const zoneNew = document.getElementById("d8-zone-new");
 const zoneSelect = document.getElementById("d8-zone-select");
 let selectingZone = false;
 let selectedZoneId = null;
+let creatingNewZone = false;
     const drawToggle = document.getElementById("d8-draw-toggle");
     const drawCount = document.getElementById("d8-draw-count");
 const zoneSave = document.getElementById("d8-zone-save");
@@ -166,7 +167,7 @@ zoneNew.addEventListener("click", () => {
   // Quitter le mode sélection
   selectingZone = false;
   selectedZoneId = null;
-
+creatingNewZone = true;
   document.body.classList.remove("d8-selecting-zone");
 
   zoneSelect.textContent = "📍 Sélectionner un quartier";
@@ -264,6 +265,8 @@ const clickedZone = Object.entries(zones)
   const [id, zone] = clickedZone;
 
   selectedZoneId = id;
+creatingNewZone = false;
+
   drawing.points = zone.points.map(point => [...point]);
 
 zoneName.value = zone.name || "";
@@ -353,22 +356,33 @@ zoneForm.hidden = false;
     zoneSave.addEventListener("click", async () => {
       if (savingZone) return;
 
-      if (!selectedZoneId) {
-        alert("Sélectionne d'abord un quartier.");
-        return;
-      }
+      
+if (!selectedZoneId && !creatingNewZone) {
+  alert("Sélectionne un quartier ou crée un nouveau quartier.");
+  return;
+}
 
       if (drawing.enabled || selectingZone) {
         alert("Termine le dessin ou la sélection avant d'enregistrer.");
         return;
       }
 
-      const zone = window.D8Zones?.zones?.[selectedZoneId];
+     
+const zone = creatingNewZone
+  ? {
+      name: zoneName.value.trim(),
+      type: zoneType.value.trim(),
+      category: zoneCategory.value,
+      description: zoneDescription.value.trim(),
+      interiors: []
+    }
+  : window.D8Zones?.zones?.[selectedZoneId];
 
-      if (!zone) {
-        alert("Quartier introuvable. Actualise la carte.");
-        return;
-      }
+if (!zone) {
+  alert("Quartier introuvable. Actualise la carte.");
+  return;
+}
+
 
 if (!zoneName.value.trim()) {
   alert("Le nom du quartier est obligatoire.");
@@ -411,8 +425,12 @@ if (!zoneName.value.trim()) {
         }
 
        
+const zoneId = creatingNewZone
+  ? "zone_" + crypto.randomUUID().replace(/-/g, "")
+  : selectedZoneId;
+
 await window.D8Cloud.saveZone({
-  id: selectedZoneId,
+  id: zoneId,
   name: zoneName.value.trim(),
   type: zoneType.value.trim(),
   category: zoneCategory.value,
@@ -423,6 +441,15 @@ await window.D8Cloud.saveZone({
 
 
         await window.D8Zones.refresh();
+
+selectedZoneId = zoneId;
+creatingNewZone = false;
+
+if (drawing.enabled) {
+  drawToggle.click();
+}
+
+zoneSelect.textContent = "📍 " + zoneName.value.trim();
 
         // Recharger le tracé depuis les données enregistrées
         const savedZone =
