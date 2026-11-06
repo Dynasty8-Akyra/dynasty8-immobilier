@@ -1609,3 +1609,135 @@ body[data-map-mode="admin"] #d8-draw-tools::after {
     right: 10px !important;
   }
 }
+
+/* DYNASTY 8 — INTERIEUR DU CADRAN PRESTIGE */
+
+body[data-map-mode="admin"] #d8-draw-tools {
+  padding: 48px 58px !important;
+  gap: 14px !important;
+  justify-content: flex-start;
+}
+
+body[data-map-mode="admin"] .d8-prestige-editor-head {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.d8-prestige-editor-crown {
+  display: block;
+  color: #f1d2ff;
+  font-size: 26px;
+  text-shadow: 0 0 16px #bb65ff;
+}
+
+body[data-map-mode="admin"] .d8-prestige-editor-head .d8-draw-title {
+  font-family: Georgia, serif;
+  font-size: 21px;
+  margin: 3px 0 6px;
+}
+
+.d8-prestige-editor-subtitle {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #c9a3e4;
+}
+
+.d8-prestige-editor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.d8-prestige-editor-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(201, 128, 255, .38);
+  border-radius: 16px;
+  background: rgba(17, 8, 34, .7);
+}
+
+.d8-prestige-editor-label {
+  color: #e7bcff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .7px;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+body[data-map-mode="admin"] .d8-prestige-editor-section button {
+  padding: 9px 6px;
+  font-size: 11px;
+}
+
+#d8-zone-form:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+#d8-zone-form[hidden] {
+  display: none !important;
+}
+
+.d8-prestige-editor-section:has(#d8-zone-form:not([hidden]))
+.d8-prestige-editor-empty {
+  display: none;
+}
+
+.d8-prestige-editor-empty {
+  color: #bca1d1;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 20px 4px;
+}
+
+.d8-prestige-editor-section label {
+  font-size: 10px;
+  color: #e9ccff;
+}
+
+body[data-map-mode="admin"] #d8-zone-form input,
+body[data-map-mode="admin"] #d8-zone-form select,
+body[data-map-mode="admin"] #d8-zone-form textarea {
+  font-size: 11px;
+  padding: 8px;
+  margin-bottom: 5px;
+}
+
+.d8-prestige-editor-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(100%, 340px);
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+body[data-map-mode="admin"] #d8-zone-save {
+  background: linear-gradient(90deg, #7533b5, #a450e0);
+  border-color: #e0a9ff;
+  box-shadow: 0 0 18px rgba(187,101,255,.3);
+}
+
+body[data-map-mode="admin"] #d8-zone-delete {
+  background: rgba(72, 18, 46, .8);
+  border-color: #e05279;
+  color: #ffc1d0;
+}
+
+@media (max-width: 600px) {
+  .d8-prestige-editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-map-mode="admin"] #d8-draw-tools {
+    padding: 35px 28px !important;
+  }
+}
