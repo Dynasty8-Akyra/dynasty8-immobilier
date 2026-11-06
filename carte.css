@@ -1524,3 +1524,31 @@ body[data-map-mode="admin"] #d8-zone-form {
     animation: none !important;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — CADRAN DIRECTION PERMANENT
+   ========================================== */
+
+body[data-map-mode="admin"] #d8-draw-tools {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  position: fixed !important;
+  z-index: 99999 !important;
+
+  pointer-events: auto !important;
+}
+
+/* Le cadran reste visible pendant le dessin */
+body[data-map-mode="admin"] #d8-draw-tools.drawing-active {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Éviter qu'un effet de survol le masque */
+body[data-map-mode="admin"] #d8-draw-tools:hover,
+body[data-map-mode="admin"] #d8-draw-tools:focus-within {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
