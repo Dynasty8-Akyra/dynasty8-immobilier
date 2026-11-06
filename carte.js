@@ -1086,7 +1086,64 @@ console.log("Zoom :", map.getZoom());
 
   panel.classList.add("is-open");
 }
+// =====================================
+// DYNASTY 8 — PORTAIL ADN ÉNERGÉTIQUE
+// =====================================
 
+// Couleur automatique du quartier sélectionné
+panel.style.setProperty("--panel-neon", color);
+
+// Supprime l'ancien SVG si le quartier change
+const ancienPortail = panel.querySelector(".d8-portal-dna");
+if (ancienPortail) {
+  ancienPortail.remove();
+}
+
+// Crée les filaments lumineux autour du grand panneau
+const svgNS = "http://www.w3.org/2000/svg";
+
+const portalSVG = document.createElementNS(svgNS, "svg");
+portalSVG.classList.add("d8-portal-dna");
+portalSVG.setAttribute("preserveAspectRatio", "none");
+portalSVG.setAttribute("aria-hidden", "true");
+
+const classes = [
+  "d8-dna-track",
+  "d8-dna-strand d8-dna-strand-a",
+  "d8-dna-strand d8-dna-strand-b"
+];
+
+classes.forEach(classNames => {
+  const rect = document.createElementNS(svgNS, "rect");
+  rect.setAttribute("class", classNames);
+  rect.setAttribute("pathLength", "1000");
+  portalSVG.appendChild(rect);
+});
+
+panel.appendChild(portalSVG);
+
+// Ajuste le contour à la taille du panneau
+function ajusterPortailADN() {
+  const largeur = panel.clientWidth;
+  const hauteur = panel.clientHeight;
+
+  if (!largeur || !hauteur) return;
+
+  portalSVG.setAttribute(
+    "viewBox",
+    `0 0 ${largeur} ${hauteur}`
+  );
+
+  portalSVG.querySelectorAll("rect").forEach(rect => {
+    rect.setAttribute("x", "4");
+    rect.setAttribute("y", "4");
+    rect.setAttribute("width", Math.max(0, largeur - 8));
+    rect.setAttribute("height", Math.max(0, hauteur - 8));
+    rect.setAttribute("rx", "18");
+  });
+}
+
+requestAnimationFrame(ajusterPortailADN);
   // =====================================
   // SURBRILLANCE DES ZONES
   // =====================================
