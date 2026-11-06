@@ -1069,7 +1069,38 @@ console.log("Zoom :", map.getZoom());
 
     highlight(null);
   }
+// =====================================
+// NOMS DES QUARTIERS AU ZOOM
+// =====================================
 
+const LABEL_ZOOM = 3.75;
+const zoneLabels = {};
+
+function updateZoneLabels() {
+  const showLabels = map.getZoom() >= LABEL_ZOOM;
+
+  for (const [id, label] of Object.entries(zoneLabels)) {
+    const zone = zones[id];
+
+    const visible =
+      currentFilter === "all" ||
+      updateZoneLabels();
+      zone.category === currentFilter;
+
+    if (showLabels && visible) {
+      if (!map.hasLayer(label)) {
+        label.addTo(map);
+      }
+    } else {
+      if (map.hasLayer(label)) {
+        map.removeLayer(label);
+      }
+    }
+  }
+}
+
+map.on("zoomend", updateZoneLabels);
+  
   // =====================================
   // CREATION DES POLYGONES
   // =====================================
@@ -1100,7 +1131,33 @@ console.log("Zoom :", map.getZoom());
 }).addTo(map);
 
     polygons[id] = polygon;
+// =====================================
+// ETIQUETTE DU NOM DU QUARTIER
+// =====================================
 
+const center = polygon.getBounds().getCenter();
+
+const label = L.marker(center, {
+  interactive: false,
+  keyboard: false,
+
+  icon: L.divIcon({
+    className: "d8-map-label-container",
+
+    html: `
+      <div class="d8-map-label"
+           style="--label-color:${color}">
+        ${escapeHTML(z.name)}
+      </div>
+    `,
+
+    iconSize: [0, 0],
+    iconAnchor: [0, 0]
+  })
+});
+
+zoneLabels[id] = label;
+    
     // Nom visible seulement au survol
     polygon.bindTooltip(
       `<span class="d8-zone-label">${escapeHTML(z.name)}</span>`,
@@ -1126,7 +1183,7 @@ console.log("Zoom :", map.getZoom());
 
     polygon.on("click", () => select(id));
   }
-
+updateZoneLabels();
   // =====================================
   // FERMETURE DU CATALOGUE
   // =====================================
@@ -1186,6 +1243,7 @@ console.log("Zoom :", map.getZoom());
         }
       }
     });
+    updateZoneLabels();
   }
 
   // =====================================
