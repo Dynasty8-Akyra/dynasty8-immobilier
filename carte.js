@@ -1031,15 +1031,22 @@ console.log("Zoom :", map.getZoom());
   // =====================================
 
   function highlight(id) {
-    for (const [key, polygon] of Object.entries(polygons)) {
-      const active = key === id;
+  for (const [key, polygon] of Object.entries(polygons)) {
+    const active = key === id;
+    const excluded = zones[key].category === "excluded";
 
-      polygon.setStyle({
-        weight: active ? 5 : 3,
-        fillOpacity: active ? 0.24 : 0.09
-      });
-    }
+    polygon.setStyle({
+      weight: active ? 5 : 3,
+      opacity: 1,
+      color: excluded ? "#8e92a5" : COLORS[zones[key].category],
+      fillColor: excluded ? "#252633" : COLORS[zones[key].category],
+      fillOpacity: excluded
+        ? (active ? 0.82 : 0.72)
+        : (active ? 0.52 : 0.38),
+      dashArray: excluded ? "7 6" : null
+    });
   }
+}
 
   function preview(id) {
     if (pinned !== null) return;
@@ -1071,15 +1078,26 @@ console.log("Zoom :", map.getZoom());
     const color = COLORS[z.category];
 
     const polygon = L.polygon(z.points, {
-      color: color,
-      weight: 3,
-      opacity: 0.96,
-      fillColor: color,
-      fillOpacity: 0.09,
-      interactive: true,
-      className: "d8-neon-polygon",
-      dashArray: z.category === "excluded" ? "7 6" : null
-    }).addTo(map);
+  color: z.category === "excluded" ? "#8e92a5" : color,
+  weight: 3,
+  opacity: 1,
+
+  fillColor: z.category === "excluded"
+    ? "#252633"
+    : color,
+
+  fillOpacity: z.category === "excluded"
+    ? 0.72
+    : 0.38,
+
+  interactive: true,
+  className: "d8-neon-polygon",
+
+  dashArray: z.category === "excluded"
+    ? "7 6"
+    : null
+
+}).addTo(map);
 
     polygons[id] = polygon;
 
