@@ -32,6 +32,16 @@ window.D8Cloud={
  async authenticated(){return !!(await token())},
  async role(){return secured('status')},
  async isAgent(){try{return (await secured('status')).canWrite}catch{return false}},
+ 
+async isDirection(){
+  try {
+    const status = await secured('status');
+    return status.canEditZones === true;
+  } catch {
+    return false;
+  }
+},
+
  async list(){return req('/rest/v1/properties?select=*&order=name.asc',{method:'GET'})},
  async upsert(p){return secured('save','POST',p)},
  async remove(id){return secured('delete','DELETE',null,id)}
