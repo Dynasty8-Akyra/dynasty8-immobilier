@@ -20,6 +20,101 @@
   <script src="supabase-config.js"></script>
   <script src="supabase-client.js"></script>
   <script src="admin-carte.js" defer></script>
+  
+<style>
+/* DYNASTY 8 — CORRECTION CARTE DIRECTION */
+
+body:has(#direction-map:not([hidden])) {
+  margin: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
+#direction-map {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}
+
+#direction-map[hidden] {
+  display: none !important;
+}
+
+#direction-map .map-page {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#direction-map .map-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+}
+
+#direction-map .map-toolbar button {
+  width: auto;
+  min-width: max-content;
+  white-space: nowrap;
+}
+
+#direction-map .map-layout {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  min-height: 650px;
+  overflow: hidden;
+}
+
+#direction-map #viewport {
+  width: 100%;
+  height: 650px;
+  min-height: 650px;
+}
+
+#direction-map .map-buttons {
+  position: absolute;
+  z-index: 500;
+}
+
+#direction-map .map-buttons button {
+  width: 44px;
+  height: 44px;
+}
+
+#direction-map .zone-panel {
+  box-sizing: border-box;
+}
+  
+/* Donner toute la largeur à la carte Direction */
+body:has(#direction-map:not([hidden])) .direction-main {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+}
+
+/* Masquer le panneau de connexion après validation */
+body:has(#direction-map:not([hidden])) #access-check {
+  display: none !important;
+}
+
+/* Éviter que les styles Agent limitent la carte */
+body:has(#direction-map:not([hidden])) #direction-map {
+  display: block;
+  width: 100%;
+  max-width: none;
+}
+
+</style>
+
 </head>
 
 <body>
@@ -28,7 +123,7 @@
     <span>DYNASTY 8 · DIRECTION</span>
   </header>
 
-  <main>
+  <main class="direction-main">
     <section class="login" id="access-check">
       <h1>Éditeur de <em>zones</em></h1>
 
