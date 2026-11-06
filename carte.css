@@ -447,6 +447,8 @@ html, body {
    DYNASTY 8 — NEON TOURNANT
    ===================================== */
 
+#panel.is-open::before {
+  --d8-angle: 0deg;
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -460,7 +462,7 @@ html, body {
   mask-composite: exclude;
 
   pointer-events: none;
-  animation: d8NeonRotate 4s linear infinite;
+  animation: d8NeonRotate 30s linear infinite;
 }
 
 @property --d8-angle {
