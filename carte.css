@@ -268,3 +268,178 @@ html, body {
   backdrop-filter: blur(8px);
   pointer-events: none;
 }
+/* =====================================
+   DYNASTY 8 — FICHES LUXURY GLASS
+   ===================================== */
+
+.d8-luxury-card {
+  --zone-accent: #bb65ff;
+  color: #ffffff;
+}
+
+/* Conserver le panneau transparent */
+.d8-luxury-card .d8-panel-top {
+  background: transparent;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  padding-bottom: 20px;
+}
+
+.d8-luxury-card .d8-kicker {
+  color: var(--zone-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.d8-luxury-card h2 {
+  font-size: 28px;
+  font-weight: 900;
+  margin: 12px 0 5px;
+}
+
+.d8-luxury-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+  padding: 7px 12px;
+  border-radius: 8px;
+
+  background: color-mix(
+    in srgb,
+    var(--zone-accent) 13%,
+    transparent
+  );
+
+  border: 1px solid color-mix(
+    in srgb,
+    var(--zone-accent) 40%,
+    transparent
+  );
+
+  color: var(--zone-accent);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.d8-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--zone-accent);
+  box-shadow: 0 0 10px var(--zone-accent);
+}
+
+/* Bannière en verre coloré */
+.d8-luxury-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  margin: 20px 0;
+  padding: 25px 20px;
+  border-radius: 14px;
+
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--zone-accent) 20%, transparent),
+    rgba(18,15,35,0.25)
+  );
+
+  border: 1px solid color-mix(
+    in srgb,
+    var(--zone-accent) 45%,
+    transparent
+  );
+
+  backdrop-filter: blur(10px);
+}
+
+.d8-luxury-banner span {
+  color: var(--zone-accent);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.d8-luxury-banner strong {
+  font-size: 22px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.d8-luxury-banner small {
+  opacity: 0.65;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+/* Sections */
+.d8-luxury-section {
+  margin: 25px 0;
+}
+
+.d8-luxury-heading {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.d8-luxury-heading span {
+  color: var(--zone-accent);
+}
+
+.d8-luxury-section p {
+  color: #d1ccdf;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+/* Pastilles translucides */
+.d8-luxury-card .chip {
+  background: color-mix(
+    in srgb,
+    var(--zone-accent) 13%,
+    transparent
+  );
+
+  border: 1px solid color-mix(
+    in srgb,
+    var(--zone-accent) 40%,
+    transparent
+  );
+
+  backdrop-filter: blur(8px);
+}
+
+.d8-luxury-warning {
+  padding: 15px;
+  border-radius: 10px;
+  background: rgba(37,38,51,0.55);
+  border: 1px solid #8e92a5;
+  color: #d5d5df;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.d8-luxury-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  padding-top: 20px;
+  font-size: 10px;
+}
+
+.d8-luxury-footer span {
+  color: var(--zone-accent);
+  font-weight: 900;
+}
+
+.d8-luxury-footer small {
+  opacity: 0.65;
+}
