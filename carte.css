@@ -2402,3 +2402,43 @@ body[data-map-mode="admin"] #d8-prestige-halo {
     animation: none !important;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — FUMEE VIOLETTE ANIMEE
+   ========================================== */
+
+body[data-map-mode="admin"] .d8-prestige-smoke {
+  opacity: .8;
+  transform-box: view-box;
+  transform-origin: center;
+  animation: d8-smoke-drift 16s ease-in-out infinite;
+}
+
+@keyframes d8-smoke-drift {
+  0%, 100% {
+    opacity: .55;
+    transform: scale(1) rotate(0deg);
+  }
+
+  50% {
+    opacity: .9;
+    transform: scale(1.025) rotate(1deg);
+  }
+}
+
+/* Atténuation du tracé géométrique */
+body[data-map-mode="admin"] #d8-sculpted-outline {
+  opacity: .12 !important;
+}
+
+/* La fumée reste décorative */
+body[data-map-mode="admin"] #d8-prestige-halo {
+  pointer-events: none !important;
+}
+
+/* Animations réduites si nécessaire */
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="admin"] .d8-prestige-smoke {
+    animation: none !important;
+  }
+}
