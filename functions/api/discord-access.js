@@ -131,6 +131,37 @@ const canEditZones = role === 'direction';
       });
     }
 
+    // ÉDITEUR DE ZONES — ACCÈS DIRECTION UNIQUEMENT
+    if (action === "zone-editor" && method === "GET") {
+      if (!canEditZones) {
+        return json(403, {
+          error: "Éditeur réservé à la Direction."
+        });
+      }
+
+      const editorUrl =
+        new URL("/private/carte-editeur.js", request.url);
+
+      const editorResponse = await env.ASSETS.fetch(
+        new Request(editorUrl, { method: "GET" })
+      );
+
+      if (!editorResponse.ok) {
+        return json(503, {
+          error: "Fichier éditeur indisponible."
+        });
+      }
+
+      return new Response(editorResponse.body, {
+        status: 200,
+        headers: {
+          "content-type": "application/javascript; charset=utf-8",
+          "cache-control": "private, no-store",
+          "x-content-type-options": "nosniff"
+        }
+      });
+    }
+
     if (!canWrite) {
       return json(403, {
         error: "Seuls la Direction et les Agents confirmés peuvent gérer les annonces."
