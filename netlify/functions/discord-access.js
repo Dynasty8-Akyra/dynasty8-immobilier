@@ -33,10 +33,25 @@ exports.handler=async(event)=>{
   catch(e){if(e.status===404)return json(403,{error:'Vous ne faites pas partie du Discord Dynasty 8.'});throw e}
   const roles=member.roles||[];
   const role=roles.includes(DIRECTOR)?'direction':roles.includes(CONFIRMED)?'confirme':(TRAINING && /^\d{17,22}$/.test(TRAINING) && roles.includes(TRAINING))?'formation':'aucun';
-  const canWrite=role==='direction'||role==='confirme';
-  const canViewDashboard=canWrite||role==='formation';
+  
+const canWrite = role === 'direction' || role === 'confirme';
+
+const canViewDashboard = canWrite || role === 'formation';
+
+// Seule la Direction peut modifier les zones.
+const canEditZones = role === 'direction';
+
   const action=event.queryStringParameters?.action||'status';
-  if(action==='status'&&event.httpMethod==='GET')return json(200,{role,canWrite,canViewDashboard});
+  
+if (action === 'status' && event.httpMethod === 'GET') {
+  return json(200, {
+    role,
+    canWrite,
+    canViewDashboard,
+    canEditZones
+  });
+}
+
   if(!canWrite)return json(403,{error:'Seuls la Direction et les Agents confirmés peuvent gérer les annonces.'});
   const endpoint=url+'/rest/v1/properties';
   const serviceHeaders={apikey:serviceKey,authorization:'Bearer '+serviceKey,'content-type':'application/json'};
