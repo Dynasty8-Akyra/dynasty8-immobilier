@@ -447,36 +447,15 @@ html, body {
    DYNASTY 8 — NEON TOURNANT
    ===================================== */
 
-.d8-luxury-card {
-  position: relative;
-  isolation: isolate;
-  border-radius: 18px;
-  padding: 18px;
-  border: 1px solid color-mix(
-    in srgb,
-    var(--zone-accent) 40%,
-    transparent
-  );
-
-  background: rgba(18, 15, 35, 0.12);
+.d8-dna-strand-a {
+  stroke: #ffffff;
+  animation: d8DNAForward 30s linear infinite;
 }
 
-/* Faisceau qui tourne autour du cadre */
-.d8-luxury-card::before {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 21px;
-  padding: 3px;
-
-  background: conic-gradient(
-    from var(--d8-angle),
-    transparent 0deg,
-    transparent 275deg,
-    var(--zone-accent) 325deg,
-    #ffffff 345deg,
-    transparent 360deg
-  );
+.d8-dna-strand-b {
+  stroke: var(--panel-neon, #bb65ff);
+  animation: d8DNABackward 30s linear infinite;
+}
 
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
