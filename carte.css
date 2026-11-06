@@ -2674,3 +2674,35 @@ body[data-map-mode="admin"] #d8-prestige-halo {
     animation: none !important;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — BARRE SUPERIEURE FIXE
+   ========================================== */
+
+/* La barre Prestige reste au-dessus de la carte */
+body[data-map-mode="admin"] .d8-prestige-heading {
+  position: relative !important;
+  z-index: 100001 !important;
+  transform: none !important;
+}
+
+/* Les filtres restent accessibles */
+body[data-map-mode="admin"] #filters {
+  position: relative !important;
+  z-index: 100001 !important;
+}
+
+/* La carte reste derrière l'interface */
+body[data-map-mode="admin"] #viewport {
+  z-index: 0 !important;
+}
+
+/* Empêche la carte Leaflet de recouvrir l'en-tête */
+body[data-map-mode="admin"] .leaflet-container {
+  z-index: 0 !important;
+}
+
+/* Le cadran conserve sa position */
+body[data-map-mode="admin"] #d8-draw-tools {
+  z-index: 99999 !important;
+}
