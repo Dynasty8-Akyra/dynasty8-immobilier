@@ -32,6 +32,10 @@ window.D8Cloud={
  async authenticated(){return !!(await token())},
  async role(){return secured('status')},
  
+async saveZone(zone){
+  return secured('zones-save','POST',zone);
+},
+
 async zoneEditorSource(){
   const t = await token();
 
