@@ -126,7 +126,7 @@ const canEditZones = role === 'direction';
       return json(200, {
         role,
         canWrite,
-        canViewDashboard
+        canViewDashboard,
         canEditZones
       });
     }
