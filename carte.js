@@ -1470,29 +1470,6 @@ if (
   window.D8InitZoneEditor(map);
 }
 
-
-  document.getElementById("d8-draw-copy")
-    .addEventListener("click", async () => {
-      if (drawing.points.length < 3) {
-        alert("Place au moins 3 points sur la carte.");
-        return;
-      }
-
-      const coordinates =
-        "points: " +
-        JSON.stringify(drawing.points, null, 2);
-
-      try {
-        await navigator.clipboard.writeText(coordinates);
-        alert("Coordonnées copiées !");
-      } catch (error) {
-        window.prompt(
-          "Copie ces coordonnées avec Ctrl + C :",
-          coordinates
-        );
-      }
-    });
-
   map.whenReady(() => {
     map.setView([5350, 4500], 3);
 
