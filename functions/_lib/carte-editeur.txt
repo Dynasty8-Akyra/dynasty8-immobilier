@@ -30,6 +30,7 @@
       <button id="d8-draw-toggle" type="button">✏️ Activer le dessin</button>
       <button id="d8-draw-undo" type="button">↶ Annuler un point</button>
       <button id="d8-draw-copy" type="button">📋 Copier les coordonnées</button>
+<button id="d8-zone-save" type="button">💾 Enregistrer les modifications</button>
       <button id="d8-draw-clear" type="button">✕ Effacer le tracé</button>
       <div id="d8-draw-count">0 point</div>
     `;
@@ -40,8 +41,9 @@ let selectingZone = false;
 let selectedZoneId = null;
     const drawToggle = document.getElementById("d8-draw-toggle");
     const drawCount = document.getElementById("d8-draw-count");
-
-    function refreshDrawing() {
+const zoneSave = document.getElementById("d8-zone-save");
+   
+function refreshDrawing() {
       if (drawing.polygon) {
         map.removeLayer(drawing.polygon);
         drawing.polygon = null;
