@@ -256,5 +256,103 @@ const clickedZone = Object.entries(zones)
           );
         }
       });
+
+    // =====================================
+    // SAUVEGARDE SECURISEE DES QUARTIERS
+    // =====================================
+
+    let savingZone = false;
+
+    zoneSave.addEventListener("click", async () => {
+      if (savingZone) return;
+
+      if (!selectedZoneId) {
+        alert("Sélectionne d'abord un quartier.");
+        return;
+      }
+
+      if (drawing.enabled || selectingZone) {
+        alert("Termine le dessin ou la sélection avant d'enregistrer.");
+        return;
+      }
+
+      const zone = window.D8Zones?.zones?.[selectedZoneId];
+
+      if (!zone) {
+        alert("Quartier introuvable. Actualise la carte.");
+        return;
+      }
+
+      const points = drawing.points.map(point => [...point]);
+
+      if (
+        points.length < 3 ||
+        points.length > 5000 ||
+        !points.every(point =>
+          Array.isArray(point) &&
+          point.length === 2 &&
+          point.every(value =>
+            Number.isFinite(value) &&
+            value >= 0 &&
+            value <= 8192
+          )
+        )
+      ) {
+        alert("Les coordonnées du quartier sont invalides.");
+        return;
+      }
+
+      if (!confirm(
+        "Enregistrer les modifications de « " +
+        zone.name +
+        " » dans Supabase ?"
+      )) return;
+
+      savingZone = true;
+      zoneSave.disabled = true;
+      zoneSave.textContent = "⏳ Enregistrement...";
+
+      try {
+        if (typeof window.D8Cloud?.saveZone !== "function") {
+          throw new Error("Fonction de sauvegarde indisponible.");
+        }
+
+        await window.D8Cloud.saveZone({
+          id: selectedZoneId,
+          name: zone.name,
+          type: zone.type || "",
+          category: zone.category,
+          description: zone.description || "",
+          interiors: zone.interiors || [],
+          points
+        });
+
+        await window.D8Zones.refresh();
+
+        // Recharger le tracé depuis les données enregistrées
+        const savedZone =
+          window.D8Zones.zones[selectedZoneId];
+
+        if (savedZone) {
+          drawing.points = savedZone.points.map(
+            point => [...point]
+          );
+          refreshDrawing();
+        }
+
+        alert("✅ Quartier enregistré dans Supabase !");
+
+      } catch (error) {
+        console.error("Sauvegarde du quartier :", error);
+        alert("❌ " + error.message);
+
+      } finally {
+        savingZone = false;
+        zoneSave.disabled = false;
+        zoneSave.textContent =
+          "💾 Enregistrer les modifications";
+      }
+    });
+
   };
 })();
