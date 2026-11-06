@@ -1,30 +1,78 @@
+
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dynasty 8 | Carte immobilière</title>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="carte.css?v=prestige3">
+  <title>Dynasty 8 | Carte immobilière</title>
 
-<main class="map-page">
- <div class="map-toolbar" id="filters" aria-label="Filtres des zones"><button class="on" data-type="all">Toutes les zones</button><button data-type="lux">Villas de luxe</button><button data-type="res">Résidentiel</button><button data-type="biz">Commerces</button><button data-type="ind">Garages</button><button data-type="rural">Rural</button></div>
- <section class="map-layout" aria-label="Carte immobilière interactive de San Andreas">
-  <div class="map-viewport" id="viewport" aria-label="Carte satellite de San Andreas"></div>
-  <div class="map-buttons"><button id="zoomIn" aria-label="Zoom avant">+</button><button id="zoomOut" aria-label="Zoom arrière">−</button><button id="reset" aria-label="Vue générale">⌂</button></div>
-  <div class="map-hint">Survolez ou cliquez sur une zone · Faites glisser la carte pour vous déplacer</div>
-  <aside class="zone-panel" id="zonePanel" aria-live="polite"></aside>
-  <div class="map-credit">Carte GTA V non officielle · Images © Rockstar Games · Tuiles : VIRUXE</div>
- </section>
-</main>
-<a class="agent-link" href="agent-login.html">♛ CONNEXION AGENT</a>
-<a class="home-link" href="index.html">‹ Accueil</a>
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="carte.css?v=prestige3">
+</head>
 
-<!-- Connexion Discord existante -->
-<script src="supabase-config.js"></script>
-<script src="supabase-client.js"></script>
+<body data-map-mode="public">
 
-<!-- Carte immobilière -->
-<script src="carte.js"></script>
+  <main class="map-page">
 
-</body></html>
+    <div class="map-toolbar"
+         id="filters"
+         aria-label="Filtres des zones">
+
+      <button class="on" data-type="all">Toutes les zones</button>
+      <button data-type="lux">Villas de luxe</button>
+      <button data-type="res">Résidentiel</button>
+      <button data-type="biz">Commerces</button>
+      <button data-type="ind">Garages</button>
+      <button data-type="rural">Rural</button>
+
+    </div>
+
+    <section class="map-layout"
+             aria-label="Carte immobilière interactive de San Andreas">
+
+      <div class="map-viewport"
+           id="viewport"
+           aria-label="Carte satellite de San Andreas"></div>
+
+      <div class="map-buttons">
+        <button id="zoomIn" aria-label="Zoom avant">+</button>
+        <button id="zoomOut" aria-label="Zoom arrière">−</button>
+        <button id="reset" aria-label="Vue générale">⌂</button>
+      </div>
+
+      <div class="map-hint">
+        Survolez ou cliquez sur une zone · Faites glisser la carte pour vous déplacer
+      </div>
+
+      <aside class="zone-panel"
+             id="zonePanel"
+             aria-live="polite"></aside>
+
+      <div class="map-credit">
+        Carte GTA V non officielle · Images © Rockstar Games · Tuiles : VIRUXE
+      </div>
+
+    </section>
+  </main>
+
+  <a class="agent-link" href="agent-login.html">
+    ♛ CONNEXION AGENT
+  </a>
+
+  <a class="home-link" href="index.html">
+    ‹ Accueil
+  </a>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script src="supabase-config.js"></script>
+  <script src="supabase-client.js"></script>
+
+  <script src="carte.js"></script>
+
+</body>
+</html>
