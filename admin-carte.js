@@ -51,10 +51,30 @@
     const script = document.createElement("script");
     script.src = "carte.js";
 
-    script.onload = () => {
-      accessCheck.hidden = true;
-      console.log("DYNASTY 8 - Carte Direction chargée.");
-    };
+    
+script.onload = () => {
+  accessCheck.hidden = true;
+
+  const editorScript = document.createElement("script");
+  editorScript.src = "carte-editeur.js";
+
+  editorScript.onload = () => {
+    if (
+      typeof window.D8InitZoneEditor === "function" &&
+      window.D8Map
+    ) {
+      window.D8InitZoneEditor(window.D8Map);
+      console.log("DYNASTY 8 - Éditeur initialisé.");
+    }
+  };
+
+  editorScript.onerror = () => {
+    console.error("Impossible de charger l'éditeur.");
+  };
+
+  document.body.appendChild(editorScript);
+};
+
 
     script.onerror = () => {
       message.textContent =
