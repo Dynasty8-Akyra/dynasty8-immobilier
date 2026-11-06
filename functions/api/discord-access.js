@@ -1,5 +1,5 @@
 
-import editorSource from "../_lib/carte-editeur.js";
+import editorSource from "../_lib/carte-editeur.txt";
 
 const GUILD = "1567889374836957286";
 const DIRECTOR = "1567889789569728583";
