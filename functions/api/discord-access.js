@@ -53,6 +53,27 @@ export async function onRequest(context) {
     });
   }
 
+  // DYNASTY 8 — LECTURE PUBLIQUE DES QUARTIERS
+  if (action === "zones-list" && method === "GET") {
+    try {
+      const response = await api(
+        url + "/rest/v1/map_zones?select=*&order=name.asc",
+        {
+          headers: {
+            apikey: serviceKey,
+            authorization: "Bearer " + serviceKey
+          }
+        }
+      );
+
+      return json(200, { zones: response });
+    } catch {
+      return json(503, {
+        error: "Impossible de charger les quartiers."
+      });
+    }
+  }
+
   const token = request.headers
     .get("authorization")
     ?.match(/^Bearer (.+)$/i)?.[1];
@@ -151,34 +172,136 @@ const canEditZones = role === 'direction';
       });
     }
 
-    // ÉDITEUR DE ZONES — ACCÈS DIRECTION UNIQUEMENT
-    if (action === "zone-editor" && method === "GET") {
+    // DYNASTY 8 — GESTION DES QUARTIERS
+    if (
+      action === "zones-save" ||
+      action === "zones-delete"
+    ) {
       if (!canEditZones) {
         return json(403, {
-          error: "Éditeur réservé à la Direction."
+          error: "Accès réservé à la Direction."
         });
       }
 
-      const editorUrl =
-        new URL("/private/carte-editeur.js", request.url);
+      const zoneEndpoint = url + "/rest/v1/map_zones";
 
-      const editorResponse = await env.ASSETS.fetch(
-        new Request(editorUrl, { method: "GET" })
-      );
+      const zoneHeaders = {
+        apikey: serviceKey,
+        authorization: "Bearer " + serviceKey,
+        "content-type": "application/json"
+      };
 
-      if (!editorResponse.ok) {
-        return json(503, {
-          error: "Fichier éditeur indisponible."
-        });
-      }
+      if (action === "zones-save" && method === "POST") {
+        const raw = await request.text();
 
-      return new Response(editorResponse.body, {
-        status: 200,
-        headers: {
-          "content-type": "application/javascript; charset=utf-8",
-          "cache-control": "private, no-store",
-          "x-content-type-options": "nosniff"
+        if (raw.length > 200000) {
+          return json(413, {
+            error: "Quartier trop volumineux."
+          });
         }
+
+        let zone;
+
+        try {
+          zone = JSON.parse(raw);
+        } catch {
+          return json(400, {
+            error: "Données du quartier invalides."
+          });
+        }
+
+        if (!zone || typeof zone !== "object" ||
+            Array.isArray(zone)) {
+          return json(400, {
+            error: "Quartier invalide."
+          });
+        }
+
+        const valid =
+          typeof zone.id === "string" &&
+          /^[a-zA-Z0-9_-]{1,100}$/.test(zone.id) &&
+          typeof zone.name === "string" &&
+          zone.name.trim().length > 0 &&
+          zone.name.length <= 100 &&
+          typeof zone.type === "string" &&
+          zone.type.length <= 100 &&
+          ["lux", "res", "rural", "ind", "excluded"]
+            .includes(zone.category) &&
+          typeof zone.description === "string" &&
+          zone.description.length <= 2000 &&
+          Array.isArray(zone.interiors) &&
+          zone.interiors.length <= 30 &&
+          zone.interiors.every(
+            item => typeof item === "string" &&
+                    item.length <= 100
+          ) &&
+          Array.isArray(zone.points) &&
+          zone.points.length >= 3 &&
+          zone.points.length <= 5000 &&
+          zone.points.every(
+            point =>
+              Array.isArray(point) &&
+              point.length === 2 &&
+              point.every(
+                value =>
+                  Number.isFinite(value) &&
+                  value >= 0 &&
+                  value <= 8192
+              )
+          );
+
+        if (!valid) {
+          return json(400, {
+            error: "Vérifiez les informations et les points du quartier."
+          });
+        }
+
+        const clean = {
+          id: zone.id,
+          name: zone.name.trim(),
+          type: zone.type,
+          category: zone.category,
+          description: zone.description,
+          interiors: zone.interiors,
+          points: zone.points
+        };
+
+        await api(zoneEndpoint + "?on_conflict=id", {
+          method: "POST",
+          headers: {
+            ...zoneHeaders,
+            Prefer: "resolution=merge-duplicates,return=minimal"
+          },
+          body: JSON.stringify(clean)
+        });
+
+        return json(200, { ok: true });
+      }
+
+      if (action === "zones-delete" &&
+          method === "DELETE") {
+        const id = params.get("id") || "";
+
+        if (!/^[a-zA-Z0-9_-]{1,100}$/.test(id)) {
+          return json(400, {
+            error: "Identifiant du quartier invalide."
+          });
+        }
+
+        await api(
+          zoneEndpoint +
+          "?id=eq." + encodeURIComponent(id),
+          {
+            method: "DELETE",
+            headers: zoneHeaders
+          }
+        );
+
+        return json(200, { ok: true });
+      }
+
+      return json(405, {
+        error: "Méthode non autorisée."
       });
     }
 
