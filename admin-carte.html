@@ -113,6 +113,126 @@ body:has(#direction-map:not([hidden])) #direction-map {
   max-width: none;
 }
 
+/* ========================================
+   DYNASTY 8 PRESTIGE - DIRECTION
+   ======================================== */
+
+body:has(#direction-map:not([hidden])) {
+  background: #090512;
+  color: #f5eaff;
+}
+
+body[data-map-mode="admin"] header {
+  background: linear-gradient(
+    90deg,
+    #11091f,
+    #241035,
+    #11091f
+  );
+  border-bottom: 1px solid #9c4de2;
+  box-shadow: 0 0 25px #a855f744;
+}
+
+body[data-map-mode="admin"] .map-page {
+  background: #090512;
+}
+
+.d8-prestige-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 25px;
+  margin-bottom: 12px;
+  border: 1px solid #8042b8;
+  border-radius: 18px;
+  background: linear-gradient(
+    110deg,
+    #12091f,
+    #29133f,
+    #12091f
+  );
+  box-shadow: 0 0 30px #a855f72b;
+}
+
+.d8-prestige-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.d8-prestige-crown {
+  color: #e6b8ff;
+  font-size: 38px;
+  text-shadow: 0 0 20px #b65cff;
+}
+
+.d8-prestige-brand strong {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 26px;
+  letter-spacing: 3px;
+  color: #ffffff;
+}
+
+.d8-prestige-brand small {
+  display: block;
+  margin-top: 5px;
+  font-size: 10px;
+  letter-spacing: 4px;
+  color: #d3a2f5;
+}
+
+.d8-prestige-heading-right {
+  text-align: right;
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: #f4dcff;
+}
+
+.d8-prestige-heading-right span {
+  display: block;
+  margin-top: 6px;
+  font-size: 10px;
+  color: #b47cda;
+}
+
+body[data-map-mode="admin"] .map-layout {
+  border: 1px solid #8d4bc4;
+  border-radius: 22px;
+  box-shadow: 0 0 35px #a855f730;
+}
+
+/* Réserver la place du futur cadran circulaire */
+body[data-map-mode="admin"] #viewport {
+  border-radius: 20px;
+}
+
+/* Animation lumineuse */
+@keyframes d8-prestige-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px #a855f733;
+  }
+  50% {
+    box-shadow: 0 0 35px #b65cff77;
+  }
+}
+
+.d8-prestige-heading {
+  animation: d8-prestige-glow 4s ease-in-out infinite;
+}
+
+@media (max-width: 700px) {
+  .d8-prestige-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .d8-prestige-heading-right {
+    text-align: left;
+  }
+}
+
 </style>
 
 </head>
@@ -152,6 +272,21 @@ body:has(#direction-map:not([hidden])) #direction-map {
           <button data-type="ind">Garages</button>
           <button data-type="rural">Rural</button>
         </div>
+
+<div class="d8-prestige-heading">
+  <div class="d8-prestige-brand">
+    <span class="d8-prestige-crown">♛</span>
+    <div>
+      <strong>DYNASTY 8</strong>
+      <small>PRESTIGE · DIRECTION</small>
+    </div>
+  </div>
+
+  <div class="d8-prestige-heading-right">
+    LOS SANTOS
+    <span>ÉDITEUR DE QUARTIERS</span>
+  </div>
+</div>
 
         <div class="map-layout">
 
