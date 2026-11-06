@@ -1741,3 +1741,90 @@ body[data-map-mode="admin"] #d8-zone-delete {
     padding: 35px 28px !important;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — FINITIONS DU CADRAN PRESTIGE
+   ========================================== */
+
+/* Le cadran conserve sa forme circulaire */
+body[data-map-mode="admin"] #d8-draw-tools {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  padding: 42px 62px 48px !important;
+  gap: 12px !important;
+}
+
+/* En-tête toujours visible */
+body[data-map-mode="admin"] .d8-prestige-editor-head {
+  flex: 0 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Les deux colonnes utilisent l'espace disponible */
+body[data-map-mode="admin"] .d8-prestige-editor-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  align-items: stretch;
+}
+
+/* Défilement indépendant dans les colonnes */
+body[data-map-mode="admin"] .d8-prestige-editor-section {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #a965e4 transparent;
+}
+
+/* Boutons plus compacts */
+body[data-map-mode="admin"] .d8-prestige-editor-section button {
+  flex-shrink: 0;
+  padding: 9px 7px;
+  font-size: 10px;
+  letter-spacing: .3px;
+}
+
+/* Actions visibles sous les colonnes */
+body[data-map-mode="admin"] .d8-prestige-editor-actions {
+  flex: 0 0 auto;
+  width: min(100%, 310px);
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* Sauvegarde et suppression côte à côte */
+body[data-map-mode="admin"] .d8-prestige-editor-actions button {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 10px 5px;
+  font-size: 10px;
+  line-height: 1.4;
+  white-space: normal;
+}
+
+/* Effet lumineux sur les boutons */
+body[data-map-mode="admin"] .d8-prestige-editor-section button:hover,
+body[data-map-mode="admin"] .d8-prestige-editor-actions button:hover {
+  border-color: #f0c6ff;
+  box-shadow: 0 0 16px rgba(187, 101, 255, .45);
+  transition: box-shadow .2s ease, border-color .2s ease;
+}
+
+/* Adaptation aux petits écrans */
+@media (max-width: 700px) {
+  body[data-map-mode="admin"] #d8-draw-tools {
+    padding: 36px 32px 42px !important;
+  }
+
+  body[data-map-mode="admin"] .d8-prestige-editor-actions {
+    flex-direction: column;
+  }
+}
