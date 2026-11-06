@@ -60,18 +60,51 @@ let selectedZoneId = null;
         }).addTo(map);
       }
 
-      drawing.points.forEach(point => {
-        const marker = L.circleMarker(point, {
-          radius: 5,
-          color: "#ffffff",
-          fillColor: drawing.color,
-          fillOpacity: 1,
-          weight: 2,
-          interactive: false
-        }).addTo(map);
+      
+drawing.points.forEach((point, index) => {
+  const marker = L.circleMarker(point, {
+    radius: 6,
+    color: "#ffffff",
+    fillColor: drawing.color,
+    fillOpacity: 1,
+    weight: 2,
+    interactive: true,
+    bubblingMouseEvents: false
+  }).addTo(map);
 
-        drawing.markers.push(marker);
-      });
+  marker.on("mousedown", event => {
+    if (!selectedZoneId || drawing.enabled) return;
+
+    L.DomEvent.stopPropagation(event);
+
+    map.dragging.disable();
+
+    const movePoint = moveEvent => {
+      drawing.points[index] = [
+        Math.round(moveEvent.latlng.lat),
+        Math.round(moveEvent.latlng.lng)
+      ];
+
+      marker.setLatLng(drawing.points[index]);
+
+      if (drawing.polygon) {
+        drawing.polygon.setLatLngs(drawing.points);
+      }
+    };
+
+    const stopMoving = () => {
+      map.off("mousemove", movePoint);
+      map.off("mouseup", stopMoving);
+      map.dragging.enable();
+    };
+
+    map.on("mousemove", movePoint);
+    map.on("mouseup", stopMoving);
+  });
+
+  drawing.markers.push(marker);
+});
+
 
       drawCount.textContent =
         drawing.points.length +
