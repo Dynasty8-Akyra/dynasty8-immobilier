@@ -30,6 +30,43 @@
       <button id="d8-draw-toggle" type="button">✏️ Activer le dessin</button>
       <button id="d8-draw-undo" type="button">↶ Annuler un point</button>
       <button id="d8-draw-copy" type="button">📋 Copier les coordonnées</button>
+
+<div id="d8-zone-form" hidden>
+  <div class="d8-draw-title">✦ INFORMATIONS DU QUARTIER</div>
+
+  <label for="d8-zone-name">Nom du quartier</label>
+  <input
+    id="d8-zone-name"
+    type="text"
+    maxlength="100"
+    placeholder="Ex : Vinewood Hills"
+  >
+
+  <label for="d8-zone-type">Type de quartier</label>
+  <input
+    id="d8-zone-type"
+    type="text"
+    maxlength="100"
+    placeholder="Ex : Résidentiel de luxe"
+  >
+
+  <label for="d8-zone-category">Catégorie</label>
+  <select id="d8-zone-category">
+    <option value="lux">💜 Luxe</option>
+    <option value="res">💙 Résidentiel</option>
+    <option value="rural">🩵 Rural</option>
+    <option value="ind">🩷 Industriel</option>
+    <option value="excluded">🚫 Zone exclue</option>
+  </select>
+
+  <label for="d8-zone-description">Description</label>
+  <textarea
+    id="d8-zone-description"
+    rows="4"
+    placeholder="Description du quartier..."
+  ></textarea>
+</div>
+
 <button id="d8-zone-save" type="button">💾 Enregistrer les modifications</button>
       <button id="d8-draw-clear" type="button">✕ Effacer le tracé</button>
       <div id="d8-draw-count">0 point</div>
@@ -43,6 +80,12 @@ let selectedZoneId = null;
     const drawCount = document.getElementById("d8-draw-count");
 const zoneSave = document.getElementById("d8-zone-save");
    
+const zoneForm = document.getElementById("d8-zone-form");
+const zoneName = document.getElementById("d8-zone-name");
+const zoneType = document.getElementById("d8-zone-type");
+const zoneCategory = document.getElementById("d8-zone-category");
+const zoneDescription = document.getElementById("d8-zone-description");
+
 function refreshDrawing() {
       if (drawing.polygon) {
         map.removeLayer(drawing.polygon);
@@ -185,6 +228,13 @@ const clickedZone = Object.entries(zones)
 
   selectedZoneId = id;
   drawing.points = zone.points.map(point => [...point]);
+
+zoneName.value = zone.name || "";
+zoneType.value = zone.type || "";
+zoneCategory.value = zone.category || "res";
+zoneDescription.value = zone.description || "";
+
+zoneForm.hidden = false;
 
   const colors = window.D8Zones.colors;
   drawing.color = colors[zone.category] || "#bb65ff";
