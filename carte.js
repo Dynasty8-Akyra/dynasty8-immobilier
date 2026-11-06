@@ -1075,10 +1075,22 @@ console.log("Zoom :", map.getZoom());
                 ${
                   interiors.length
                     ? interiors.map(item => `
-                        <div class="chip">
-                          <span class="d8-pin">⌂</span>
-                          ${escapeHTML(item)}
-                        </div>
+                        
+<div class="chip d8-property-card">
+  <span class="d8-property-icon" aria-hidden="true">
+    ${
+      /piscine/i.test(item) ? "♒" :
+      /appartement|studio|penthouse/i.test(item) ? "▥" :
+      /garage|atelier|entrepôt|hangar/i.test(item) ? "▣" :
+      /terrain|ferme/i.test(item) ? "❀" :
+      "⌂"
+    }
+  </span>
+  <span class="d8-property-name">
+    ${escapeHTML(item)}
+  </span>
+</div>
+
                       `).join("")
                     : '<div class="chip">Types de biens à définir</div>'
                 }
@@ -1095,17 +1107,34 @@ console.log("Zoom :", map.getZoom());
             GALERIE DU QUARTIER
           </div>
 
-          <div class="d8-gallery-placeholder">
-            <div class="d8-gallery-symbol">▧</div>
-            <strong>Photos à venir</strong>
-            <small>
-              Découvrez bientôt les biens et les paysages
-              de ${escapeHTML(z.name)}.
-            </small>
-            <span class="d8-gallery-counter">
-              GALERIE · 00 PHOTO
-            </span>
-          </div>
+          
+<div class="d8-gallery-placeholder">
+  <div class="d8-gallery-content">
+    <div class="d8-gallery-symbol">▧</div>
+    <strong>Photos à venir</strong>
+    <small>
+      Découvrez bientôt les biens et paysages
+      de ${escapeHTML(z.name)}.
+    </small>
+  </div>
+
+  <div class="d8-gallery-navigation">
+    <button type="button"
+            class="d8-gallery-arrow"
+            disabled
+            aria-label="Photo précédente">‹</button>
+
+    <span class="d8-gallery-counter">
+      00 / 00
+    </span>
+
+    <button type="button"
+            class="d8-gallery-arrow"
+            disabled
+            aria-label="Photo suivante">›</button>
+  </div>
+</div>
+
         </section>
 
         <!-- 04 — ART DE VIVRE -->
