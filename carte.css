@@ -1418,3 +1418,109 @@ body[data-map-mode="admin"] #d8-zone-delete {
   color: #ff9bb4;
   background: #301224;
 }
+
+/* ==========================================
+   DYNASTY 8 — CADRAN PRESTIGE DIRECTION
+   VERSION 1 : STRUCTURE ET ANNEAUX NEON
+   ========================================== */
+
+body[data-map-mode="admin"] #d8-draw-tools {
+  position: fixed !important;
+  top: 50% !important;
+  right: 25px !important;
+  bottom: auto !important;
+
+  transform: translateY(-50%) !important;
+
+  width: min(540px, 46vw) !important;
+  height: min(760px, calc(100dvh - 50px)) !important;
+  max-height: calc(100dvh - 50px) !important;
+
+  padding: 45px 55px !important;
+  border-radius: 45% / 38% !important;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 45%,
+      rgba(69, 30, 103, .88),
+      rgba(21, 10, 40, .98) 65%,
+      rgba(10, 5, 24, .99)
+    ) !important;
+
+  border: 2px solid #c783ff !important;
+
+  box-shadow:
+    0 0 15px #bb65ff,
+    0 0 45px rgba(187,101,255,.55),
+    0 0 100px rgba(135,56,207,.25),
+    inset 0 0 40px rgba(187,101,255,.16) !important;
+
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin;
+  z-index: 9999;
+}
+
+/* Deux anneaux lumineux */
+body[data-map-mode="admin"] #d8-draw-tools::before {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(223,173,255,.65);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+body[data-map-mode="admin"] #d8-draw-tools::after {
+  content: "";
+  position: absolute;
+  inset: 25px;
+  border: 1px solid rgba(187,101,255,.35);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Titre Prestige */
+body[data-map-mode="admin"] .d8-draw-title {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: #f3d7ff;
+  text-shadow: 0 0 16px #bb65ff;
+  margin-bottom: 15px;
+}
+
+/* Boutons */
+body[data-map-mode="admin"] #d8-draw-tools button {
+  border-radius: 14px;
+  padding: 13px 15px;
+  background: linear-gradient(
+    135deg,
+    rgba(95,38,142,.55),
+    rgba(37,15,66,.85)
+  );
+  border: 1px solid rgba(208,135,255,.6);
+  box-shadow: inset 0 1px rgba(255,255,255,.1);
+}
+
+/* Formulaire */
+body[data-map-mode="admin"] #d8-zone-form {
+  position: relative;
+  z-index: 1;
+}
+
+/* Adaptation écrans plus petits */
+@media (max-width: 900px) {
+  body[data-map-mode="admin"] #d8-draw-tools {
+    width: min(440px, 90vw) !important;
+    right: 10px !important;
+    padding: 35px 28px !important;
+    border-radius: 32px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="admin"] #d8-draw-tools {
+    animation: none !important;
+  }
+}
