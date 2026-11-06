@@ -2675,34 +2675,40 @@ body[data-map-mode="admin"] #d8-prestige-halo {
   }
 }
 
+
 /* ==========================================
-   DYNASTY 8 — BARRE SUPERIEURE FIXE
+   DYNASTY 8 — CORRECTION DEFILEMENT ADMIN
    ========================================== */
 
-/* La barre Prestige reste au-dessus de la carte */
-body[data-map-mode="admin"] .d8-prestige-heading {
+/* Empêcher la page entière de défiler */
+html:has(body[data-map-mode="admin"]),
+body[data-map-mode="admin"] {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Garder la structure principale dans l'écran */
+body[data-map-mode="admin"] {
   position: relative !important;
-  z-index: 100001 !important;
+}
+
+/* Ne pas déplacer le bandeau Prestige */
+body[data-map-mode="admin"] .d8-prestige-heading {
   transform: none !important;
 }
 
-/* Les filtres restent accessibles */
-body[data-map-mode="admin"] #filters {
-  position: relative !important;
-  z-index: 100001 !important;
+/* La carte reste dans son propre conteneur */
+body[data-map-mode="admin"] #direction-map .map-layout {
+  overflow: hidden !important;
 }
 
-/* La carte reste derrière l'interface */
+/* Empêcher Leaflet de provoquer un débordement */
 body[data-map-mode="admin"] #viewport {
-  z-index: 0 !important;
+  overflow: hidden !important;
 }
 
-/* Empêche la carte Leaflet de recouvrir l'en-tête */
-body[data-map-mode="admin"] .leaflet-container {
-  z-index: 0 !important;
-}
-
-/* Le cadran conserve sa position */
-body[data-map-mode="admin"] #d8-draw-tools {
-  z-index: 99999 !important;
+/* Le cadran reste indépendant de la carte */
+body[data-map-mode="admin"] #d8-draw-tools,
+body[data-map-mode="admin"] #d8-prestige-halo {
+  position: fixed !important;
 }
