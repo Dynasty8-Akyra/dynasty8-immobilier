@@ -2851,14 +2851,13 @@ body[data-map-mode="admin"] #d8-prestige-halo::after {
    DYNASTY 8 — ALIGNEMENT BRUME / CADRAN
    ========================================== */
 
-body[data-map-mode="admin"] #d8-prestige-halo::after {
-  /* Réduit la texture pour rapprocher son anneau du cadran */
-  inset: -3% !important;
+/* DYNASTY 8 — ALIGNEMENT PRECIS DE LA BRUME */
 
-  /* Conserve la fumée et ses couleurs */
+body[data-map-mode="admin"] #d8-prestige-halo::after {
+  inset: -6.5% !important;
+
   background-size: 100% 100% !important;
   background-position: center center !important;
 
-  /* Conserve l'animation */
   transform-origin: center center;
 }
