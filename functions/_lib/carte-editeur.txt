@@ -35,7 +35,9 @@
     `;
 
     document.body.appendChild(drawTools);
-
+const zoneSelect = document.getElementById("d8-zone-select");
+let selectingZone = false;
+let selectedZoneId = null;
     const drawToggle = document.getElementById("d8-draw-toggle");
     const drawCount = document.getElementById("d8-draw-count");
 
@@ -75,6 +77,63 @@
         drawing.points.length +
         (drawing.points.length > 1 ? " points" : " point");
     }
+
+zoneSelect.addEventListener("click", () => {
+  selectingZone = !selectingZone;
+
+  if (selectingZone && drawing.enabled) {
+    drawToggle.click();
+  }
+
+  zoneSelect.textContent = selectingZone
+    ? "✓ Cliquez sur un quartier"
+    : "📍 Sélectionner un quartier";
+
+  map.getContainer().style.cursor =
+    selectingZone ? "pointer" : "";
+});
+
+map.on("click", event => {
+  if (!selectingZone) return;
+
+  const zones = window.D8Zones?.zones;
+
+  if (!zones) {
+    alert("Les quartiers ne sont pas encore chargés.");
+    return;
+  }
+
+  const clickedZone = Object.entries(zones)
+    .reverse()
+    .find(([id, zone]) => {
+      const polygon = L.polygon(zone.points);
+      return polygon.getBounds().contains(event.latlng);
+    });
+
+  if (!clickedZone) {
+    alert("Aucun quartier trouvé à cet endroit.");
+    return;
+  }
+
+  const [id, zone] = clickedZone;
+
+  selectedZoneId = id;
+  drawing.points = zone.points.map(point => [...point]);
+
+  const colors = window.D8Zones.colors;
+  drawing.color = colors[zone.category] || "#bb65ff";
+
+  refreshDrawing();
+
+  selectingZone = false;
+  zoneSelect.textContent = "📍 " + zone.name;
+  map.getContainer().style.cursor = "";
+
+  alert(
+    "Quartier sélectionné : " + zone.name +
+    "\nSes points sont maintenant affichés."
+  );
+});
 
     drawToggle.addEventListener("click", () => {
       drawing.enabled = !drawing.enabled;
