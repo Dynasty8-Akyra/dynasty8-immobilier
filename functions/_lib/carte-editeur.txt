@@ -136,12 +136,43 @@ map.on("click", event => {
     return;
   }
 
-  const clickedZone = Object.entries(zones)
-    .reverse()
-    .find(([id, zone]) => {
-      const polygon = L.polygon(zone.points);
-      return polygon.getBounds().contains(event.latlng);
-    });
+  
+const pointIsInsidePolygon = (latlng, points) => {
+  const x = latlng.lng;
+  const y = latlng.lat;
+  let inside = false;
+
+  for (
+    let i = 0, j = points.length - 1;
+    i < points.length;
+    j = i++
+  ) {
+    const yi = points[i][0];
+    const xi = points[i][1];
+    const yj = points[j][0];
+    const xj = points[j][1];
+
+    const intersects =
+      (yi > y) !== (yj > y) &&
+      x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+
+    if (intersects) {
+      inside = !inside;
+    }
+  }
+
+  return inside;
+};
+
+const clickedZone = Object.entries(zones)
+  .reverse()
+  .find(([id, zone]) => {
+    return pointIsInsidePolygon(
+      event.latlng,
+      zone.points
+    );
+  });
+
 
   if (!clickedZone) {
     alert("Aucun quartier trouvé à cet endroit.");
