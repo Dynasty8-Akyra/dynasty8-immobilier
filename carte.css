@@ -2338,3 +2338,67 @@ body[data-map-mode="admin"] .d8-sculpted-spark-three {
     animation: none !important;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — CONTOUR FUMEE PRESTIGE
+   ========================================== */
+
+/* On adoucit la bordure circulaire */
+body[data-map-mode="admin"] #d8-draw-tools {
+  border-color: rgba(215, 133, 255, .12) !important;
+  box-shadow:
+    0 0 35px rgba(178, 75, 255, .22),
+    0 0 95px rgba(141, 45, 225, .18),
+    inset 0 0 50px rgba(181, 91, 255, .10) !important;
+}
+
+/* On retire l'anneau intérieur trop géométrique */
+body[data-map-mode="admin"] #d8-draw-tools::before {
+  opacity: .12 !important;
+}
+
+/* La bordure SVG devient plus discrète */
+body[data-map-mode="admin"] #d8-sculpted-outline {
+  opacity: .18 !important;
+}
+
+/* Les reflets restent visibles mais plus doux */
+body[data-map-mode="admin"] .d8-sculpted-arc {
+  opacity: .55;
+  filter:
+    blur(.6px)
+    drop-shadow(0 0 8px #e2a0ff)
+    drop-shadow(0 0 20px #a54cff);
+}
+
+/* Un halo diffus qui dépasse du cadran */
+body[data-map-mode="admin"] #d8-prestige-halo {
+  filter:
+    drop-shadow(0 0 18px rgba(198, 104, 255, .55))
+    drop-shadow(0 0 45px rgba(166, 63, 255, .38))
+    drop-shadow(0 0 85px rgba(117, 36, 207, .24));
+}
+
+/* Effet atmosphérique doux */
+@keyframes d8-mist-breathe {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 18px rgba(198,104,255,.45))
+      drop-shadow(0 0 45px rgba(166,63,255,.28));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 30px rgba(208,122,255,.65))
+      drop-shadow(0 0 70px rgba(166,63,255,.42));
+  }
+}
+
+body[data-map-mode="admin"] #d8-prestige-halo {
+  animation: d8-mist-breathe 10s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="admin"] #d8-prestige-halo {
+    animation: none !important;
+  }
+}
