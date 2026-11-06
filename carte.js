@@ -1458,7 +1458,9 @@ updateZoneLabels();
   // =========================================
   // DYNASTY 8 — MODE DESSIN DES QUARTIERS
   // =========================================
-
+const isAdminMap =
+  document.body.dataset.mapMode === "admin";
+  
   const drawing = {
     enabled: false,
     points: [],
