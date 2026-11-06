@@ -1226,3 +1226,137 @@ background: linear-gradient(
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — PROPRIÉTÉS PRESTIGE
+   ========================================== */
+
+#zonePanel .d8-property-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+#zonePanel .d8-property-icon {
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: rgba(194, 104, 255, .14);
+  border: 1px solid rgba(210, 135, 255, .4);
+
+  color: #e7b6ff;
+  font-size: 25px;
+  font-weight: 400;
+
+  text-shadow: 0 0 12px rgba(198, 100, 255, .5);
+}
+
+#zonePanel .d8-property-name {
+  min-width: 0;
+  color: #f9efff;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* ==========================================
+   GALERIE PHOTO — NAVIGATION
+   ========================================== */
+
+#zonePanel .d8-gallery-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 205px;
+}
+
+#zonePanel .d8-gallery-content {
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+#zonePanel .d8-gallery-navigation {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#zonePanel .d8-gallery-arrow {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(207, 134, 255, .45);
+  border-radius: 50%;
+
+  background: rgba(63, 36, 88, .75);
+  color: #f3d9ff;
+
+  font-size: 24px;
+  line-height: 1;
+}
+
+#zonePanel .d8-gallery-arrow:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+#zonePanel .d8-gallery-navigation .d8-gallery-counter {
+  position: static;
+  color: #cbb5dd;
+  font-size: 11px;
+  letter-spacing: .12em;
+}
+
+/* ==========================================
+   CONTACT — EFFET LUMINEUX
+   ========================================== */
+
+#zonePanel .d8-contact-teaser {
+  position: relative;
+  overflow: hidden;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    0 0 18px rgba(180, 80, 255, .22);
+}
+
+#zonePanel .d8-contact-teaser::before {
+  content: "";
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  right: -45px;
+  top: -65px;
+
+  border-radius: 50%;
+  background: rgba(215, 134, 255, .22);
+  filter: blur(32px);
+  pointer-events: none;
+}
+
+#zonePanel .d8-contact-teaser > * {
+  position: relative;
+  z-index: 1;
+}
