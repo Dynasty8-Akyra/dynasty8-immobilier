@@ -447,16 +447,6 @@ html, body {
    DYNASTY 8 — NEON TOURNANT
    ===================================== */
 
-.d8-dna-strand-a {
-  stroke: #ffffff;
-  animation: d8DNAForward 30s linear infinite;
-}
-
-.d8-dna-strand-b {
-  stroke: var(--panel-neon, #bb65ff);
-  animation: d8DNABackward 30s linear infinite;
-}
-
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -494,4 +484,17 @@ html, body {
   .d8-luxury-card::before {
     animation: none;
   }
+}
+/* =====================================
+   DYNASTY 8 — ADN LUMINEUX 30 SECONDES
+   ===================================== */
+
+.d8-dna-strand-a {
+  stroke: #ffffff;
+  animation: d8DNAForward 30s linear infinite;
+}
+
+.d8-dna-strand-b {
+  stroke: var(--panel-neon, #bb65ff);
+  animation: d8DNABackward 30s linear infinite;
 }
