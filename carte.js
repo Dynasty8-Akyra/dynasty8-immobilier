@@ -1390,7 +1390,13 @@ zoneLabels[id] = label;
       }
     );
 
-    polygon.on("mouseover", () => preview(id));
+polygon.on("mouseover", () => {
+  if (document.body.dataset.mapMode === "admin") {
+    return;
+  }
+
+  preview(id);
+});
 
     polygon.on("mouseout", () => {
       if (pinned === null) {
@@ -1402,7 +1408,15 @@ zoneLabels[id] = label;
     });
 
    
-    polygon.on("click", () => select(id));
+  
+polygon.on("click", () => {
+  if (document.body.dataset.mapMode === "admin") {
+    return;
+  }
+
+  select(id);
+});
+
   }
 
   updateZoneLabels();
