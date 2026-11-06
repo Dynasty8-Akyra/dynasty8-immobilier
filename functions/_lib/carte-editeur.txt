@@ -128,98 +128,115 @@ drawTools.innerHTML = `
 const prestigeHalo = document.createElement("div");
 prestigeHalo.id = "d8-prestige-halo";
 
+
 prestigeHalo.innerHTML = `
-  <svg
-    viewBox="0 0 600 600"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-hidden="true"
-    focusable="false"
-  >
-    <defs>
-      <linearGradient id="d8-halo-gradient"
-        x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#8a35ed"/>
-        <stop offset="28%" stop-color="#ffbaff"/>
-        <stop offset="50%" stop-color="#a54cff"/>
-        <stop offset="75%" stop-color="#f7c5ff"/>
-        <stop offset="100%" stop-color="#8a35ed"/>
-      </linearGradient>
+<svg viewBox="0 0 600 600"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false">
 
-      <filter id="d8-halo-blur"
-        x="-50%" y="-50%"
-        width="200%" height="200%">
-        <feGaussianBlur stdDeviation="9"/>
-      </filter>
+  <defs>
+    <linearGradient id="d8-sculpted-light"
+      x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9d4aff"/>
+      <stop offset="22%" stop-color="#ffd8ff"/>
+      <stop offset="48%" stop-color="#ae58ff"/>
+      <stop offset="78%" stop-color="#eeb4ff"/>
+      <stop offset="100%" stop-color="#9134e5"/>
+    </linearGradient>
 
-      <filter id="d8-halo-sparkle"
-        x="-200%" y="-200%"
-        width="500%" height="500%">
-        <feGaussianBlur stdDeviation="3"/>
-      </filter>
-    </defs>
+    <filter id="d8-sculpted-blur"
+      x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
 
-    <!-- Halo extérieur diffus -->
-    <circle cx="300" cy="300" r="274"
-      fill="none"
-      stroke="#bd56ff"
-      stroke-width="15"
-      opacity=".38"
-      filter="url(#d8-halo-blur)"/>
+    <filter id="d8-sculpted-glow"
+      x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
 
-    <!-- Anneau principal -->
-    <circle cx="300" cy="300" r="274"
-      fill="none"
-      stroke="url(#d8-halo-gradient)"
-      stroke-width="2"
-      opacity=".8"/>
+  <!-- Halo circulaire diffus -->
+  <circle cx="300" cy="300" r="274"
+    fill="none"
+    stroke="#a84cff"
+    stroke-width="14"
+    opacity=".22"
+    filter="url(#d8-sculpted-blur)"/>
 
-    <!-- Arc lumineux supérieur -->
-    <path
-      d="M 80 138 A 274 274 0 0 1 365 34"
-      fill="none"
-      stroke="#ffd8ff"
-      stroke-width="3"
-      stroke-linecap="round"
-      class="d8-halo-arc"/>
+  <!-- Tracé sculpté extérieur -->
+  <path
+    id="d8-sculpted-outline"
+    d="
+      M 300 25
+      C 415 21, 520 94, 559 206
+      C 580 264, 581 337, 553 410
+      C 520 503, 424 571, 300 576
+      C 186 578, 86 515, 44 412
+      C 13 338, 18 257, 48 191
+      C 94 87, 188 29, 300 25
+      Z
+    "
+    fill="none"
+    stroke="url(#d8-sculpted-light)"
+    stroke-width="1.8"
+    opacity=".85"/>
 
-    <!-- Arc lumineux inférieur -->
-    <path
-      d="M 540 430 A 274 274 0 0 1 245 568"
-      fill="none"
-      stroke="#e5a0ff"
-      stroke-width="3"
-      stroke-linecap="round"
-      class="d8-halo-arc d8-halo-arc-second"/>
+  <!-- Reflet supérieur -->
+  <path
+    d="M 100 110 C 174 35, 280 12, 392 44"
+    fill="none"
+    stroke="#ffe5ff"
+    stroke-width="2.8"
+    stroke-linecap="round"
+    class="d8-sculpted-arc"/>
 
-    <!-- Éclat supérieur -->
-    <g class="d8-halo-spark d8-halo-spark-one">
-      <circle cx="365" cy="34" r="10"
-        fill="#eab5ff"
-        opacity=".9"
-        filter="url(#d8-halo-sparkle)"/>
-      <circle cx="365" cy="34" r="3"
-        fill="#ffffff"/>
-    </g>
+  <!-- Reflet latéral droit -->
+  <path
+    d="M 555 202 C 579 274, 572 354, 548 417"
+    fill="none"
+    stroke="#f3b8ff"
+    stroke-width="2.4"
+    stroke-linecap="round"
+    class="d8-sculpted-arc d8-sculpted-arc-two"/>
 
-    <!-- Éclat latéral -->
-    <g class="d8-halo-spark d8-halo-spark-two">
-      <circle cx="80" cy="138" r="9"
-        fill="#eab5ff"
-        filter="url(#d8-halo-sparkle)"/>
-      <circle cx="80" cy="138" r="2.5"
-        fill="#ffffff"/>
-    </g>
+  <!-- Reflet inférieur -->
+  <path
+    d="M 438 541 C 355 591, 243 585, 157 543"
+    fill="none"
+    stroke="#ffe2ff"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    class="d8-sculpted-arc d8-sculpted-arc-three"/>
 
-    <!-- Éclat inférieur -->
-    <g class="d8-halo-spark d8-halo-spark-three">
-      <circle cx="245" cy="568" r="11"
-        fill="#eab5ff"
-        filter="url(#d8-halo-sparkle)"/>
-      <circle cx="245" cy="568" r="3"
-        fill="#ffffff"/>
-    </g>
-  </svg>
+  <!-- Éclats lumineux -->
+  <g class="d8-sculpted-spark">
+    <circle cx="392" cy="44" r="12"
+      fill="#f5baff"
+      opacity=".8"
+      filter="url(#d8-sculpted-glow)"/>
+    <circle cx="392" cy="44" r="3"
+      fill="#ffffff"/>
+  </g>
+
+  <g class="d8-sculpted-spark d8-sculpted-spark-two">
+    <circle cx="555" cy="202" r="11"
+      fill="#e8a3ff"
+      filter="url(#d8-sculpted-glow)"/>
+    <circle cx="555" cy="202" r="2.5"
+      fill="#ffffff"/>
+  </g>
+
+  <g class="d8-sculpted-spark d8-sculpted-spark-three">
+    <circle cx="157" cy="543" r="12"
+      fill="#f5baff"
+      filter="url(#d8-sculpted-glow)"/>
+    <circle cx="157" cy="543" r="3"
+      fill="#ffffff"/>
+  </g>
+</svg>
 `;
+
 
 document.body.appendChild(prestigeHalo);
 
