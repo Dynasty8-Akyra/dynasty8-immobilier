@@ -37,8 +37,6 @@ html,body{margin:0!important;padding:0!important;width:100%;height:100%;overflow
 @media(max-width:900px){.map-toolbar{top:70px;max-width:calc(100% - 20px)}.map-toolbar button{padding:8px 10px;font-size:11px}.map-buttons{top:155px}.zone-panel{right:12px!important;width:calc(100vw - 24px)!important;height:72dvh!important;padding:19px}.zone-panel h2{font-size:28px}.d8-categories{grid-template-columns:1fr}.map-hint{display:none}.agent-link{bottom:12px;right:12px}}
 @media(prefers-reduced-motion:reduce){.zone-panel,.d8-zone-marker{transition:none}}
 
-}
-
 /* DYNASTY 8 — EFFET NÉON DES ZONES */
 
 .leaflet-overlay-pane svg path {
@@ -443,60 +441,103 @@ html, body {
 .d8-luxury-footer small {
   opacity: 0.65;
 }
-/* =====================================
-   DYNASTY 8 — NEON TOURNANT
-   ===================================== */
+/* ==============================================
+   DYNASTY 8 — PORTAIL ADN ÉNERGÉTIQUE
+   Grand panneau .zone-panel — cycle 30 secondes
+   ============================================== */
 
-#panel.is-open::before {
-  --d8-angle: 0deg;
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
+/* La couleur est déduite de la carte intérieure existante.
+   Aucun changement de JavaScript nécessaire pour ces contours. */
+.zone-panel { --panel-neon: #bb65ff; isolation: isolate; }
+.zone-panel:has(.d8-luxury-card[style*="#4daeff"]) { --panel-neon: #4daeff; }
+.zone-panel:has(.d8-luxury-card[style*="#28e6ed"]) { --panel-neon: #28e6ed; }
+.zone-panel:has(.d8-luxury-card[style*="#ff69b9"]) { --panel-neon: #ff69b9; }
+.zone-panel:has(.d8-luxury-card[style*="#8e92a5"]) { --panel-neon: #8e92a5; }
 
-  -webkit-mask-composite: xor;
-
-  mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-
-  mask-composite: exclude;
-
+/* Deux filaments lumineux qui parcourent le contour du grand verre.
+   On n'utilise PAS #panel : l'élément réel est .zone-panel. */
+.zone-panel.is-open::before,
+.zone-panel.is-open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: 3px solid transparent;
+  border-radius: inherit;
+  padding: 2px;
   pointer-events: none;
-  animation: d8NeonRotate 30s linear infinite;
+  z-index: 5;
+  background: conic-gradient(
+    from var(--d8-angle),
+    transparent 0deg 55deg,
+    var(--panel-neon) 80deg,
+    #fff 88deg,
+    var(--panel-neon) 96deg,
+    transparent 120deg 360deg
+  ) border-box;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: d8PortalTurn 30s linear infinite;
+}
+
+.zone-panel.is-open::after {
+  inset: 5px;
+  border-width: 2px;
+  border-radius: 19px;
+  opacity: .65;
+  animation-direction: reverse;
+  animation-delay: -15s;
 }
 
 @property --d8-angle {
   syntax: "<angle>";
-  initial-value: 0deg;
   inherits: false;
+  initial-value: 0deg;
 }
 
-@keyframes d8NeonRotate {
-  from {
-    --d8-angle: 0deg;
-  }
-
-  to {
-    --d8-angle: 360deg;
-  }
+@keyframes d8PortalTurn {
+  to { --d8-angle: 360deg; }
 }
 
-/* Accessibilité */
-@media (prefers-reduced-motion: reduce) {
-  .d8-luxury-card::before {
-    animation: none;
-  }
+/* Si le SVG ADN a déjà été inséré dans carte.js, il sera animé
+   et recoloré automatiquement. */
+.zone-panel .d8-portal-dna {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 6;
 }
-/* =====================================
-   DYNASTY 8 — ADN LUMINEUX 30 SECONDES
-   ===================================== */
-
-.d8-dna-strand-a {
-  stroke: #ffffff;
+.zone-panel .d8-portal-dna rect { fill: none; }
+.zone-panel .d8-dna-track {
+  stroke: var(--panel-neon);
+  stroke-opacity: .3;
+  stroke-width: 1;
+}
+.zone-panel .d8-dna-strand {
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 8 12;
+  filter: drop-shadow(0 0 4px var(--panel-neon));
+}
+.zone-panel .d8-dna-strand-a {
+  stroke: #fff;
   animation: d8DNAForward 30s linear infinite;
 }
-
-.d8-dna-strand-b {
-  stroke: var(--panel-neon, #bb65ff);
+.zone-panel .d8-dna-strand-b {
+  stroke: var(--panel-neon);
   animation: d8DNABackward 30s linear infinite;
 }
+@keyframes d8DNAForward { to { stroke-dashoffset: -1000; } }
+@keyframes d8DNABackward { to { stroke-dashoffset: 1000; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .zone-panel.is-open::before,
+  .zone-panel.is-open::after,
+  .zone-panel .d8-dna-strand { animation: none; }
+}
+
