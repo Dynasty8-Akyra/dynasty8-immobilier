@@ -119,6 +119,110 @@ drawTools.innerHTML = `
 
 
     document.body.appendChild(drawTools);
+
+/* ==========================================
+   DYNASTY 8 — COURONNE NEON PRESTIGE
+   Décoration indépendante de l'éditeur
+   ========================================== */
+
+const prestigeHalo = document.createElement("div");
+prestigeHalo.id = "d8-prestige-halo";
+
+prestigeHalo.innerHTML = `
+  <svg
+    viewBox="0 0 600 600"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <defs>
+      <linearGradient id="d8-halo-gradient"
+        x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#8a35ed"/>
+        <stop offset="28%" stop-color="#ffbaff"/>
+        <stop offset="50%" stop-color="#a54cff"/>
+        <stop offset="75%" stop-color="#f7c5ff"/>
+        <stop offset="100%" stop-color="#8a35ed"/>
+      </linearGradient>
+
+      <filter id="d8-halo-blur"
+        x="-50%" y="-50%"
+        width="200%" height="200%">
+        <feGaussianBlur stdDeviation="9"/>
+      </filter>
+
+      <filter id="d8-halo-sparkle"
+        x="-200%" y="-200%"
+        width="500%" height="500%">
+        <feGaussianBlur stdDeviation="3"/>
+      </filter>
+    </defs>
+
+    <!-- Halo extérieur diffus -->
+    <circle cx="300" cy="300" r="274"
+      fill="none"
+      stroke="#bd56ff"
+      stroke-width="15"
+      opacity=".38"
+      filter="url(#d8-halo-blur)"/>
+
+    <!-- Anneau principal -->
+    <circle cx="300" cy="300" r="274"
+      fill="none"
+      stroke="url(#d8-halo-gradient)"
+      stroke-width="2"
+      opacity=".8"/>
+
+    <!-- Arc lumineux supérieur -->
+    <path
+      d="M 80 138 A 274 274 0 0 1 365 34"
+      fill="none"
+      stroke="#ffd8ff"
+      stroke-width="3"
+      stroke-linecap="round"
+      class="d8-halo-arc"/>
+
+    <!-- Arc lumineux inférieur -->
+    <path
+      d="M 540 430 A 274 274 0 0 1 245 568"
+      fill="none"
+      stroke="#e5a0ff"
+      stroke-width="3"
+      stroke-linecap="round"
+      class="d8-halo-arc d8-halo-arc-second"/>
+
+    <!-- Éclat supérieur -->
+    <g class="d8-halo-spark d8-halo-spark-one">
+      <circle cx="365" cy="34" r="10"
+        fill="#eab5ff"
+        opacity=".9"
+        filter="url(#d8-halo-sparkle)"/>
+      <circle cx="365" cy="34" r="3"
+        fill="#ffffff"/>
+    </g>
+
+    <!-- Éclat latéral -->
+    <g class="d8-halo-spark d8-halo-spark-two">
+      <circle cx="80" cy="138" r="9"
+        fill="#eab5ff"
+        filter="url(#d8-halo-sparkle)"/>
+      <circle cx="80" cy="138" r="2.5"
+        fill="#ffffff"/>
+    </g>
+
+    <!-- Éclat inférieur -->
+    <g class="d8-halo-spark d8-halo-spark-three">
+      <circle cx="245" cy="568" r="11"
+        fill="#eab5ff"
+        filter="url(#d8-halo-sparkle)"/>
+      <circle cx="245" cy="568" r="3"
+        fill="#ffffff"/>
+    </g>
+  </svg>
+`;
+
+document.body.appendChild(prestigeHalo);
+
 const zoneNew = document.getElementById("d8-zone-new");
 const zoneSelect = document.getElementById("d8-zone-select");
 let selectingZone = false;
