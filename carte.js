@@ -980,51 +980,112 @@ console.log("Zoom :", map.getZoom());
   }
 
   function render(id) {
-    if (!panel || !zones[id]) return;
+  if (!panel || !zones[id]) return;
 
-    const z = zones[id];
+  const z = zones[id];
+  const excluded = z.category === "excluded";
 
-    panel.innerHTML = `
+  const color = COLORS[z.category] || "#bb65ff";
+
+  const categoryNames = {
+    lux: "PRESTIGE & LUXE",
+    res: "RÉSIDENTIEL",
+    rural: "RURAL & NATURE",
+    ind: "COMMERCIAL & INDUSTRIEL",
+    excluded: "ZONE NON HABITABLE"
+  };
+
+  const category = categoryNames[z.category] || z.type;
+
+  const interiors = Array.isArray(z.interiors)
+    ? z.interiors
+    : [];
+
+  panel.innerHTML = `
+    <div class="d8-luxury-card"
+         style="--zone-accent:${color}">
+
       <div class="d8-panel-top">
         <div>
           <div class="d8-kicker">
-            DYNASTY 8 · ZONE IMMOBILIÈRE
+            ✦ DYNASTY 8 · IMMOBILIER
           </div>
+
+          <div class="d8-luxury-status">
+            <span class="d8-status-dot"></span>
+            ${escapeHTML(category)}
+          </div>
+
           <h2>${escapeHTML(z.name)}</h2>
-          <div class="type">${escapeHTML(z.type)}</div>
+
+          <div class="type">
+            ${escapeHTML(z.type)}
+          </div>
         </div>
-        <button class="d8-close" type="button"
-          aria-label="Fermer">×</button>
+
+        <button class="d8-close"
+                type="button"
+                aria-label="Fermer">×</button>
       </div>
 
-      <div class="d8-panel-photo">
-        <span>Catalogue de la zone · Photos à ajouter</span>
+      <div class="d8-luxury-banner">
+        <span>✦ DYNASTY 8</span>
+        <strong>${escapeHTML(z.name)}</strong>
+        <small>LOS SANTOS · SAN ANDREAS</small>
       </div>
 
-      <p>${escapeHTML(z.description)}</p>
+      <div class="d8-luxury-section">
+        <div class="d8-luxury-heading">
+          <span>01</span>
+          DÉCOUVRIR LE QUARTIER
+        </div>
 
-      <h3>Catégories autorisées</h3>
+        <p>${escapeHTML(z.description || "Présentation à venir.")}</p>
+      </div>
 
-      <div class="d8-categories">
+      <div class="d8-luxury-section">
+        <div class="d8-luxury-heading">
+          <span>02</span>
+          ${excluded
+            ? "STATUT DU SECTEUR"
+            : "TYPES DE PROPRIÉTÉS"}
+        </div>
+
         ${
-          z.interiors.length
-            ? z.interiors.map(item => `
-              <div class="chip">
-                <span class="d8-pin">⌂</span>
-                ${escapeHTML(item)}
+          excluded
+            ? `
+              <div class="d8-luxury-warning">
+                ⛔ Secteur non habitable.
+                Aucun bien immobilier proposé dans cette zone.
               </div>
-            `).join("")
-            : '<div class="chip">Aucun bien disponible</div>'
+            `
+            : `
+              <div class="d8-categories">
+                ${
+                  interiors.length
+                    ? interiors.map(item => `
+                        <div class="chip">
+                          <span class="d8-pin">⌂</span>
+                          ${escapeHTML(item)}
+                        </div>
+                      `).join("")
+                    : '<div class="chip">Types de biens à définir</div>'
+                }
+              </div>
+            `
         }
       </div>
 
-      <small class="d8-note">
-        Contours provisoires à ajuster selon le plan validé.
-      </small>
-    `;
+      <div class="d8-luxury-footer">
+        <span>✦ DYNASTY 8</span>
+        <small>L'immobilier d'exception</small>
+      </div>
 
-    panel.classList.add("is-open");
-  }
+    </div>
+  `;
+
+  panel.classList.add("is-open");
+}
 
   // =====================================
   // SURBRILLANCE DES ZONES
