@@ -1488,7 +1488,26 @@ updateZoneLabels();
     <div id="d8-draw-count">0 point</div>
   `;
 
-  document.body.appendChild(drawTools);
+  
+document.body.appendChild(drawTools);
+
+// L'éditeur reste invisible tant que
+// le rôle Direction n'est pas vérifié.
+drawTools.style.display = "none";
+
+(async () => {
+  try {
+    if (
+      window.D8Cloud &&
+      await window.D8Cloud.isDirection()
+    ) {
+      drawTools.style.display = "";
+    }
+  } catch (error) {
+    console.warn("Accès à l'éditeur refusé.");
+  }
+})();
+
 
   const drawToggle = document.getElementById("d8-draw-toggle");
   const drawCount = document.getElementById("d8-draw-count");
