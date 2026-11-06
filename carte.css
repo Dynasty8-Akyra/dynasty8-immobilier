@@ -2107,3 +2107,71 @@ body[data-map-mode="admin"] #d8-prestige-halo {
     right: -19px;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — CONTOUR PRESTIGE RAFFINÉ
+   ========================================== */
+
+/* Contour principal plus fin */
+body[data-map-mode="admin"] #d8-draw-tools {
+  border: 1px solid rgba(247, 196, 255, .85) !important;
+
+  box-shadow:
+    0 0 8px rgba(245, 185, 255, .85),
+    0 0 24px rgba(196, 91, 255, .65),
+    0 0 65px rgba(151, 50, 235, .35),
+    inset 0 0 24px rgba(191, 93, 255, .12) !important;
+}
+
+/* Anneaux intérieurs plus discrets */
+body[data-map-mode="admin"] #d8-draw-tools::before {
+  border: 1px solid rgba(225, 158, 255, .28) !important;
+  box-shadow: none !important;
+}
+
+body[data-map-mode="admin"] #d8-draw-tools::after {
+  border: 1px solid rgba(225, 158, 255, .12) !important;
+  box-shadow: none !important;
+}
+
+/* Éviter un halo trop uniforme */
+body[data-map-mode="admin"] #d8-prestige-halo {
+  filter:
+    drop-shadow(0 0 4px rgba(245, 178, 255, .55))
+    drop-shadow(0 0 13px rgba(180, 68, 255, .32));
+}
+
+/* Arcs plus fins, proches de la maquette */
+body[data-map-mode="admin"] .d8-halo-arc {
+  stroke-width: 1.8;
+  stroke-dasharray: 150 720;
+  filter:
+    drop-shadow(0 0 3px #ffffff)
+    drop-shadow(0 0 7px #d56aff);
+}
+
+/* Éclats lumineux ponctuels */
+body[data-map-mode="admin"] .d8-halo-spark {
+  filter: drop-shadow(0 0 5px #f7c8ff);
+}
+
+/* Animation plus douce */
+body[data-map-mode="admin"] #d8-draw-tools {
+  animation-duration: 9s;
+}
+
+body[data-map-mode="admin"] .d8-halo-arc {
+  animation-duration: 18s;
+}
+
+body[data-map-mode="admin"] .d8-halo-spark {
+  animation-duration: 6s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="admin"] #d8-draw-tools,
+  body[data-map-mode="admin"] .d8-halo-arc,
+  body[data-map-mode="admin"] .d8-halo-spark {
+    animation: none !important;
+  }
+}
