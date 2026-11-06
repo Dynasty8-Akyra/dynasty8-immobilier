@@ -1024,3 +1024,91 @@ background: linear-gradient(
     gap: 14px;
   }
 }
+
+/* ============================================
+   DYNASTY 8 — NOUVEAU CADRAN PRESTIGE
+   Remplace visuellement l'ancien portail ADN
+   ============================================ */
+
+/* Masquer les anciens filaments */
+#zonePanel .d8-portal-dna {
+  display: none !important;
+}
+
+/* Neutraliser les anciens contours animés */
+#zonePanel.d8-portal-active::before,
+#zonePanel.d8-portal-active::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Nouveau panneau aux courbes douces */
+#zonePanel.zone-panel.is-open {
+  --panel-neon: #bb65ff;
+
+  border: 1px solid rgba(215, 142, 255, .72) !important;
+  border-radius: 95px 42px 65px 100px / 145px 65px 85px 145px !important;
+
+  background:
+    radial-gradient(
+      ellipse at 98% 2%,
+      rgba(168, 73, 232, .20),
+      transparent 38%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(15, 10, 31, .88) 0%,
+      rgba(16, 10, 33, .97) 30%,
+      rgba(12, 8, 27, .98) 100%
+    ) !important;
+
+  backdrop-filter: blur(17px) !important;
+  -webkit-backdrop-filter: blur(17px) !important;
+
+  box-shadow:
+    -25px 0 75px rgba(24, 9, 44, .45),
+    0 0 12px var(--panel-neon),
+    0 0 35px rgba(187, 101, 255, .42),
+    inset 0 0 24px rgba(176, 80, 255, .12) !important;
+
+  overflow-x: hidden;
+}
+
+/* Halo doux sur la bordure */
+#zonePanel.zone-panel.is-open {
+  animation: d8NewPrestigeGlow 6s ease-in-out infinite;
+}
+
+@keyframes d8NewPrestigeGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px rgba(187,101,255,.28));
+  }
+  50% {
+    filter: drop-shadow(0 0 13px rgba(187,101,255,.5));
+  }
+}
+
+/* Garder les textes dans la zone lisible */
+#zonePanel .d8-luxury-card {
+  position: relative;
+  z-index: 2;
+  padding: 18px 22px 22px;
+  box-sizing: border-box;
+}
+
+/* Adaptation mobile */
+@media (max-width: 900px) {
+  #zonePanel.zone-panel.is-open {
+    border-radius: 32px !important;
+  }
+
+  #zonePanel .d8-luxury-card {
+    padding: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #zonePanel.zone-panel.is-open {
+    animation: none;
+  }
+}
