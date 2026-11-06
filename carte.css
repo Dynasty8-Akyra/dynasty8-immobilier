@@ -2775,3 +2775,36 @@ body[data-map-mode="admin"] #d8-prestige-halo {
     animation: none !important;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — BRUME PLUS DISCRETE
+   ========================================== */
+
+body[data-map-mode="admin"] #d8-prestige-halo::after {
+  inset: -3% !important;
+
+  opacity: .4 !important;
+
+  /* Ne conserver que la fumée proche du contour */
+  -webkit-mask-image:
+    radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 61%,
+      rgba(0,0,0,.35) 72%,
+      #000 84%,
+      #000 100%
+    );
+
+  mask-image:
+    radial-gradient(
+      ellipse at center,
+      transparent 0%,
+      transparent 61%,
+      rgba(0,0,0,.35) 72%,
+      #000 84%,
+      #000 100%
+    );
+
+  animation: none !important;
+}
