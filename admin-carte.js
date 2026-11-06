@@ -61,6 +61,11 @@ script.onload = async () => {
     const editorSource =
       await D8Cloud.zoneEditorSource();
 
+console.log(
+  "DYNASTY 8 — Début du script reçu :",
+  editorSource.slice(0, 200)
+);
+
     // Créer un script temporaire à partir du code autorisé.
     const blob = new Blob(
       [editorSource],
