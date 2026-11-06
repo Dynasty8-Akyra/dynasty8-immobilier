@@ -2486,3 +2486,26 @@ body[data-map-mode="admin"] .d8-sculpted-arc {
     animation: none !important;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — OPTIMISATION PERFORMANCE
+   ========================================== */
+
+/* Désactive les volutes SVG coûteuses */
+body[data-map-mode="admin"] .d8-prestige-smoke {
+  display: none !important;
+  animation: none !important;
+  filter: none !important;
+}
+
+/* Supprime l'animation de filtre sur le halo */
+body[data-map-mode="admin"] #d8-prestige-halo {
+  animation: none !important;
+  filter: none !important;
+}
+
+/* Conserve les reflets sans animation permanente */
+body[data-map-mode="admin"] .d8-sculpted-arc,
+body[data-map-mode="admin"] .d8-sculpted-spark {
+  animation: none !important;
+}
