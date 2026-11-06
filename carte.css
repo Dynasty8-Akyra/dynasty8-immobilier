@@ -1828,3 +1828,93 @@ body[data-map-mode="admin"] .d8-prestige-editor-actions button:hover {
     flex-direction: column;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — FINITIONS MIDNIGHT PRESTIGE
+   ========================================== */
+
+/* Panneaux effet verre fumé */
+body[data-map-mode="admin"] .d8-prestige-editor-section {
+  background: linear-gradient(
+    145deg,
+    rgba(49, 20, 77, .55),
+    rgba(15, 7, 32, .82)
+  ) !important;
+
+  border: 1px solid rgba(195, 125, 255, .35) !important;
+  box-shadow: inset 0 0 20px rgba(173, 82, 255, .07);
+  backdrop-filter: blur(10px);
+}
+
+/* Barre de défilement discrète */
+body[data-map-mode="admin"] .d8-prestige-editor-section {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(189, 110, 255, .3) transparent;
+}
+
+body[data-map-mode="admin"]
+.d8-prestige-editor-section::-webkit-scrollbar {
+  width: 4px;
+}
+
+body[data-map-mode="admin"]
+.d8-prestige-editor-section::-webkit-scrollbar-thumb {
+  background: rgba(189, 110, 255, .3);
+  border-radius: 10px;
+}
+
+/* Boutons Prestige */
+body[data-map-mode="admin"]
+.d8-prestige-editor-section button {
+  background: linear-gradient(
+    135deg,
+    rgba(95, 37, 143, .5),
+    rgba(42, 15, 70, .85)
+  ) !important;
+
+  border: 1px solid rgba(198, 127, 255, .55) !important;
+  border-radius: 13px !important;
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease !important;
+}
+
+/* Animation au survol */
+body[data-map-mode="admin"]
+.d8-prestige-editor-section button:hover {
+  transform: translateY(-2px);
+  border-color: #e4b3ff !important;
+  box-shadow:
+    0 0 12px rgba(195, 108, 255, .55),
+    inset 0 0 12px rgba(195, 108, 255, .12) !important;
+}
+
+/* Effet lumineux sur les champs */
+body[data-map-mode="admin"]
+#d8-zone-form input:focus,
+body[data-map-mode="admin"]
+#d8-zone-form select:focus,
+body[data-map-mode="admin"]
+#d8-zone-form textarea:focus {
+  outline: none;
+  border-color: #d9a1ff !important;
+  box-shadow: 0 0 12px rgba(187, 101, 255, .35);
+}
+
+/* Couronne lumineuse */
+body[data-map-mode="admin"] .d8-prestige-editor-crown {
+  text-shadow:
+    0 0 8px #e6bdff,
+    0 0 20px #bb65ff,
+    0 0 35px rgba(187, 101, 255, .5);
+}
+
+/* Respect des préférences d'animation */
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="admin"]
+  .d8-prestige-editor-section button {
+    transition: none !important;
+  }
+}
