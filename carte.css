@@ -2085,3 +2085,25 @@ body[data-map-mode="admin"] #d8-prestige-halo {
     animation: none !important;
   }
 }
+
+/* DYNASTY 8 — HALO EXTERIEUR AJUSTE */
+
+body[data-map-mode="admin"] #d8-prestige-halo {
+  width: calc(min(720px, 76vh, 48vw) + 58px);
+  height: calc(min(720px, 76vh, 48vw) + 58px);
+
+  right: -7px;
+  z-index: 100000;
+
+  filter:
+    drop-shadow(0 0 8px rgba(245, 178, 255, .65))
+    drop-shadow(0 0 20px rgba(180, 68, 255, .45));
+}
+
+@media (max-width: 900px) {
+  body[data-map-mode="admin"] #d8-prestige-halo {
+    width: calc(min(86vw, 76vh) + 58px);
+    height: calc(min(86vw, 76vh) + 58px);
+    right: -19px;
+  }
+}
