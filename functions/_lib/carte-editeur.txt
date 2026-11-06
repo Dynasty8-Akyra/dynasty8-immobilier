@@ -1,3 +1,4 @@
+export const editorSource = String.raw`
 (function () {
   "use strict";
 
@@ -131,3 +132,4 @@
       });
   };
 })();
+`;
