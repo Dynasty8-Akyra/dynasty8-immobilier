@@ -541,3 +541,280 @@ html, body {
   .zone-panel .d8-dna-strand { animation: none; }
 }
 
+<CodeBlock language="css" editable>
+/* ==========================================
+   DYNASTY 8 — MIDNIGHT PRESTIGE
+   Panneau fondu dans la carte
+   ========================================== */
+
+.zone-panel {
+  background: linear-gradient(
+    90deg,
+    rgba(13, 9, 26, 0.78) 0%,
+    rgba(14, 10, 28, 0.93) 20%,
+    rgba(13, 9, 27, 0.97) 65%,
+    rgba(12, 8, 24, 0.97) 100%
+  ) !important;
+
+backdrop-filter: blur(15px) saturate(1.08) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(1.08) !important;
+
+  border-left-color: rgba(210, 135, 255, 0.35) !important;
+
+box-shadow:
+    -16px 0 52px rgba(12, 6, 28, 0.25),
+    0 0 25px rgba(180, 75, 255, 0.18) !important;
+
+scrollbar-width: thin;
+  scrollbar-color: rgba(187, 101, 255, 0.6) transparent;
+}
+
+/* Contenu intérieur */
+
+.zone-panel .d8-luxury-card {
+  position: relative;
+  z-index: 1;
+}
+
+/* Bannière Prestige */
+
+.zone-panel .d8-luxury-banner {
+  background: linear-gradient(
+    125deg,
+    color-mix(
+      in srgb,
+      var(--zone-accent) 19%,
+      #191329
+    ),
+    rgba(18, 13, 33, 0.96)
+  );
+
+border-color: color-mix(
+    in srgb,
+    var(--zone-accent) 40%,
+    transparent
+  );
+
+box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* Description */
+
+.zone-panel .d8-luxury-section p {
+  color: #eee5f7;
+}
+
+/* Cartes des propriétés */
+
+.zone-panel .d8-luxury-card .chip {
+  background: linear-gradient(
+    120deg,
+    rgba(37, 24, 56, 0.97),
+    rgba(29, 20, 46, 0.96)
+  );
+
+border-color: color-mix(
+    in srgb,
+    var(--zone-accent) 48%,
+    transparent
+  );
+
+  color: #ffffff;
+
+box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055);
+
+transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.zone-panel .d8-luxury-card .chip:hover {
+  transform: translateY(-2px);
+  border-color: var(--zone-accent);
+
+box-shadow: 0 0 16px color-mix(
+    in srgb,
+    var(--zone-accent) 22%,
+    transparent
+  );
+}
+
+/* ==========================================
+   GALERIE PHOTO
+   ========================================== */
+
+.d8-gallery-placeholder {
+  position: relative;
+  min-height: 165px;
+
+border: 1px dashed color-mix(
+    in srgb,
+    var(--zone-accent) 48%,
+    transparent
+  );
+
+  border-radius: 16px;
+
+background:
+    radial-gradient(
+      ellipse at 70% 10%,
+      color-mix(
+        in srgb,
+        var(--zone-accent) 14%,
+        transparent
+      ),
+      transparent 65%
+    ),
+    rgba(20, 15, 36, 0.97);
+
+display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+text-align: center;
+  gap: 9px;
+
+padding: 24px 18px 34px;
+  box-sizing: border-box;
+}
+
+.d8-gallery-symbol {
+  font-size: 29px;
+  line-height: 1;
+  color: var(--zone-accent);
+}
+
+.d8-gallery-placeholder strong {
+  color: white;
+  font-size: 15px;
+}
+
+.d8-gallery-placeholder small {
+  color: #c8bcd5;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.d8-gallery-counter {
+  position: absolute;
+  right: 15px;
+  bottom: 12px;
+
+color: #a99ab9;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+/* ==========================================
+   L'ART DE VIVRE
+   ========================================== */
+
+.d8-lifestyle-section {
+  background: rgba(22, 16, 39, 0.97);
+
+border: 1px solid rgba(189, 143, 226, 0.22);
+  border-radius: 15px;
+
+padding: 19px;
+}
+
+.d8-lifestyle-section .d8-luxury-heading {
+  margin-top: 0;
+}
+
+.d8-lifestyle-section p {
+  margin: 0 0 15px;
+}
+
+.d8-lifestyle-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.d8-lifestyle-tags span {
+  border: 1px solid color-mix(
+    in srgb,
+    var(--zone-accent) 35%,
+    transparent
+  );
+
+border-radius: 999px;
+  background: rgba(41, 27, 62, 0.96);
+
+  padding: 7px 11px;
+
+font-size: 10px;
+  color: #f5eaff;
+}
+
+/* ==========================================
+   CONTACT PRESTIGE
+   ========================================== */
+
+.d8-contact-teaser {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+padding: 18px 20px;
+  border-radius: 15px;
+
+border: 1px solid color-mix(
+    in srgb,
+    var(--zone-accent) 45%,
+    transparent
+  );
+
+background: linear-gradient(
+    115deg,
+    color-mix(
+      in srgb,
+      var(--zone-accent) 28%,
+      #20112e
+    ),
+    #21152e
+  );
+}
+
+.d8-contact-teaser span {
+  color: #eed3ff;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+}
+
+.d8-contact-teaser strong {
+  color: #ffffff;
+  font-size: 15px;
+}
+
+.d8-contact-teaser small {
+  color: #d1b9e1;
+  font-size: 11px;
+}
+
+/* ==========================================
+   ADAPTATION MOBILE
+   ========================================== */
+
+@media (max-width: 900px) {
+  .zone-panel {
+    background: rgba(13, 9, 27, 0.96) !important;
+  }
+
+.d8-gallery-placeholder {
+    min-height: 145px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zone-panel .d8-luxury-card .chip {
+    transition: none;
+  }
+}
+</CodeBlock>
