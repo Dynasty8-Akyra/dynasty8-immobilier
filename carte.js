@@ -1083,6 +1083,56 @@ console.log("Zoom :", map.getZoom());
         }
       </div>
 
+      ${!excluded ? `
+        <!-- 03 — GALERIE PHOTO -->
+        <section class="d8-luxury-section d8-gallery-section">
+          <div class="d8-luxury-heading">
+            <span>03</span>
+            GALERIE DU QUARTIER
+          </div>
+
+          <div class="d8-gallery-placeholder">
+            <div class="d8-gallery-symbol">▧</div>
+            <strong>Photos à venir</strong>
+            <small>
+              Découvrez bientôt les biens et les paysages
+              de ${escapeHTML(z.name)}.
+            </small>
+            <span class="d8-gallery-counter">
+              GALERIE · 00 PHOTO
+            </span>
+          </div>
+        </section>
+
+        <!-- 04 — ART DE VIVRE -->
+        <section class="d8-luxury-section d8-lifestyle-section">
+          <div class="d8-luxury-heading">
+            <span>04</span>
+            L'ART DE VIVRE
+          </div>
+
+          <p>
+            ${escapeHTML(z.description || "Découvrez l'ambiance de ce quartier.")}
+          </p>
+
+          <div class="d8-lifestyle-tags">
+            <span>✦ ${escapeHTML(category)}</span>
+            <span>
+              ⌂ ${interiors.length
+                ? escapeHTML(interiors[0])
+                : "Immobilier"}
+            </span>
+          </div>
+        </section>
+
+        <!-- CONTACT PRESTIGE -->
+        <div class="d8-contact-teaser">
+          <span>✦ UN PROJET IMMOBILIER ?</span>
+          <strong>Un conseiller Dynasty 8 à vos côtés.</strong>
+          <small>Prise de contact bientôt disponible</small>
+        </div>
+      ` : ""}
+
       <div class="d8-luxury-footer">
         <span>✦ DYNASTY 8</span>
         <small>L'immobilier d'exception</small>
