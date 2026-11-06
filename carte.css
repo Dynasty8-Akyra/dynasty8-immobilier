@@ -2712,3 +2712,66 @@ body[data-map-mode="admin"] #d8-draw-tools,
 body[data-map-mode="admin"] #d8-prestige-halo {
   position: fixed !important;
 }
+
+/* ==========================================
+   DYNASTY 8 — VRAIE BRUME PNG PRESTIGE
+   ========================================== */
+
+/* Supprime l'ancienne brume en dégradés */
+body[data-map-mode="admin"] #d8-prestige-halo::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Nouvelle texture de fumée */
+body[data-map-mode="admin"] #d8-prestige-halo::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+
+  inset: -13% !important;
+
+  background-image: url("brume-prestige.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  pointer-events: none !important;
+
+  opacity: .75;
+  z-index: -1;
+
+  animation: d8-real-smoke 12s ease-in-out infinite;
+}
+
+/* Mouvement doux, sans filtre graphique */
+@keyframes d8-real-smoke {
+  0%, 100% {
+    opacity: .55;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: .85;
+    transform: scale(1.035);
+  }
+}
+
+/* Les anciennes fumées SVG restent désactivées */
+body[data-map-mode="admin"] .d8-prestige-smoke {
+  display: none !important;
+}
+
+/* Préserver les reflets existants */
+body[data-map-mode="admin"] #d8-prestige-halo {
+  pointer-events: none !important;
+  animation: none !important;
+  filter: none !important;
+}
+
+/* Respect des préférences d'animation */
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="admin"] #d8-prestige-halo::after {
+    animation: none !important;
+  }
+}
