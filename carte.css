@@ -1552,3 +1552,60 @@ body[data-map-mode="admin"] #d8-draw-tools:focus-within {
   visibility: visible !important;
   opacity: 1 !important;
 }
+
+/* ==========================================
+   DYNASTY 8 PRESTIGE
+   CADRAN PARFAITEMENT CIRCULAIRE
+   ========================================== */
+
+body[data-map-mode="admin"] #d8-draw-tools {
+  /* Même largeur et même hauteur */
+  width: min(720px, 76vh, 48vw) !important;
+  height: min(720px, 76vh, 48vw) !important;
+
+  /* Empêcher l'ancien CSS de l'étirer */
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-height: none !important;
+
+  /* Un vrai cercle */
+  border-radius: 50% !important;
+  aspect-ratio: 1 / 1;
+
+  /* Positionnement */
+  position: fixed !important;
+  top: 50% !important;
+  right: 22px !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+
+  /* Effets lumineux */
+  border: 2px solid #d9a1ff !important;
+
+  box-shadow:
+    0 0 12px #c46cff,
+    0 0 35px rgba(187, 101, 255, 0.65),
+    0 0 80px rgba(155, 55, 255, 0.35),
+    inset 0 0 45px rgba(187, 101, 255, 0.18) !important;
+
+  /* Conserver l'accès aux outils */
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+
+  box-sizing: border-box !important;
+}
+
+/* Anneaux parfaitement circulaires */
+body[data-map-mode="admin"] #d8-draw-tools::before,
+body[data-map-mode="admin"] #d8-draw-tools::after {
+  border-radius: 50% !important;
+}
+
+/* Adaptation aux écrans plus petits */
+@media (max-width: 900px) {
+  body[data-map-mode="admin"] #d8-draw-tools {
+    width: min(86vw, 76vh) !important;
+    height: min(86vw, 76vh) !important;
+    right: 10px !important;
+  }
+}
