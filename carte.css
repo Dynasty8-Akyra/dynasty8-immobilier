@@ -1112,3 +1112,117 @@ background: linear-gradient(
     animation: none;
   }
 }
+
+/* ========================================
+   DYNASTY 8 — BANNIÈRE PRESTIGE
+   ======================================== */
+
+#zonePanel .d8-prestige-banner {
+  position: relative;
+  min-height: 115px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  border-radius: 25px;
+  border: 1px solid rgba(222, 132, 255, .85);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(22, 10, 39, .98) 0%,
+      rgba(26, 12, 46, .92) 47%,
+      rgba(27, 13, 47, .28) 100%
+    ),
+    url("images/dynasty-prestige-villa.jpg")
+      center / cover no-repeat;
+
+  box-shadow:
+    0 0 10px rgba(201, 90, 255, .65),
+    0 0 28px rgba(183, 77, 255, .25),
+    inset 0 0 20px rgba(179, 74, 255, .12);
+}
+
+#zonePanel .d8-prestige-banner-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+}
+
+#zonePanel .d8-prestige-banner-content span {
+  color: #e2a9ff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .13em;
+}
+
+#zonePanel .d8-prestige-banner-content strong {
+  color: white;
+  font-size: clamp(19px, 2vw, 28px);
+  font-style: italic;
+  font-family: Georgia, serif;
+}
+
+#zonePanel .d8-prestige-banner-content small {
+  color: #e6d7f2;
+  font-size: 10px;
+  letter-spacing: .15em;
+}
+
+/* ========================================
+   CARTES DES TYPES DE PROPRIÉTÉS
+   ======================================== */
+
+#zonePanel .d8-categories {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+#zonePanel .d8-categories .chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  overflow: hidden;
+
+  background: linear-gradient(
+    110deg,
+    rgba(52, 27, 79, .98),
+    rgba(35, 18, 56, .92)
+  ) !important;
+
+  border: 1px solid rgba(211, 128, 255, .7);
+  border-radius: 13px;
+  padding: 12px 16px;
+
+  color: white;
+  font-weight: 700;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.12),
+    0 0 12px rgba(186, 84, 255, .16);
+
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+#zonePanel .d8-categories .chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(187,101,255,.45);
+}
+
+#zonePanel .d8-categories .d8-pin {
+  font-size: 24px;
+  color: #e0a8ff;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  #zonePanel .d8-categories {
+    grid-template-columns: 1fr;
+  }
+}
