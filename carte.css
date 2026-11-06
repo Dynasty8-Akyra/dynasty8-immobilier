@@ -2442,3 +2442,47 @@ body[data-map-mode="admin"] #d8-prestige-halo {
     animation: none !important;
   }
 }
+
+/* ==========================================
+   DYNASTY 8 — BRUME PRESTIGE AERIENNE
+   ========================================== */
+
+/* Réduire l'opacité des volutes */
+body[data-map-mode="admin"] .d8-prestige-smoke {
+  opacity: .32 !important;
+  filter: blur(11px);
+  animation: d8-smoke-air 20s ease-in-out infinite;
+}
+
+/* Conserver les éclats lumineux nets */
+body[data-map-mode="admin"] .d8-sculpted-spark {
+  filter:
+    drop-shadow(0 0 5px #f8caff)
+    drop-shadow(0 0 14px rgba(199, 101, 255, .6));
+}
+
+/* Courbes lumineuses plus délicates */
+body[data-map-mode="admin"] .d8-sculpted-arc {
+  filter:
+    drop-shadow(0 0 4px rgba(255, 222, 255, .65))
+    drop-shadow(0 0 12px rgba(190, 86, 255, .4));
+}
+
+/* Mouvement très lent de la brume */
+@keyframes d8-smoke-air {
+  0%, 100% {
+    opacity: .22;
+    transform: scale(1) rotate(0deg);
+  }
+
+  50% {
+    opacity: .38;
+    transform: scale(1.035) rotate(1.2deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="admin"] .d8-prestige-smoke {
+    animation: none !important;
+  }
+}
