@@ -541,7 +541,7 @@ html, body {
   .zone-panel .d8-dna-strand { animation: none; }
 }
 
-<CodeBlock language="css" editable>
+
 /* ==========================================
    DYNASTY 8 — MIDNIGHT PRESTIGE
    Panneau fondu dans la carte
@@ -817,7 +817,6 @@ background: linear-gradient(
     transition: none;
   }
 }
-</CodeBlock>
 
 /* =========================================
    DYNASTY 8 — PRESTIGE IMMERSIF
@@ -1919,78 +1918,175 @@ body[data-map-mode="admin"] .d8-prestige-editor-crown {
   }
 }
 
+
 /* ==========================================
-   DYNASTY 8 — PRESTIGE NEON CINEMATIQUE
-   Habillage extérieur du cadran
+   DYNASTY 8 — MIDNIGHT PRESTIGE
+   CONTOUR DEFINITIF — VERSION UNIFIEE
    ========================================== */
 
+/* Cadran principal : conserver le cercle */
 body[data-map-mode="admin"] #d8-draw-tools {
+  border-radius: 50% !important;
   isolation: isolate;
 
   background:
     radial-gradient(
-      ellipse at 28% 18%,
-      rgba(125, 62, 176, .24),
-      transparent 48%
+      ellipse at 25% 15%,
+      rgba(105, 49, 151, .23),
+      transparent 52%
     ),
-    radial-gradient(
-      ellipse at 80% 85%,
-      rgba(105, 34, 174, .16),
-      transparent 55%
-    ),
-    rgba(14, 7, 32, .92) !important;
+    linear-gradient(
+      145deg,
+      rgba(28, 13, 49, .96),
+      rgba(12, 6, 28, .98)
+    ) !important;
 
-  border: 1.5px solid rgba(242, 173, 255, .95) !important;
+  border: 1px solid rgba(228, 167, 255, .45) !important;
 
   box-shadow:
-    0 0 5px #fff0ff,
-    0 0 15px #d76bff,
-    0 0 35px rgba(196, 73, 255, .75),
-    0 0 75px rgba(147, 44, 255, .4),
-    0 0 120px rgba(120, 35, 220, .2),
-    inset 0 0 18px rgba(213, 122, 255, .25),
-    inset 0 0 65px rgba(111, 35, 170, .18) !important;
+    0 0 16px rgba(188, 83, 255, .35),
+    0 0 48px rgba(151, 48, 225, .22),
+    inset 0 0 36px rgba(183, 83, 255, .12) !important;
 
-  animation: d8-prestige-glow 6s ease-in-out infinite;
+  /* La lumière extérieure est gérée par le SVG */
+  animation: none !important;
 }
 
-/* Premier anneau intérieur */
+/* Un seul anneau intérieur discret */
 body[data-map-mode="admin"] #d8-draw-tools::before {
   content: "" !important;
   position: absolute !important;
-  inset: 12px !important;
-  border: 1px solid rgba(220, 144, 255, .45) !important;
+  inset: 13px !important;
+  border: 1px solid rgba(224, 157, 255, .22) !important;
   border-radius: 50% !important;
-  box-shadow:
-    inset 0 0 12px rgba(187, 101, 255, .12),
-    0 0 10px rgba(187, 101, 255, .12);
+  box-shadow: none !important;
   pointer-events: none !important;
 }
 
-/* Deuxième anneau, plus discret */
+/* Supprimer le troisième anneau superflu */
 body[data-map-mode="admin"] #d8-draw-tools::after {
-  content: "" !important;
-  position: absolute !important;
-  inset: 25px !important;
-  border: 1px solid rgba(199, 125, 255, .2) !important;
-  border-radius: 50% !important;
-  box-shadow: inset 0 0 25px rgba(187, 101, 255, .08);
-  pointer-events: none !important;
+  content: none !important;
+  display: none !important;
 }
 
-/* Respiration lumineuse douce */
-@keyframes d8-prestige-glow {
+/* ==========================================
+   COURONNE SVG — ALIGNEMENT
+   ========================================== */
+
+body[data-map-mode="admin"] #d8-prestige-halo {
+  position: fixed;
+  top: 50%;
+  right: -7px;
+
+  width: calc(min(720px, 76vh, 48vw) + 58px);
+  height: calc(min(720px, 76vh, 48vw) + 58px);
+
+  transform: translateY(-50%);
+  pointer-events: none !important;
+  z-index: 100000;
+  overflow: visible;
+
+  /* Halo contrôlé, sans superposition excessive */
+  filter:
+    drop-shadow(0 0 5px rgba(242, 170, 255, .55))
+    drop-shadow(0 0 17px rgba(175, 61, 255, .35));
+}
+
+#d8-prestige-halo svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ==========================================
+   REFLETS DE VERRE SCULPTE
+   ========================================== */
+
+/* Bordure organique principale */
+body[data-map-mode="admin"] #d8-sculpted-outline {
+  stroke-width: 1.5;
+  opacity: .7;
+  filter: drop-shadow(0 0 3px #bc67ff);
+}
+
+/* Arcs lumineux localisés */
+body[data-map-mode="admin"] .d8-sculpted-arc {
+  stroke-width: 2;
+  opacity: .75;
+
+  filter:
+    drop-shadow(0 0 3px #fff1ff)
+    drop-shadow(0 0 7px #c76aff);
+
+  animation: d8-prestige-shimmer 9s ease-in-out infinite;
+}
+
+body[data-map-mode="admin"] .d8-sculpted-arc-two {
+  animation-delay: -3s;
+}
+
+body[data-map-mode="admin"] .d8-sculpted-arc-three {
+  animation-delay: -6s;
+}
+
+/* Scintillement doux */
+@keyframes d8-prestige-shimmer {
   0%, 100% {
-    filter: drop-shadow(0 0 6px rgba(186, 85, 255, .3));
+    opacity: .4;
   }
 
   50% {
-    filter: drop-shadow(0 0 18px rgba(208, 112, 255, .65));
+    opacity: 1;
   }
 }
 
+/* Éclats blancs et roses */
+body[data-map-mode="admin"] .d8-sculpted-spark {
+  transform-box: fill-box;
+  transform-origin: center;
+
+  filter: drop-shadow(0 0 5px #f8caff);
+
+  animation: d8-prestige-spark 6s ease-in-out infinite;
+}
+
+body[data-map-mode="admin"] .d8-sculpted-spark-two {
+  animation-delay: -2s;
+}
+
+body[data-map-mode="admin"] .d8-sculpted-spark-three {
+  animation-delay: -4s;
+}
+
+@keyframes d8-prestige-spark {
+  0%, 100% {
+    opacity: .55;
+    transform: scale(.85);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.25);
+  }
+}
+
+/* ==========================================
+   ADAPTATION AUX ECRANS PLUS PETITS
+   ========================================== */
+
+@media (max-width: 900px) {
+  body[data-map-mode="admin"] #d8-prestige-halo {
+    width: calc(min(86vw, 76vh) + 58px);
+    height: calc(min(86vw, 76vh) + 58px);
+    right: -19px;
+  }
+}
+
+/* Accessibilité */
 @media (prefers-reduced-motion: reduce) {
-  body[data-map-mode="admin"] #d8-draw-tools {
+  body[data-map-mode="admin"] .d8-sculpted-arc,
+  body[data-map-mode="admin"] .d8-sculpted-spark {
     animation: none !important;
   }
 }
