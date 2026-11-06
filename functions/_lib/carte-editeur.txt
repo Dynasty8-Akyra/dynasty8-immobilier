@@ -333,6 +333,12 @@ zoneForm.hidden = false;
         return;
       }
 
+if (!zoneName.value.trim()) {
+  alert("Le nom du quartier est obligatoire.");
+  zoneName.focus();
+  return;
+}
+
       const points = drawing.points.map(point => [...point]);
 
       if (
@@ -367,15 +373,17 @@ zoneForm.hidden = false;
           throw new Error("Fonction de sauvegarde indisponible.");
         }
 
-        await window.D8Cloud.saveZone({
-          id: selectedZoneId,
-          name: zone.name,
-          type: zone.type || "",
-          category: zone.category,
-          description: zone.description || "",
-          interiors: zone.interiors || [],
-          points
-        });
+       
+await window.D8Cloud.saveZone({
+  id: selectedZoneId,
+  name: zoneName.value.trim(),
+  type: zoneType.value.trim(),
+  category: zoneCategory.value,
+  description: zoneDescription.value.trim(),
+  interiors: zone.interiors || [],
+  points
+});
+
 
         await window.D8Zones.refresh();
 
