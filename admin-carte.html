@@ -325,6 +325,75 @@ body[data-map-mode="admin"] #direction-map #viewport {
   min-height: 650px !important;
 }
 
+/* DYNASTY 8 — BANNIÈRES COMPACTES */
+
+body[data-map-mode="admin"] > header {
+  min-height: 48px;
+  padding: 8px 24px;
+  box-sizing: border-box;
+}
+
+body[data-map-mode="admin"] #direction-map .map-page {
+  padding: 10px 14px;
+  gap: 8px;
+}
+
+body[data-map-mode="admin"] #direction-map .map-toolbar {
+  gap: 6px;
+}
+
+body[data-map-mode="admin"] #direction-map .map-toolbar button {
+  padding: 7px 12px;
+  font-size: 11px;
+}
+
+body[data-map-mode="admin"] .d8-prestige-heading {
+  padding: 9px 17px;
+  min-height: 55px;
+  margin: 0;
+  border-radius: 12px;
+}
+
+body[data-map-mode="admin"] .d8-prestige-crown {
+  font-size: 25px;
+}
+
+body[data-map-mode="admin"] .d8-prestige-brand strong {
+  font-size: 19px;
+  letter-spacing: 2px;
+}
+
+body[data-map-mode="admin"] .d8-prestige-brand small,
+body[data-map-mode="admin"] .d8-prestige-heading-right span {
+  font-size: 8px;
+}
+
+body[data-map-mode="admin"] .d8-prestige-heading-right {
+  font-size: 11px;
+}
+
+/* DYNASTY 8 — ÉDITEUR REPLIABLE */
+
+#d8-toggle-editor {
+  background: #291238;
+  color: #f8dfff;
+  border: 1px solid #c36cff;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 12px #a855f744;
+}
+
+#d8-toggle-editor:hover {
+  background: #48205f;
+}
+
+/* Priorité sur les anciens styles permanents */
+body[data-map-mode="admin"].d8-editor-collapsed #d8-draw-tools {
+  display: none !important;
+}
+
 </style>
 
 </head>
@@ -353,6 +422,17 @@ body[data-map-mode="admin"] #direction-map #viewport {
   >
     🔱 PRESTIGE CIRCLE
   </a>
+  
+<button
+  id="d8-toggle-editor"
+  type="button"
+  aria-controls="d8-draw-tools"
+  aria-expanded="true"
+  hidden
+>
+  ◉ Masquer l'éditeur
+</button>
+
 </header>
 
 
@@ -455,6 +535,43 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     console.warn("Accès Prestige non disponible.");
   }
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.getElementById("d8-toggle-editor");
+
+  if (!button) return;
+
+  const observer = new MutationObserver(() => {
+    const editor = document.getElementById("d8-draw-tools");
+
+    if (editor && !button.dataset.ready) {
+      button.dataset.ready = "true";
+      button.hidden = false;
+    }
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  button.addEventListener("click", () => {
+    const collapsed = document.body.classList.toggle(
+      "d8-editor-collapsed"
+    );
+
+    button.textContent = collapsed
+      ? "◉ Ouvrir l'éditeur"
+      : "◉ Masquer l'éditeur";
+
+    button.setAttribute(
+      "aria-expanded",
+      String(!collapsed)
+    );
+  });
 });
 </script>
 
