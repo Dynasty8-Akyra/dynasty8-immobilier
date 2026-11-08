@@ -394,6 +394,89 @@ body[data-map-mode="admin"].d8-editor-collapsed #d8-draw-tools {
   display: none !important;
 }
 
+/* ==========================================
+   DYNASTY 8 — CARTE DIRECTION IMMERSIVE
+   ========================================== */
+
+/* Permettre à la page de s'adapter à l'écran */
+html:has(body[data-map-mode="admin"]),
+body[data-map-mode="admin"] {
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden !important;
+}
+
+/* Organisation verticale de la page */
+body[data-map-mode="admin"] {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Barre de navigation très compacte */
+body[data-map-mode="admin"] > header {
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 6px 18px;
+}
+
+/* La partie carte utilise tout l'espace restant */
+body[data-map-mode="admin"] .direction-main {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body[data-map-mode="admin"] #direction-map {
+  height: 100%;
+  min-height: 0;
+}
+
+/* Filtres + bannière + carte */
+body[data-map-mode="admin"] #direction-map .map-page {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 7px 10px 10px;
+}
+
+/* Filtres plus discrets */
+body[data-map-mode="admin"] #direction-map .map-toolbar {
+  flex: 0 0 auto;
+  min-height: 0;
+  gap: 5px;
+}
+
+body[data-map-mode="admin"] #direction-map .map-toolbar button {
+  padding: 6px 10px;
+  font-size: 10px;
+}
+
+/* Bannière Prestige plus fine */
+body[data-map-mode="admin"] #direction-map .d8-prestige-heading {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 6px 14px;
+}
+
+/* La carte remplit tout l'espace restant */
+body[data-map-mode="admin"] #direction-map .map-layout {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Leaflet suit exactement la taille de la carte */
+body[data-map-mode="admin"] #direction-map #viewport {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
 </style>
 
 </head>
