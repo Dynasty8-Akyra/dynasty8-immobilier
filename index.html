@@ -1,251 +1,655 @@
+
 <!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dynasty 8 | Agence immobilière</title>
+<meta name="theme-color" content="#100609">
+<title>Dynasty 8 | L'immobilier d'exception</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="dynasty8-luxe-neon.css">
-<link rel="stylesheet" href="dynasty8-luxe-neon-v2.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #080608;
+  --panel: #16090d;
+  --red: #e51c38;
+  --ruby: #9e152a;
+  --text: #f9f0f1;
+  --muted: #c8afb4;
+  --line: rgba(232,52,75,.36);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Montserrat, sans-serif;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; }
+
+.site-header {
+  position: relative;
+  z-index: 10;
+  border-bottom: 1px solid var(--line);
+  background: rgba(9,4,7,.95);
+  box-shadow: 0 8px 35px #0008;
+}
+
+.nav {
+  max-width: 1480px;
+  margin: auto;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.brand-crown {
+  color: #ff6275;
+  font-size: 27px;
+  line-height: 1;
+  text-shadow: 0 0 18px #ed173e;
+}
+
+.brand-name {
+  font: 600 29px "Cormorant Garamond", serif;
+  letter-spacing: 2px;
+}
+
+.brand-caption {
+  color: #d7a8b0;
+  font-size: 8px;
+  letter-spacing: 2px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+
+.nav-links a {
+  position: relative;
+  font-size: 11px;
+  font-weight: 600;
+  transition: color .25s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: #ff7182;
+}
+
+.nav-links a.active::after,
+.nav-links a:hover::after {
+  content: "";
+  position: absolute;
+  height: 2px;
+  left: 0;
+  right: 0;
+  bottom: -12px;
+  background: var(--red);
+  box-shadow: 0 0 12px var(--red);
+}
+
+.agent-link {
+  flex-shrink: 0;
+  padding: 12px 17px;
+  border: 1px solid #a72b40;
+  border-radius: 8px;
+  background: #260b13;
+  font-size: 11px;
+  font-weight: 600;
+  transition: .25s;
+}
+
+.agent-link:hover {
+  background: #58101f;
+  box-shadow: 0 0 20px #d31b3a77;
+}
+
+.menu-toggle {
+  display: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #230b12;
+  color: white;
+  padding: 9px 13px;
+  cursor: pointer;
+}
+
+/* ACCUEIL CINÉMATOGRAPHIQUE */
+
+.hero {
+  position: relative;
+  min-height: min(790px, 86vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+  background: #140609;
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background-image:
+    linear-gradient(90deg,rgba(9,3,7,.65),rgba(30,4,11,.2),rgba(9,3,7,.5)),
+    linear-gradient(0deg,#090608 0%,transparent 35%,#09060855 100%),
+    url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2200&q=85");
+  background-size: cover;
+  background-position: center;
+  animation: hero-zoom 18s ease-in-out infinite alternate;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse at 30% 55%,#8e0b2670,transparent 52%),
+    radial-gradient(ellipse at 85% 25%,#6d071c55,transparent 48%);
+  mix-blend-mode: screen;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg,transparent,#fa2449,transparent);
+  box-shadow: 0 0 24px #ff1644;
+}
+
+.hero-content {
+  width: min(900px, 92%);
+  padding: 95px 15px;
+  text-align: center;
+  animation: rise-in 1.2s ease both;
+}
+
+.hero-crown {
+  font-size: 55px;
+  color: #ffd0d5;
+  text-shadow: 0 0 12px #ed173e,0 0 35px #d71338;
+}
+
+.eyebrow {
+  margin: 14px 0 12px;
+  color: #ffb2bd;
+  font-size: 11px;
+  letter-spacing: 6px;
+}
+
+.hero h1 {
+  margin: 0;
+  font: 500 clamp(70px, 11vw, 145px)/.95 "Cormorant Garamond", serif;
+  letter-spacing: 5px;
+  text-shadow: 0 5px 25px #000c;
+}
+
+.hero-subtitle {
+  margin: 15px 0 0;
+  font: 500 clamp(19px,3vw,30px) "Cormorant Garamond",serif;
+  letter-spacing: 5px;
+}
+
+.hero-rule {
+  position: relative;
+  width: min(500px, 80%);
+  height: 1px;
+  margin: 33px auto;
+  background: linear-gradient(90deg,transparent,#ff4c68,transparent);
+}
+
+.hero-rule::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  transform: translateX(-50%) rotate(45deg);
+  background: #ff4a66;
+  box-shadow: 0 0 18px #ff1744;
+}
+
+.hero-description {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #f4e3e5;
+  font: 20px/1.6 "Cormorant Garamond",serif;
+  text-shadow: 0 2px 10px #000;
+}
+
+.hero-actions {
+  margin-top: 34px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 13px 24px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  transition: transform .25s,box-shadow .25s,background .25s;
+}
+
+.btn:hover { transform: translateY(-3px); }
+
+.btn-primary {
+  border: 1px solid #ff4960;
+  background: linear-gradient(110deg,#8e0c25,#dc193b,#8e0c25);
+  box-shadow: 0 0 22px #f0193b77,inset 0 0 12px #ff879433;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 35px #ff234cbb;
+}
+
+.btn-outline {
+  border: 1px solid #a95d68;
+  background: #0e0709aa;
+}
+
+.btn-outline:hover {
+  background: #36101b;
+  box-shadow: 0 0 20px #a5153166;
+}
+
+/* SECTIONS */
+
+.section {
+  padding: 90px 25px;
+}
+
+.section-inner {
+  max-width: 1250px;
+  margin: auto;
+}
+
+.section-heading {
+  text-align: center;
+  margin-bottom: 42px;
+}
+
+.section-heading span {
+  color: #ef6475;
+  font-size: 10px;
+  letter-spacing: 4px;
+}
+
+.section-heading h2 {
+  margin: 13px 0;
+  font: 500 clamp(35px,5vw,60px) "Cormorant Garamond",serif;
+}
+
+.section-heading p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.map-section {
+  background:
+    radial-gradient(ellipse at 15% 0%,#6e0c2240,transparent 50%),
+    linear-gradient(140deg,#11070b,#1b090f,#090608);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  padding: 35px 28px;
+  min-height: 220px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: linear-gradient(145deg,#270b15cc,#0e080bcc);
+  box-shadow: 0 15px 35px #0005;
+  transition: transform .25s,border-color .25s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  border-color: #f0445c;
+}
+
+.feature-icon {
+  font-size: 32px;
+  color: #ff6275;
+  text-shadow: 0 0 18px #e51c3888;
+}
+
+.feature-card h3 {
+  font: 500 27px "Cormorant Garamond",serif;
+  margin: 18px 0 12px;
+}
+
+.feature-card p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.map-cta {
+  margin-top: 36px;
+  text-align: center;
+}
+
+.agent-section {
+  background:
+    radial-gradient(ellipse at 80% 50%,#76102844,transparent 55%),
+    #090608;
+}
+
+.agent-panel {
+  padding: 48px 35px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: linear-gradient(110deg,#200b13,#0d080b);
+  text-align: center;
+}
+
+.agent-panel h2 {
+  margin: 0 0 15px;
+  font: 500 43px "Cormorant Garamond",serif;
+}
+
+.agent-panel p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+  margin-bottom: 26px;
+}
+
+.contact-section {
+  background: linear-gradient(150deg,#1c0910,#080608);
+  text-align: center;
+}
+
+.contact-section h2 {
+  font: 500 45px "Cormorant Garamond",serif;
+}
+
+.contact-section p {
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+footer {
+  padding: 27px 20px;
+  border-top: 1px solid var(--line);
+  background: #080608;
+  text-align: center;
+  color: #bca5aa;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+@keyframes hero-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 850px) {
+  .nav { flex-wrap: wrap; padding: 15px 20px; }
+  .menu-toggle { display: block; margin-left: auto; }
+  .nav-links {
+    display: none;
+    width: 100%;
+    order: 5;
+    flex-direction: column;
+    gap: 20px;
+    padding: 22px 0;
+  }
+  .nav-links.open { display: flex; }
+  .agent-link { order: 3; }
+  .feature-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 500px) {
+  .brand-name { font-size: 23px; }
+  .brand-caption { font-size: 7px; }
+  .agent-link { font-size: 9px; padding: 10px; }
+  .hero { min-height: 700px; }
+  .hero h1 { font-size: 62px; }
+  .eyebrow { letter-spacing: 3px; }
+  .hero-subtitle { letter-spacing: 2px; }
+  .section { padding: 65px 18px; }
+  .agent-panel { padding: 35px 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,*::before,*::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
 </head>
+
 <body>
-<div class="intro-screen" id="intro" role="dialog" aria-label="Introduction Dynasty 8">
-  <div class="intro-aura"></div>
-  <div class="intro-stars" aria-hidden="true"></div>
-  <svg class="intro-bolts" viewBox="0 0 1200 700" preserveAspectRatio="none" aria-hidden="true">
-    <polyline class="bolt bolt-a" points="0,85 190,150 155,245 355,280 300,390 515,445"/>
-    <polyline class="bolt bolt-b" points="1200,40 990,170 1040,235 820,320 865,390 660,480"/>
-    <polyline class="bolt bolt-c" points="370,0 460,125 425,195 585,280 545,345"/>
-    <polyline class="bolt bolt-d" points="1000,700 865,565 900,485 710,405"/>
-  </svg>
-  <div class="intro-shockwave" aria-hidden="true"></div>
-  <img class="intro-art" src="dynasty8-banner-neon.png" alt="Dynasty 8, logo chromé aux éclairs violets">
-  <div class="intro-flash"></div><div class="intro-scan" aria-hidden="true"></div>
-  <p class="intro-caption">L'IMMOBILIER D'EXCEPTION · LOS SANTOS</p>
-  <button class="intro-skip" type="button" id="skipIntro">PASSER L'INTRO <span aria-hidden="true">›</span></button>
-</div>
 
-<header class="header">
-  <div class="header-texture"></div>
- 
-<div class="container nav d8-nav-premium">
+<header class="site-header">
+  <div class="nav">
 
-  <a class="d8-agent-access" href="agent-login.html">
-    ♛ CONNEXION AGENT
-  </a>
+    <a class="brand" href="index.html" aria-label="Dynasty 8, accueil">
+      <span class="brand-crown">♛</span>
+      <span class="brand-name">DYNASTY 8</span>
+      <span class="brand-caption">AGENCE IMMOBILIÈRE DE PRESTIGE</span>
+    </a>
 
-  <button class="menu-toggle" aria-label="Ouvrir le menu">
-    ☰
-  </button>
+    <button
+      class="menu-toggle"
+      id="menu-toggle"
+      type="button"
+      aria-label="Ouvrir le menu"
+      aria-expanded="false"
+      aria-controls="nav-links"
+    >☰</button>
 
-  <nav id="navlinks">
-    <a href="index.html">⌂ Accueil</a>
-    <a href="biens.html">✦ Annonces</a>
-    <a href="carte.html">◈ Carte immobilière</a>
-    <a href="#contact">✉ Contact</a>
-  </nav>
+    <nav class="nav-links" id="nav-links" aria-label="Navigation principale">
+      <a class="active" href="index.html">Accueil</a>
+      <a href="carte.html">Carte de Los Santos</a>
+      <a href="#agence">Notre agence</a>
+      <a href="#contact">Contact</a>
+    </nav>
 
-</div>
+    <a class="agent-link" href="agent-login.html">
+      ♛ CONNEXION AGENT
+    </a>
 
-  <div class="d8-glass-logo">
-    <img
-      src="dynasty8-logo-transparent.png"
-      alt="Logo Dynasty 8 chromé et électrique"
-    >
   </div>
-</div>
-
-<div class="wave"></div>
 </header>
+
 <main>
-  
-<!-- DYNASTY 8 : SECTION PRESTIGE -->
-<section class="d8-prestige">
-  
-<!-- DYNASTY 8 : ARRIERE-PLANS INTERACTIFS -->
-<div class="d8-interactive-backgrounds" aria-hidden="true">
 
-  <!-- Intérieurs GTA RP -->
-  <div class="d8-bg d8-bg-shell d8-bg-active"
-       style="background-image:url('https://forum-cfx-re.akamaized.net/original/4X/4/0/b/40bf2437d41ce11d50e12be37e3b20a5763b72c2.jpeg')">
-  </div>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-image"></div>
 
-  <div class="d8-bg d8-bg-shell"
-       style="background-image:url('https://forum-cfx-re.akamaized.net/optimized/4X/0/8/0/080e96e494d7b6f357c58be77732dda23585336e_2_1380x776.jpeg')">
-  </div>
+    <div class="hero-content">
+      <div class="hero-crown" aria-hidden="true">♛</div>
+      <p class="eyebrow">LOS SANTOS REAL ESTATE</p>
 
-  <div class="d8-bg d8-bg-shell"
-       style="background-image:url('https://tse4.mm.bing.net/th/id/OIP.KarQOEE0JgejqrGJmMogkQHaEK?r=0&amp;rs=1&amp;pid=ImgDetMain&amp;o=7&amp;rm=3')">
-  </div>
+      <h1 id="hero-title">DYNASTY 8</h1>
 
-  <div class="d8-bg d8-bg-shell"
-       style="background-image:url('https://framerusercontent.com/images/I572MOglUZ4SxX3zUA4TuLvPSI.png')">
-  </div>
+      <p class="hero-subtitle">L'IMMOBILIER D'EXCEPTION</p>
 
-  <!-- Carte de Los Santos -->
-  <div class="d8-bg d8-bg-map"
-       style="background-image:url('https://www.pngkit.com/png/full/868-8681113_gta5-map-mapa-de-los-santos-de-gta.png')">
-  </div>
+      <div class="hero-rule"></div>
 
-</div>
+      <p class="hero-description">
+        Une sélection de biens uniques, un service sur mesure
+        et une expérience immobilière prestigieuse au cœur
+        de Los Santos.
+      </p>
 
-
-  <div class="d8-prestige-visual"
-       role="img"
-       aria-label="Villa contemporaine de prestige">
-  </div>
-
-  <div class="d8-prestige-content">
-
-    <span class="d8-eyebrow">
-      DYNASTY 8 · LOS SANTOS
-    </span>
-
-    <h2>
-      Votre prochaine adresse.
-      <em>Notre signature.</em>
-    </h2>
-
-    <p>
-      Des villas de Vinewood aux appartements
-      de Los Santos, découvrez une sélection
-      immobilière pensée pour vos ambitions.
-
-      Dynasty 8 vous accompagne pour trouver
-      le lieu qui correspond à votre histoire.
-    </p>
-
-    <div class="d8-prestige-actions">
-      <a href="catalogue.html">
-        DÉCOUVRIR NOS BIENS ↗
-      </a>
-
-      <a href="carte.html">
-        EXPLORER LA CARTE ◈
-      </a>
-    </div>
-
-  </div>
-
-</section>
-<!-- FIN SECTION PRESTIGE -->
-
-  <section class="cards-area">
-    <div class="cards">
-      <article class="box featured"><span></span><div class="content"><h2>▣ Catalogue</h2><p>Parcourez les biens disponibles et commencez à imaginer votre prochain lieu de vie à Los Santos.</p><a class="start" href="catalogue.html">DÉCOUVRIR&nbsp; ›</a></div></article>
-      <article class="box featured"><span></span><div class="content"><h2>◈ Carte immobilière</h2><p>Explorez les zones de San Andreas et découvrez les propriétés autorisées par quartier.</p><a class="start" href="carte.html">EXPLORER LA CARTE ›</a></div></article>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="carte.html">
+          EXPLORER LA CARTE ↗
+        </a>
+        <a class="btn btn-outline" href="#agence">
+          NOTRE AGENCE
+        </a>
+      </div>
     </div>
   </section>
-  <section class="agent-cta container"><h2>ESPACE AGENT DYNASTY</h2><p>Publiez et gérez les propriétés de Los Santos.</p><a href="agent-login.html">♛ CONNEXION AGENT DYNASTY ↗</a></section><section class="contact container" id="contact"><h2>DYNASTY 8 · LOS SANTOS</h2><p>Un projet immobilier ? Notre équipe vous accompagne dans votre recherche.</p><a href="catalogue.html">Consulter le catalogue</a></section>
+
+  <section class="section map-section" id="agence">
+    <div class="section-inner">
+
+      <div class="section-heading">
+        <span>UNE EXPÉRIENCE IMMOBILIÈRE UNIQUE</span>
+        <h2>Explorez Los Santos autrement.</h2>
+        <p>
+          Votre recherche immobilière commence directement sur
+          notre carte interactive.
+        </p>
+      </div>
+
+      <div class="feature-grid">
+
+        <article class="feature-card">
+          <div class="feature-icon">⌖</div>
+          <h3>Carte interactive</h3>
+          <p>
+            Explorez les quartiers de Los Santos et retrouvez
+            les biens immobiliers disponibles directement
+            sur la carte.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">♛</div>
+          <h3>Accompagnement privé</h3>
+          <p>
+            Profitez d'un service personnalisé pour vos projets
+            d'achat, de vente ou de location.
+          </p>
+        </article>
+
+        <article class="feature-card">
+          <div class="feature-icon">✧</div>
+          <h3>Biens d'exception</h3>
+          <p>
+            Découvrez des résidences prestigieuses et des
+            opportunités immobilières dans toute la ville.
+          </p>
+        </article>
+
+      </div>
+
+      <div class="map-cta">
+        <a class="btn btn-primary" href="carte.html">
+          DÉCOUVRIR LA CARTE DE LOS SANTOS ↗
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section agent-section">
+    <div class="section-inner">
+      <div class="agent-panel">
+        <h2>Espace Agent Dynasty 8</h2>
+        <p>
+          Un espace professionnel réservé à notre équipe
+          pour gérer les biens immobiliers et accompagner
+          les clients.
+        </p>
+        <a class="btn btn-outline" href="agent-login.html">
+          ACCÉDER À L'ESPACE AGENT ↗
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section contact-section" id="contact">
+    <div class="section-inner">
+      <span class="eyebrow">DYNASTY 8 · LOS SANTOS</span>
+      <h2>Votre prochaine adresse commence ici.</h2>
+      <p>
+        Un projet immobilier ? Notre équipe vous accompagne
+        dans votre recherche.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="carte.html">
+          EXPLORER NOS PROPRIÉTÉS ↗
+        </a>
+      </div>
+    </div>
+  </section>
+
 </main>
-<footer><p>© 2026 <b>DYNASTY 8</b> · Agence immobilière de Los Santos</p></footer>
-<script src="app.js"></script>
-  
-<!-- DYNASTY 8 — INTERACTIONS DE LA BANNIERE -->
+
+<footer>
+  © 2026 DYNASTY 8 · Agence immobilière de Los Santos
+</footer>
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const banner = document.querySelector(".d8-prestige");
-  if (!banner) return;
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle = document.getElementById("menu-toggle");
+  const nav = document.getElementById("nav-links");
 
-  const shells = Array.from(
-    banner.querySelectorAll(".d8-bg-shell")
-  );
-  const map = banner.querySelector(".d8-bg-map");
+  if (!toggle || !nav) return;
 
-  const buttons = banner.querySelectorAll(
-    ".d8-prestige-actions a"
-  );
-
-  const propertiesButton = buttons[0];
-  const mapButton = buttons[1];
-
-  if (!shells.length || !map ||
-      !propertiesButton || !mapButton) return;
-
-  let slideshow = null;
-  let currentIndex = 0;
-
-  function stopSlideshow() {
-    if (slideshow !== null) {
-      clearInterval(slideshow);
-      slideshow = null;
-    }
-  }
-
-  function showBackground(element) {
-    banner.querySelectorAll(".d8-bg").forEach(bg => {
-      bg.classList.toggle(
-        "d8-bg-active",
-        bg === element
-      );
-    });
-  }
-
-  function resetBanner() {
-    stopSlideshow();
-    map.classList.remove("d8-map-moving");
-    currentIndex = 0;
-    showBackground(shells[0]);
-  }
-
-  function startProperties() {
-    stopSlideshow();
-    map.classList.remove("d8-map-moving");
-
-    currentIndex = 0;
-    showBackground(shells[currentIndex]);
-
-    if (shells.length > 1) {
-      slideshow = setInterval(function () {
-        currentIndex = (currentIndex + 1) % shells.length;
-        showBackground(shells[currentIndex]);
-      }, 3000);
-    }
-  }
-
-  function startMap() {
-    stopSlideshow();
-    showBackground(map);
-
-    map.classList.remove("d8-map-moving");
-
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        map.classList.add("d8-map-moving");
-      });
-    });
-  }
-
-  propertiesButton.addEventListener(
-    "mouseenter", startProperties
-  );
-
-  mapButton.addEventListener(
-    "mouseenter", startMap
-  );
-
-  propertiesButton.addEventListener(
-    "focus", startProperties
-  );
-
-  mapButton.addEventListener(
-    "focus", startMap
-  );
-
-  banner.addEventListener(
-    "mouseleave", resetBanner
-  );
-
-  banner.addEventListener("focusout", function (event) {
-    if (!banner.contains(event.relatedTarget)) {
-      resetBanner();
-    }
+  toggle.addEventListener("click", () => {
+    const open = nav.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute(
+      "aria-label",
+      open ? "Fermer le menu" : "Ouvrir le menu"
+    );
   });
 
-  resetBanner();
+  nav.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      nav.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Ouvrir le menu");
+    });
+  });
 });
 </script>
 
-</body></html>
+</body>
+</html>
