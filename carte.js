@@ -1043,7 +1043,26 @@ console.log("Zoom :", map.getZoom());
       
 <div class="d8-luxury-banner d8-prestige-banner">
   <div class="d8-prestige-banner-content">
-    <span>♛ DYNASTY 8 — COLLECTION PRESTIGE</span>
+    <span>
+<svg
+  class="d8-prestige-crown"
+  viewBox="0 0 64 64"
+  width="25"
+  height="25"
+  fill="none"
+  stroke="#ff536d"
+  stroke-width="2.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  <path d="M8 46 L4 16 L18 30 L31 10 L45 30 L60 16 L56 46 Z"/>
+  <path d="M8 46 H56 V54 H8 Z"/>
+  <circle cx="4" cy="16" r="3"/>
+  <circle cx="31" cy="10" r="3"/>
+  <circle cx="60" cy="16" r="3"/>
+</svg>
+ DYNASTY 8 — COLLECTION PRESTIGE</span>
     <strong>${escapeHTML(z.name)}</strong>
     <small>LOS SANTOS · SAN ANDREAS</small>
   </div>
