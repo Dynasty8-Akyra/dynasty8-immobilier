@@ -3588,3 +3588,36 @@ body[data-map-mode="public"] #zonePanel .d8-property-icon svg {
   fill: none !important;
   filter: drop-shadow(0 0 4px rgba(229,28,61,.45));
 }
+
+/* ==========================================
+   DYNASTY 8 — FLÈCHES GALERIE RED NEON
+   ========================================== */
+
+body[data-map-mode="public"] #zonePanel .d8-gallery-arrow {
+  color: #ff647d !important;
+
+  background: rgba(65, 10, 24, 0.90) !important;
+
+  border: 1px solid #a82b43 !important;
+
+  box-shadow:
+    0 0 12px rgba(229, 28, 61, 0.25) !important;
+
+  text-shadow: 0 0 6px rgba(229, 28, 61, 0.45) !important;
+
+  filter: none !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-gallery-arrow:hover {
+  color: #ffffff !important;
+  background: #a51b36 !important;
+  border-color: #ff647d !important;
+
+  box-shadow:
+    0 0 18px rgba(229, 28, 61, 0.55) !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-gallery-arrow:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}
