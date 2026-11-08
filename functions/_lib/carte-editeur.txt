@@ -27,7 +27,7 @@
    
 drawTools.innerHTML = `
   <div class="d8-prestige-editor-head">
-    <span class="d8-prestige-editor-crown">
+   
 <svg class="d8-prestige-editor-crown"
      viewBox="0 0 64 64"
      width="30"
@@ -47,7 +47,7 @@ drawTools.innerHTML = `
   <circle cx="32" cy="10" r="3" fill="currentColor"/>
   <circle cx="56" cy="18" r="3" fill="currentColor"/>
 </svg>
-</span>
+
     <div class="d8-draw-title">ÉDITION DES ZONES</div>
     <div class="d8-prestige-editor-subtitle">
       GESTION DES QUARTIERS DE LOS SANTOS
