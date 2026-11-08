@@ -3363,3 +3363,81 @@ body[data-map-mode="public"] #zonePanel .d8-luxury-footer span {
 body[data-map-mode="public"] .leaflet-overlay-pane svg path:hover {
   filter: drop-shadow(0 0 6px #e51c3d) drop-shadow(0 0 12px #a51b36) !important;
 }
+
+/* ==========================================
+   DYNASTY 8 — FINITION RED NEON PRESTIGE
+   ========================================== */
+
+body[data-map-mode="public"] #zonePanel {
+  --zone-accent: #e51c3d !important;
+  --panel-neon: #e51c3d !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-luxury-card {
+  --zone-accent: #ff536d !important;
+  --panel-neon: #e51c3d !important;
+}
+
+/* Titres et textes */
+
+body[data-map-mode="public"] #zonePanel h2 {
+  color: #fff1f3 !important;
+  text-shadow: 0 0 15px rgba(229,28,61,.45) !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-kicker,
+body[data-map-mode="public"] #zonePanel .d8-luxury-banner span,
+body[data-map-mode="public"] #zonePanel .d8-luxury-heading span {
+  color: #ff647d !important;
+}
+
+/* Icônes des propriétés */
+
+body[data-map-mode="public"] #zonePanel .chip .d8-pin,
+body[data-map-mode="public"] #zonePanel .chip svg,
+body[data-map-mode="public"] #zonePanel .d8-category-icon {
+  color: #ff647d !important;
+  stroke: #ff647d !important;
+}
+
+body[data-map-mode="public"] #zonePanel .chip .d8-pin,
+body[data-map-mode="public"] #zonePanel .d8-category-icon {
+  background: linear-gradient(
+    135deg, #541022, #250a13
+  ) !important;
+  border: 1px solid #a82b43 !important;
+  box-shadow: 0 0 12px rgba(229,28,61,.2) !important;
+}
+
+/* Cartes des catégories */
+
+body[data-map-mode="public"] #zonePanel .chip {
+  background: linear-gradient(
+    135deg, #2a0b16, #17070e
+  ) !important;
+  border-color: #a82b43 !important;
+  box-shadow: 0 0 12px rgba(229,28,61,.12) !important;
+}
+
+/* Bannière Vinewood et autres quartiers */
+
+body[data-map-mode="public"] #zonePanel .d8-luxury-banner {
+  background: linear-gradient(
+    135deg, #380d1a, #16070d
+  ) !important;
+  border-color: #e51c3d !important;
+  box-shadow: 0 0 18px rgba(229,28,61,.3) !important;
+}
+
+/* Autres accents */
+
+body[data-map-mode="public"] #zonePanel .d8-luxury-status {
+  color: #ff647d !important;
+  border-color: #9c2a43 !important;
+  background: #300d1a !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-status-dot {
+  background: #ff536d !important;
+  box-shadow: 0 0 10px #e51c3d !important;
+}
