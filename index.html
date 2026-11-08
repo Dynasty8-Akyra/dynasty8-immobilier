@@ -480,6 +480,56 @@ footer {
     transition-duration: .01ms !important;
   }
 }
+  
+/* DYNASTY 8 — AMBIANCE ROUGE CINÉMATOGRAPHIQUE */
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at 18% 65%,
+      rgba(200, 0, 40, .48),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse at 85% 30%,
+      rgba(170, 0, 35, .38),
+      transparent 48%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(10, 0, 5, .15),
+      rgba(45, 0, 12, .30)
+    );
+
+  mix-blend-mode: screen;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.map-section {
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(125, 8, 30, .24),
+      transparent 55%
+    ),
+    linear-gradient(
+      160deg,
+      #100609,
+      #1b080e 50%,
+      #090608
+    );
+}
+
 </style>
 </head>
 
