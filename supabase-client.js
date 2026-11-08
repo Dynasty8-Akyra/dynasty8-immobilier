@@ -1,9 +1,40 @@
 
 (function(){
-const c=window.DYNASTY8_SUPABASE||{},storage='dynasty8_discord_session_v18';
-const ready=()=>!!(c.url&&c.anonKey);
-const get=()=>{try{return JSON.parse(sessionStorage.getItem(storage)||'null')}catch{return null}};
-const set=s=>s?sessionStorage.setItem(storage,JSON.stringify(s)):sessionStorage.removeItem(storage);
+
+const c = window.DYNASTY8_SUPABASE || {};
+const storage = "dynasty8_discord_session_v18";
+
+const ready = () => !!(c.url && c.anonKey);
+
+// Récupérer la session persistante.
+// Accepter aussi l'ancienne session de l'onglet.
+const get = () => {
+  try {
+    const saved =
+      localStorage.getItem(storage) ||
+      sessionStorage.getItem(storage);
+
+    return saved ? JSON.parse(saved) : null;
+  } catch {
+    return null;
+  }
+};
+
+// Enregistrer la session dans le navigateur.
+const set = (session) => {
+  if (session) {
+    localStorage.setItem(
+      storage,
+      JSON.stringify(session)
+    );
+  } else {
+    localStorage.removeItem(storage);
+  }
+
+  // Supprimer l'ancienne copie temporaire.
+  sessionStorage.removeItem(storage);
+};
+
 async function req(path,opt={},token){
  const r=await fetch(c.url.replace(/\/$/,'')+path,{...opt,headers:{apikey:c.anonKey,...(token?{authorization:'Bearer '+token}:{}),...(opt.headers||{})}});
  const t=await r.text();let body=null;try{body=t?JSON.parse(t):null}catch{throw Error('Réponse JSON incorrecte')}
