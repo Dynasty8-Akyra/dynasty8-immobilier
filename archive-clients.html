@@ -512,6 +512,84 @@ h1 {
   ＋ NOUVEAU DOSSIER
 </button>
 
+<!-- DYNASTY 8 — VISIONNEUSE CNI RP -->
+<style>
+.d8-cni-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  background: rgba(5, 2, 8, .96);
+  backdrop-filter: blur(10px);
+}
+
+.d8-cni-viewer.open {
+  display: flex;
+}
+
+.d8-cni-panel {
+  width: min(750px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 28px;
+  border: 1px solid #ff315e;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #351020, #100810);
+  box-shadow: 0 0 55px #ff315e55;
+  text-align: center;
+}
+
+.d8-cni-panel h2 {
+  color: #ffd4e0;
+}
+
+.d8-cni-panel img {
+  display: block;
+  width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
+  margin: 20px 0;
+  border-radius: 10px;
+}
+
+.d8-cni-close {
+  padding: 13px 28px;
+  border: 1px solid #ff6488;
+  border-radius: 9px;
+  color: white;
+  background: linear-gradient(135deg, #d52a57, #851b3d);
+  cursor: pointer;
+}
+</style>
+
+<div class="d8-cni-viewer"
+     id="d8-cni-viewer"
+     role="dialog"
+     aria-modal="true"
+     aria-label="Consultation de la CNI RP">
+
+  <div class="d8-cni-panel">
+    <div class="sub">
+      DYNASTY 8 · DOCUMENT CONFIDENTIEL
+    </div>
+
+    <h2>♛ Carte d'identité RP</h2>
+
+    <img id="d8-cni-full"
+         alt="Carte d'identité RP du client">
+
+    <button class="d8-cni-close"
+            id="d8-close-cni"
+            type="button">
+      ✕ Fermer le document
+    </button>
+  </div>
+</div>
+<!-- FIN VISIONNEUSE CNI RP -->
+
 <div class="d8-modal" id="d8-create-modal">
   <form class="d8-form" id="d8-create-form">
 
@@ -767,6 +845,7 @@ h1 {
       `;
     }
 
+ 
     if (tab === "identity") {
       const fields = [
         ["Nom et prénom RP", client.name],
@@ -783,10 +862,26 @@ h1 {
             <span>${safe(value)}</span>
           </div>
         `).join("") +
-        `<p class="muted">
-          La CNI RP est stockée dans un espace privé.
-          Sa consultation sécurisée sera ajoutée prochainement.
-        </p>`;
+        `
+          <div class="card" style="margin-top:25px">
+            <small>DOCUMENT D'IDENTITÉ · CONFIDENTIEL</small>
+            <h2>♛ Carte d'identité RP</h2>
+
+            <p class="muted">
+              Document accessible uniquement à la Direction
+              et aux agents confirmés de Dynasty 8.
+            </p>
+
+            <button
+              class="action"
+              type="button"
+              id="d8-view-cni">
+              ◉ Voir la CNI RP
+            </button>
+
+            <p class="status" id="d8-cni-status"></p>
+          </div>
+        `;
     }
 
     if (tab === "properties") {
@@ -866,6 +961,75 @@ h1 {
     }
 
     el("content").innerHTML = html;
+    
+    // DYNASTY 8 — Consultation sécurisée CNI RP
+    if (tab === "identity") {
+      const button = el("d8-view-cni");
+
+      if (button) {
+        button.addEventListener("click", async () => {
+          const status = el("d8-cni-status");
+
+          button.disabled = true;
+          status.textContent = "Chargement de la CNI RP…";
+
+          try {
+            const token = await getAccessToken();
+
+            const response = await fetch(
+              "/api/client-archives?action=cni&id=" +
+                encodeURIComponent(client.id),
+              {
+                method: "GET",
+                headers: {
+                  authorization: "Bearer " + token
+                },
+                cache: "no-store"
+              }
+            );
+
+            if (!response.ok) {
+              const data = await response.json().catch(() => ({}));
+
+              throw new Error(
+                data.error || "Impossible de charger la CNI RP."
+              );
+            }
+
+            const blob = await response.blob();
+
+            if (!["image/jpeg", "image/png", "image/webp"].includes(blob.type)) {
+              throw new Error("Format d'image non reconnu.");
+            }
+
+            const imageURL = URL.createObjectURL(blob);
+            const viewer = el("d8-cni-viewer");
+            const image = el("d8-cni-full");
+
+            if (!viewer || !image) {
+              URL.revokeObjectURL(imageURL);
+              throw new Error("Visionneuse CNI non installée.");
+            }
+
+            if (image.dataset.objectUrl) {
+              URL.revokeObjectURL(image.dataset.objectUrl);
+            }
+
+            image.dataset.objectUrl = imageURL;
+            image.src = imageURL;
+
+            viewer.classList.add("open");
+            status.textContent = "";
+
+          } catch (error) {
+            status.textContent = error.message;
+          } finally {
+            button.disabled = false;
+          }
+        });
+      }
+    }
+
   }
 
   async function getAccessToken() {
@@ -1172,6 +1336,47 @@ h1 {
 
   el("search").addEventListener("input", () => {
     if (authorized) renderClients();
+  });
+
+  // DYNASTY 8 — Fermeture sécurisée de la visionneuse CNI RP
+
+  function closeCniViewer() {
+    const viewer = el("d8-cni-viewer");
+    const image = el("d8-cni-full");
+
+    if (!viewer || !image) return;
+
+    viewer.classList.remove("open");
+
+    image.removeAttribute("src");
+
+    if (image.dataset.objectUrl) {
+      URL.revokeObjectURL(image.dataset.objectUrl);
+      delete image.dataset.objectUrl;
+    }
+  }
+
+  // Fermer avec le bouton
+  el("d8-close-cni").addEventListener(
+    "click",
+    closeCniViewer
+  );
+
+  // Fermer en cliquant en dehors de l'image
+  el("d8-cni-viewer").addEventListener("click", event => {
+    if (event.target === el("d8-cni-viewer")) {
+      closeCniViewer();
+    }
+  });
+
+  // Fermer avec la touche Échap
+  document.addEventListener("keydown", event => {
+    if (
+      event.key === "Escape" &&
+      el("d8-cni-viewer").classList.contains("open")
+    ) {
+      closeCniViewer();
+    }
   });
 
   initialize();
