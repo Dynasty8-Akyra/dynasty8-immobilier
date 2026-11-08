@@ -233,26 +233,31 @@ body[data-map-mode="admin"] #viewport {
   }
 }
 
-/* DYNASTY 8 — PROTECTION DES BANNIÈRES */
 
-/* Conserver l'en-tête Direction au-dessus de la carte */
+/* DYNASTY 8 — ORDRE D'AFFICHAGE */
+
+/* Barre supérieure */
 body[data-map-mode="admin"] > header {
   position: relative;
-  z-index: 1000;
-  isolation: isolate;
+  z-index: 20;
 }
 
-/* Conserver la bannière Prestige et les filtres */
-#direction-map .map-toolbar,
+/* Les filtres restent dans leur emplacement */
+#direction-map .map-toolbar {
+  position: relative;
+  z-index: 2;
+}
+
+/* Bannière Dynasty 8 sous les filtres */
 #direction-map .d8-prestige-heading {
   position: relative;
-  z-index: 100;
+  z-index: 1;
 }
 
-/* Éviter que la carte recouvre les bannières */
+/* La carte conserve son fonctionnement */
 #direction-map .map-layout {
   position: relative;
-  z-index: 1;
+  z-index: 0;
 }
 
 </style>
