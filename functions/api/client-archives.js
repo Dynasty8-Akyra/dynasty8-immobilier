@@ -183,6 +183,107 @@ export async function onRequest(context) {
       });
     }
 
+    // 3 BIS — Consultation sécurisée de la CNI RP
+    if (action === "cni" && request.method === "GET") {
+      const clientId = params.get("id") || "";
+
+      if (
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clientId)
+      ) {
+        return json(400, {
+          error: "Identifiant de dossier invalide."
+        });
+      }
+
+      // Vérifier que le dossier existe et n'est pas Prestige
+      const dossierURL = new URL(
+        base + "/rest/v1/d8_client_archives"
+      );
+
+      dossierURL.searchParams.set(
+        "select",
+        "id,cni_storage_path"
+      );
+
+      dossierURL.searchParams.set("id", "eq." + clientId);
+      dossierURL.searchParams.set("is_prestige", "eq.false");
+      dossierURL.searchParams.set("limit", "1");
+
+      const dossierResponse = await api(
+        dossierURL.toString(),
+        {
+          headers: storageHeaders(serviceKey)
+        }
+      );
+
+      const dossiers = await dossierResponse.json();
+      const dossier = dossiers[0];
+
+      if (!dossier || !dossier.cni_storage_path) {
+        return json(404, {
+          error: "CNI RP introuvable."
+        });
+      }
+
+      // Empêcher l'accès à un autre chemin de stockage
+      const path = dossier.cni_storage_path;
+
+      if (
+        typeof path !== "string" ||
+        !path.startsWith(clientId + "/") ||
+        !/^[-a-zA-Z0-9_/\.]+$/.test(path) ||
+        path.includes("..")
+      ) {
+        return json(403, {
+          error: "Chemin de CNI non autorisé."
+        });
+      }
+
+      // Lire l'image dans le bucket privé
+      const imageURL =
+        base + "/storage/v1/object/" +
+        BUCKET + "/" + path;
+
+      const imageResponse = await fetch(imageURL, {
+        headers: storageHeaders(serviceKey)
+      });
+
+      if (!imageResponse.ok) {
+        return json(404, {
+          error: "Image de CNI indisponible."
+        });
+      }
+
+      const imageBytes = await imageResponse.arrayBuffer();
+
+      if (
+        imageBytes.byteLength === 0 ||
+        imageBytes.byteLength > MAX_IMAGE_SIZE
+      ) {
+        return json(415, {
+          error: "Image de CNI invalide."
+        });
+      }
+
+      const format = imageFormat(imageBytes);
+
+      if (!format) {
+        return json(415, {
+          error: "Format de CNI non reconnu."
+        });
+      }
+
+      return new Response(imageBytes, {
+        status: 200,
+        headers: {
+          "content-type": format.mime,
+          "cache-control": "private, no-store",
+          "x-content-type-options": "nosniff",
+          "content-security-policy": "default-src 'none'; sandbox"
+        }
+      });
+    }
+
     // 4 — Lecture des dossiers classiques
     if (action === "list" && request.method === "GET") {
       const endpoint = new URL(
