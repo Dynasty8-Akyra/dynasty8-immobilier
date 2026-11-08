@@ -23,139 +23,82 @@
   
 <style>
 
-
-/* ==========================================
-   DYNASTY 8 — ACCÈS DIRECTION
-   RED NEON PRESTIGE V3
-   ========================================== */
-
+/* DYNASTY 8 — ÉCRAN DE VÉRIFICATION RED NEON PRESTIGE */
 body:not([data-map-mode="admin"]) {
-  background:
-    radial-gradient(
-      ellipse at 50% 25%,
-      rgba(115, 12, 39, .22),
-      transparent 45%
-    ),
-    #090408 !important;
+  background: radial-gradient(ellipse at 50% 24%, rgba(115,12,39,.24), transparent 48%), #090408 !important;
+  color: #fff0f4;
 }
-
-/* Fenêtre de vérification */
+body:not([data-map-mode="admin"]) > header {
+  background: #0d050a !important;
+  border-bottom: 1px solid #84203b !important;
+}
+body:not([data-map-mode="admin"]) > header a,
+body:not([data-map-mode="admin"]) > header span {
+  color: #ffb4c6 !important;
+}
 #access-check.login {
   position: relative;
-  width: min(460px, calc(100% - 40px));
-  max-width: 460px;
+  width: min(470px, calc(100% - 36px));
+  max-width: 470px;
   margin: 65px auto;
-  padding: 52px 36px 42px;
+  padding: 48px 34px 40px;
   box-sizing: border-box;
   overflow: hidden;
-
-  background: linear-gradient(
-    145deg,
-    #270915,
-    #10050b 75%
-  ) !important;
-
-  border: 1px solid #d52b4c !important;
-  border-radius: 22px !important;
-
-  box-shadow:
-    0 0 35px rgba(229, 28, 61, .18),
-    inset 0 0 30px rgba(229, 28, 61, .05) !important;
-
   text-align: center;
+  background: linear-gradient(145deg, #2a0a17, #10050b 78%) !important;
+  border: 1px solid #e33154 !important;
+  border-radius: 22px !important;
+  box-shadow: 0 0 35px rgba(229,28,61,.2), inset 0 0 28px rgba(229,28,61,.05) !important;
 }
-
-/* Couronne décorative */
 #access-check::before {
   content: "♕";
   display: block;
   margin-bottom: 16px;
-
+  color: #ff6686;
   font-size: 44px;
   line-height: 1;
-  color: #ff6686;
-
-  text-shadow:
-    0 0 12px #ff315b,
-    0 0 30px rgba(229, 28, 61, .55);
-
+  text-shadow: 0 0 12px #ff315b, 0 0 28px rgba(229,28,61,.5);
   animation: d8-access-glow 3s ease-in-out infinite;
 }
-
-/* Titre */
 #access-check h1 {
-  margin: 0 0 20px !important;
+  margin: 0 0 18px !important;
   color: #ffe5eb !important;
-  font-family: Georgia, serif !important;
-  font-size: clamp(24px, 3vw, 32px) !important;
+  font: 700 clamp(24px,3vw,32px)/1.2 Georgia,serif !important;
   letter-spacing: 1px;
-  text-shadow: 0 0 14px rgba(255, 49, 91, .3);
+  text-shadow: 0 0 14px rgba(255,49,91,.3);
 }
-
-#access-check h1 em {
-  color: #ff6686 !important;
-  font-style: normal;
-}
-
-/* Message de vérification */
+#access-check h1 em { color: #ff6686 !important; font-style: normal; }
 #access-check #admin-message {
   color: #e8b7c4 !important;
   font-size: 13px;
   line-height: 1.7;
-  letter-spacing: .3px;
 }
-
-/* Petite ligne lumineuse */
 #access-check::after {
   content: "";
   display: block;
   width: 105px;
   height: 2px;
   margin: 25px auto 0;
-
-  background: linear-gradient(
-    90deg,
-    transparent,
-    #ff315b,
-    transparent
-  );
-
+  background: linear-gradient(90deg,transparent,#ff315b,transparent);
   box-shadow: 0 0 12px #ff315b;
   animation: d8-access-glow 3s ease-in-out infinite;
 }
-
-/* Lien de connexion si nécessaire */
 #access-check #admin-actions a {
   display: inline-block;
   margin-top: 18px;
   padding: 12px 20px;
-
   color: #fff0f4 !important;
   background: #66132c;
   border: 1px solid #f04467;
   border-radius: 12px;
   text-decoration: none;
 }
-
-#access-check #admin-actions a:hover {
-  background: #a51b3f;
-  box-shadow: 0 0 16px #ff315b60;
+#access-check #admin-actions a:hover { background: #a51b3f; box-shadow: 0 0 16px #ff315b60; }
+@keyframes d8-access-glow { 0%,100% {opacity:.65} 50% {opacity:1} }
+@media (prefers-reduced-motion:reduce) {
+  #access-check::before, #access-check::after { animation:none; }
 }
 
-@keyframes d8-access-glow {
-  0%, 100% { opacity: .65; }
-  50% { opacity: 1; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #access-check::before,
-  #access-check::after {
-    animation: none;
-  }
-}
-
-
-/* DYNASTY 8 — CORRECTION CARTE DIRECTION */
 /* DYNASTY 8 — CORRECTION CARTE DIRECTION */
 
 body:has(#direction-map:not([hidden])) {
@@ -1288,4 +1231,3 @@ document.addEventListener("DOMContentLoaded", () => {
 <link rel="stylesheet" href="dynasty8-prestige-maquette.css?v=3">
 </body>
 </html>
-
