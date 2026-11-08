@@ -56,8 +56,11 @@ function consumeCallback(){
  if(access_token&&refresh_token){set({access_token,refresh_token,expires_at:Date.now()+expires_in*1000});history.replaceState(null,'',location.pathname+location.search);return true}
  const error=hash.get('error_description');if(error)throw Error(error);return false;
 }
+
 window.D8Cloud={
  ready,consumeCallback,
+ accessToken: token,
+
  async startDiscord(){const redirect=location.origin+'/agent-login.html';location.assign(c.url.replace(/\/$/,'')+'/auth/v1/authorize?provider=discord&redirect_to='+encodeURIComponent(redirect))},
  async logout(){const t=await token();if(t)try{await req('/auth/v1/logout',{method:'POST'},t)}catch{}set(null)},
  async authenticated(){return !!(await token())},
