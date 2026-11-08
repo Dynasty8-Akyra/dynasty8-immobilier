@@ -3455,3 +3455,77 @@ body[data-map-mode="public"] .d8-prestige-crown {
     drop-shadow(0 0 5px #e51c3d)
     drop-shadow(0 0 11px rgba(229,28,61,.5));
 }
+
+/* ==========================================
+   DYNASTY 8 — ICÔNES RED NEON PRESTIGE
+   ========================================== */
+
+/* Icônes des propriétés */
+body[data-map-mode="public"] #zonePanel .chip .d8-pin,
+body[data-map-mode="public"] #zonePanel .chip .d8-category-icon,
+body[data-map-mode="public"] #zonePanel .chip i,
+body[data-map-mode="public"] #zonePanel .chip svg {
+  color: #ff647d !important;
+  stroke: #ff647d !important;
+  filter: none !important;
+}
+
+/* Carrés contenant les icônes */
+body[data-map-mode="public"] #zonePanel .chip .d8-pin,
+body[data-map-mode="public"] #zonePanel .chip .d8-category-icon,
+body[data-map-mode="public"] #zonePanel .chip > span:first-child {
+  background: linear-gradient(
+    135deg, #541022, #250a13
+  ) !important;
+  border-color: #a82b43 !important;
+  box-shadow: 0 0 12px rgba(229, 28, 61, .2) !important;
+}
+
+/* Icônes de la galerie */
+body[data-map-mode="public"] #zonePanel .d8-gallery-symbol,
+body[data-map-mode="public"] #zonePanel .d8-gallery-placeholder svg,
+body[data-map-mode="public"] #zonePanel .d8-gallery-placeholder i {
+  color: #ff647d !important;
+  stroke: #ff647d !important;
+  text-shadow: 0 0 10px rgba(229, 28, 61, .4) !important;
+  filter: none !important;
+}
+
+/* Éliminer les halos violets hérités */
+body[data-map-mode="public"] #zonePanel .chip,
+body[data-map-mode="public"] #zonePanel .d8-gallery-placeholder {
+  --zone-accent: #ff536d !important;
+  --panel-neon: #e51c3d !important;
+}
+
+/* Pictogrammes intégrés sous forme d'images */
+body[data-map-mode="public"] #zonePanel .chip img,
+body[data-map-mode="public"] #zonePanel .d8-gallery-placeholder img {
+  filter: grayscale(1) sepia(1) saturate(5)
+          hue-rotate(305deg) !important;
+}
+
+/* DYNASTY 8 — CONTACT PRESTIGE ROUGE NÉON */
+
+body[data-map-mode="public"] #zonePanel .d8-contact-teaser {
+  background: linear-gradient(
+    120deg, #420d1c, #17070e
+  ) !important;
+
+  border: 1px solid #a82b43 !important;
+  box-shadow: 0 0 16px rgba(229, 28, 61, .22) !important;
+
+  color: #fff1f3 !important;
+  --zone-accent: #ff536d !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-contact-teaser,
+body[data-map-mode="public"] #zonePanel .d8-contact-teaser * {
+  color: #ff647d !important;
+  text-shadow: 0 0 8px rgba(229, 28, 61, .35) !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-contact-teaser svg {
+  stroke: #ff647d !important;
+  fill: none;
+}
