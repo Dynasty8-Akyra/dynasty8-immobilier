@@ -3568,3 +3568,23 @@ body[data-map-mode="public"] #zonePanel .d8-property-icon svg {
 body[data-map-mode="public"] #zonePanel .d8-property-icon > * {
   color: #ff647d !important;
 }
+
+/* DYNASTY 8 — ICÔNES SVG ROUGE NÉON */
+
+body[data-map-mode="public"] #zonePanel .d8-property-icon {
+  color: #ff647d !important;
+  background: linear-gradient(
+    135deg, #541022, #250a13
+  ) !important;
+  border: 1px solid #a82b43 !important;
+  box-shadow: 0 0 10px rgba(229,28,61,.25) !important;
+  text-shadow: none !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-property-icon svg {
+  width: 23px;
+  height: 23px;
+  stroke: currentColor !important;
+  fill: none !important;
+  filter: drop-shadow(0 0 4px rgba(229,28,61,.45));
+}
