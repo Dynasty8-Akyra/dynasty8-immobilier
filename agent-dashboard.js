@@ -1,99 +1,307 @@
-const $=id=>document.getElementById(id);let properties=[];const currency=n=>new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(n)+' $';const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','"':'&quot;',"'":'&#39;'}[c]));function render(){const q=$('search').value.toLocaleLowerCase('fr').trim();const filtered=properties.filter(p=>[p.name,p.area,p.type].some(v=>String(v||'').toLocaleLowerCase('fr').includes(q)));$('rows').innerHTML=filtered.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.type)}</td><td>${esc(p.area)}</td><td>${currency(Number(p.price)||0)}</td>${window.canWriteDashboard?`<td><a href="admin-annonces.html?edit=${encodeURIComponent(p.id)}">MODIFIER ↗</a></td>`:''}</tr>`).join('');$('empty').hidden=filtered.length>0}async function init(){try{if(!D8Cloud.ready()||!await D8Cloud.authenticated()){location.replace('agent-login.html');return}const access=await D8Cloud.role();if(!access.canViewDashboard){location.replace('index.html');return;}window.canWriteDashboard=access.canWrite===true;
-/* DYNASTY 8 — NAVIGATION CARTES */
-
-const mapNavigation = document.createElement("nav");
-mapNavigation.className = "d8-dashboard-maps";
-mapNavigation.setAttribute(
-  "aria-label",
-  "Navigation des cartes immobilières"
-);
-
-const publicMap = document.createElement("a");
-publicMap.href = "carte.html";
-publicMap.className = "d8-map-access";
-publicMap.textContent = "⌖ CARTE IMMOBILIÈRE";
-mapNavigation.appendChild(publicMap);
-
-// La Direction seule voit l'éditeur sécurisé.
-if (access.canEditZones === true) {
-  const directionMap = document.createElement("a");
-  directionMap.href = "admin-carte.html";
-  directionMap.className =
-    "d8-map-access d8-map-direction";
-  directionMap.textContent = "♛ ÉDITEUR DIRECTION";
-  mapNavigation.appendChild(directionMap);
-}
-
-// Ajouter les liens au tableau de bord.
-const dashboard = document.getElementById("dashboard");
-
-if (dashboard) {
-  dashboard.prepend(mapNavigation);
-}
-if(!window.canWriteDashboard){document.querySelector('.primary').style.display='none';document.querySelector('.bottom a:first-child').style.display='none';}properties=await D8Cloud.list();if(!window.canWriteDashboard){document.querySelectorAll('thead th:last-child').forEach(e=>e.remove());}const sum=properties.reduce((a,p)=>a+(Number(p.price)||0),0);$('total').textContent=properties.length;$('value').textContent=currency(sum);$('average').textContent=currency(properties.length?sum/properties.length:0);$('types').textContent=new Set(properties.map(p=>p.type)).size;$('gate').hidden=true;$('dashboard').hidden=false;render()}catch(err){$('gate').textContent='Impossible de charger le tableau de bord : '+err.message}}$('search').addEventListener('input',render);$('logout').onclick=async()=>{await D8Cloud.logout();location.replace('agent-login.html')};init();
 
 /* ==========================================
-   DYNASTY 8 — ACCÈS CARTES RED NEON
+   DYNASTY 8 — AGENT DASHBOARD
+   RED NEON PRESTIGE V2
    ========================================== */
 
-.d8-dashboard-maps {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin: 0 0 28px;
-}
+(() => {
+  "use strict";
 
-.d8-map-access {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  const $ = (id) => document.getElementById(id);
 
-  min-height: 48px;
-  padding: 13px 22px;
+  let properties = [];
+  let canWriteDashboard = false;
 
-  color: #fff1f3;
-  background: linear-gradient(
-    135deg, #380d1a, #17070e
-  );
+  /* ------------------------------------------
+     OUTILS
+     ------------------------------------------ */
 
-  border: 1px solid #a82b43;
-  border-radius: 12px;
+  const currency = (value) => {
+    return new Intl.NumberFormat("fr-FR", {
+      maximumFractionDigits: 0
+    }).format(Number(value) || 0) + " $";
+  };
 
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  const esc = (value) => {
+    return String(value ?? "").replace(
+      /[&<>"']/g,
+      (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]
+    );
+  };
 
-  box-shadow: 0 0 15px rgba(229,28,61,.16);
-  transition: .25s ease;
-}
+  /* ------------------------------------------
+     AFFICHAGE DES ANNONCES
+     ------------------------------------------ */
 
-.d8-map-access:hover {
-  color: #fff;
-  border-color: #ff647d;
-  background: #651126;
+  function render() {
+    const search = $("search");
+    const rows = $("rows");
+    const empty = $("empty");
 
-  box-shadow:
-    0 0 18px rgba(229,28,61,.4),
-    inset 0 0 12px rgba(229,28,61,.12);
+    if (!search || !rows) return;
 
-  transform: translateY(-2px);
-}
+    const query = search.value
+      .toLocaleLowerCase("fr")
+      .trim();
 
-.d8-map-direction {
-  border-color: #e51c3d;
-  background: linear-gradient(
-    135deg, #601025, #220710
-  );
-}
+    const filtered = properties.filter((property) => {
+      return [
+        property.name,
+        property.area,
+        property.type
+      ].some((value) =>
+        String(value || "")
+          .toLocaleLowerCase("fr")
+          .includes(query)
+      );
+    });
 
-@media (max-width: 600px) {
-  .d8-dashboard-maps {
-    flex-direction: column;
+    rows.innerHTML = filtered.map((property) => `
+      <tr>
+        <td>${esc(property.name)}</td>
+        <td>${esc(property.type)}</td>
+        <td>${esc(property.area)}</td>
+        <td>${currency(property.price)}</td>
+        ${
+          canWriteDashboard
+            ? `<td>
+                <a href="admin-annonces.html?edit=${encodeURIComponent(property.id)}">
+                  MODIFIER ↗
+                </a>
+              </td>`
+            : ""
+        }
+      </tr>
+    `).join("");
+
+    if (empty) {
+      empty.hidden = filtered.length > 0;
+    }
   }
 
-  .d8-map-access {
-    width: 100%;
-    box-sizing: border-box;
+  /* ------------------------------------------
+     NAVIGATION DES CARTES
+     ------------------------------------------ */
+
+  function createMapNavigation(access) {
+    const dashboard = $("dashboard");
+
+    if (!dashboard) return;
+
+    // Éviter de créer plusieurs fois les boutons.
+    if (dashboard.querySelector(".d8-dashboard-maps")) {
+      return;
+    }
+
+    const navigation = document.createElement("nav");
+
+    navigation.className = "d8-dashboard-maps";
+    navigation.setAttribute(
+      "aria-label",
+      "Navigation des cartes immobilières"
+    );
+
+    // Carte immobilière publique.
+    const publicMap = document.createElement("a");
+
+    publicMap.href = "carte.html";
+    publicMap.className = "d8-map-access";
+    publicMap.textContent = "⌖ CARTE IMMOBILIÈRE";
+
+    navigation.appendChild(publicMap);
+
+    // Éditeur réservé à la Direction.
+    if (access.canEditZones === true) {
+      const directionMap = document.createElement("a");
+
+      directionMap.href = "admin-carte.html";
+      directionMap.className =
+        "d8-map-access d8-map-direction";
+
+      directionMap.textContent =
+        "♛ ÉDITEUR DIRECTION";
+
+      navigation.appendChild(directionMap);
+    }
+
+    dashboard.prepend(navigation);
   }
-}
+
+  /* ------------------------------------------
+     AUTORISATIONS DU TABLEAU DE BORD
+     ------------------------------------------ */
+
+  function applyPermissions(access) {
+    canWriteDashboard = access.canWrite === true;
+
+    window.canWriteDashboard = canWriteDashboard;
+
+    if (!canWriteDashboard) {
+      // Masquer les actions d'écriture.
+      const primary = document.querySelector(".primary");
+
+      if (primary) {
+        primary.style.display = "none";
+      }
+
+      const bottomAction = document.querySelector(
+        ".bottom a:first-child"
+      );
+
+      if (bottomAction) {
+        bottomAction.style.display = "none";
+      }
+
+      // Supprimer la colonne Modifier.
+      const lastHeader = document.querySelector(
+        "thead th:last-child"
+      );
+
+      if (lastHeader) {
+        lastHeader.remove();
+      }
+    }
+  }
+
+  /* ------------------------------------------
+     STATISTIQUES
+     ------------------------------------------ */
+
+  function updateStatistics() {
+    const total = properties.length;
+
+    const sum = properties.reduce(
+      (result, property) =>
+        result + (Number(property.price) || 0),
+      0
+    );
+
+    const average = total ? sum / total : 0;
+
+    const types = new Set(
+      properties.map((property) => property.type)
+    ).size;
+
+    if ($("total")) {
+      $("total").textContent = total;
+    }
+
+    if ($("value")) {
+      $("value").textContent = currency(sum);
+    }
+
+    if ($("average")) {
+      $("average").textContent = currency(average);
+    }
+
+    if ($("types")) {
+      $("types").textContent = types;
+    }
+  }
+
+  /* ------------------------------------------
+     INITIALISATION ET CONNEXION DISCORD
+     ------------------------------------------ */
+
+  async function init() {
+    const gate = $("gate");
+    const dashboard = $("dashboard");
+
+    try {
+      if (
+        !window.D8Cloud ||
+        !D8Cloud.ready() ||
+        !(await D8Cloud.authenticated())
+      ) {
+        location.replace("agent-login.html");
+        return;
+      }
+
+      // Vérifier les permissions Discord côté serveur.
+      const access = await D8Cloud.role();
+
+      if (access.canViewDashboard !== true) {
+        location.replace("index.html");
+        return;
+      }
+
+      // Appliquer les autorisations.
+      applyPermissions(access);
+
+      // Ajouter les boutons de navigation.
+      createMapNavigation(access);
+
+      // Charger les annonces.
+      properties = await D8Cloud.list();
+
+      // Calculer les statistiques.
+      updateStatistics();
+
+      // Afficher le tableau de bord.
+      if (gate) {
+        gate.hidden = true;
+      }
+
+      if (dashboard) {
+        dashboard.hidden = false;
+      }
+
+      render();
+
+      console.log(
+        "DYNASTY 8 — Tableau de bord chargé.",
+        {
+          role: access.role,
+          canWrite: access.canWrite,
+          canEditZones: access.canEditZones
+        }
+      );
+
+    } catch (error) {
+      console.error(
+        "DYNASTY 8 — Erreur tableau de bord :",
+        error
+      );
+
+      if (gate) {
+        gate.hidden = false;
+        gate.textContent =
+          "Impossible de charger le tableau de bord : " +
+          error.message;
+      }
+    }
+  }
+
+  /* ------------------------------------------
+     ÉVÉNEMENTS
+     ------------------------------------------ */
+
+  const search = $("search");
+
+  if (search) {
+    search.addEventListener("input", render);
+  }
+
+  const logout = $("logout");
+
+  if (logout) {
+    logout.addEventListener("click", async () => {
+      try {
+        await D8Cloud.logout();
+      } finally {
+        location.replace("agent-login.html");
+      }
+    });
+  }
+
+  // Démarrer le tableau de bord.
+  init();
+
+})();
+
