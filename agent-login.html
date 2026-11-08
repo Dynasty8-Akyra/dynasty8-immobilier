@@ -1,1 +1,539 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Connexion Discord — Dynasty 8</title><link rel="stylesheet" href="agent.css"><script src="supabase-config.js"></script><script src="supabase-client.js"></script><script src="agent-login.js" defer></script></head><body><header><a href="index.html">← RETOUR AU SITE</a><span>ESPACE PROFESSIONNEL</span></header><main><section class="login"><img src="dynasty8-banner-neon.png" alt="Dynasty 8"><small>ACCÈS RÉSERVÉ AUX MEMBRES DE L'AGENCE</small><h1>Connexion <em>Discord</em></h1><p>Une seule connexion avec votre compte Discord. Vos permissions dépendent de vos rôles sur le serveur Dynasty 8.</p><button id="discord" style="background:#5865f2;color:white;border:0;border-radius:9px;padding:16px 22px;font-size:16px;cursor:pointer;width:100%">SE CONNECTER AVEC DISCORD ↗</button><p id="message" role="status"></p><footer>✧ Vérification sécurisée des rôles · Dynasty 8</footer></section></main></body></html>
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Portail Prestige — Dynasty 8</title>
+
+  <!-- Connexion Discord : scripts existants conservés -->
+  <script src="supabase-config.js"></script>
+  <script src="supabase-client.js"></script>
+  <script src="agent-login.js" defer></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      color-scheme: dark;
+      --bg: #080508;
+      --panel: #160810;
+      --red: #e51c3d;
+      --rose: #ff6b86;
+      --text: #fff2f4;
+      --muted: #c4a3ae;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: Montserrat, Arial, sans-serif;
+      background: #080508;
+    }
+
+    /* FOND CINÉMATOGRAPHIQUE */
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background:
+        radial-gradient(
+          ellipse at 50% 37%,
+          rgba(146, 18, 50, .35),
+          transparent 53%
+        ),
+        radial-gradient(
+          ellipse at 10% 90%,
+          rgba(95, 12, 34, .17),
+          transparent 45%
+        ),
+        linear-gradient(
+          135deg,
+          #050406,
+          #180711 48%,
+          #050406
+        );
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      opacity: .32;
+      pointer-events: none;
+      background-image:
+        linear-gradient(
+          rgba(255, 75, 110, .08) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255, 75, 110, .08) 1px,
+          transparent 1px
+        );
+      background-size: 65px 65px;
+      mask-image: linear-gradient(
+        to bottom,
+        transparent,
+        black 40%,
+        transparent
+      );
+    }
+
+    /* HALOS ANIMÉS */
+
+    .glow {
+      position: fixed;
+      width: 650px;
+      height: 650px;
+      border-radius: 50%;
+      filter: blur(95px);
+      opacity: .17;
+      pointer-events: none;
+      z-index: -1;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+
+    .glow.one {
+      background: #f21d4a;
+      top: -280px;
+      left: -230px;
+    }
+
+    .glow.two {
+      background: #c61238;
+      bottom: -340px;
+      right: -240px;
+      animation-delay: -6s;
+    }
+
+    @keyframes drift {
+      from {
+        transform: translate(0, 0) scale(1);
+      }
+      to {
+        transform: translate(65px, 45px) scale(1.2);
+      }
+    }
+
+    /* NAVIGATION */
+
+    .topbar {
+      width: 100%;
+      padding: 25px clamp(22px, 5vw, 85px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .back {
+      color: #f3cbd5;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.7px;
+      text-decoration: none;
+      transition: color .2s;
+    }
+
+    .back:hover {
+      color: var(--rose);
+    }
+
+    .top-label {
+      color: #e7a1b2;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-align: right;
+    }
+
+    /* CONTENU */
+
+    main {
+      min-height: calc(100vh - 85px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px 20px 85px;
+    }
+
+    .login {
+      position: relative;
+      isolation: isolate;
+      width: min(100%, 540px);
+      padding: 46px 45px 35px;
+      text-align: center;
+      background: linear-gradient(
+        155deg,
+        rgba(47, 12, 25, .97),
+        rgba(16, 7, 13, .98) 65%
+      );
+      border: 1px solid rgba(255, 94, 128, .6);
+      border-radius: 22px;
+      box-shadow:
+        0 0 0 1px rgba(255, 65, 103, .06),
+        0 0 42px rgba(222, 21, 64, .22),
+        0 30px 95px rgba(0, 0, 0, .7),
+        inset 0 1px rgba(255, 255, 255, .08);
+      animation: reveal .8s ease both;
+    }
+
+    .login::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 18%;
+      width: 64%;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        #ff9cb0,
+        #ff315b,
+        transparent
+      );
+      box-shadow: 0 0 22px #ff315b;
+    }
+
+    @keyframes reveal {
+      from {
+        opacity: 0;
+        transform: translateY(25px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* LOGO DYNASTY 8 */
+
+    .crown {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 12px;
+      color: #ff647e;
+      filter: drop-shadow(0 0 13px #e51c3d);
+      animation: crownPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes crownPulse {
+      0%, 100% {
+        filter: drop-shadow(0 0 9px #e51c3d);
+      }
+      50% {
+        filter: drop-shadow(0 0 23px #ff315b);
+      }
+    }
+
+    .brand-name {
+      margin: 0;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(43px, 7vw, 61px);
+      font-weight: 700;
+      letter-spacing: 4px;
+      line-height: 1;
+      text-shadow: 0 0 22px rgba(229, 28, 61, .35);
+    }
+
+    .brand-caption {
+      margin: 11px 0 27px;
+      color: #e89aae;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+    }
+
+    .separator {
+      width: 70px;
+      height: 1px;
+      margin: 0 auto 27px;
+      background: #ff5779;
+      box-shadow: 0 0 12px #ff315b;
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 12px;
+      color: #ff8ca2;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    .login h1 {
+      margin: 0 0 15px;
+      font: 700 clamp(36px, 6vw, 48px)/1.1
+        'Cormorant Garamond', Georgia, serif;
+    }
+
+    .login h1 em {
+      color: #ff8199;
+      font-style: normal;
+      text-shadow: 0 0 15px rgba(255, 54, 94, .5);
+    }
+
+    .description {
+      max-width: 390px;
+      margin: 0 auto 29px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    /* BOUTON DISCORD */
+
+    #discord {
+      width: 100%;
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 13px;
+      padding: 16px 22px;
+      border: 1px solid #ff7891;
+      border-radius: 12px;
+      color: white;
+      background: linear-gradient(
+        115deg,
+        #a71130,
+        #f02b50 55%,
+        #b20f33
+      );
+      background-size: 200% 100%;
+      box-shadow:
+        0 0 25px rgba(229, 28, 61, .4),
+        inset 0 1px rgba(255, 255, 255, .25);
+      font: 800 11px Montserrat, Arial, sans-serif;
+      letter-spacing: 1.2px;
+      cursor: pointer;
+      transition:
+        transform .25s,
+        box-shadow .25s,
+        background-position .4s;
+    }
+
+    #discord:hover {
+      transform: translateY(-3px);
+      background-position: 100% 0;
+      box-shadow:
+        0 0 38px rgba(255, 46, 88, .7),
+        0 10px 28px rgba(0, 0, 0, .35);
+    }
+
+    #discord:active {
+      transform: translateY(0);
+    }
+
+    #discord:focus-visible,
+    .back:focus-visible {
+      outline: 2px solid #ff9cb0;
+      outline-offset: 4px;
+    }
+
+    #discord:disabled {
+      opacity: .65;
+      cursor: wait;
+      transform: none;
+    }
+
+    .discord-icon {
+      width: 23px;
+      height: 23px;
+      flex-shrink: 0;
+    }
+
+    /* MESSAGE DE CONNEXION */
+
+    #message {
+      min-height: 18px;
+      margin: 17px 0 0;
+      color: #ffb3c1;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    /* PIED DE CARTE */
+
+    .login-footer {
+      margin-top: 22px;
+      padding-top: 23px;
+      border-top: 1px solid rgba(255, 103, 135, .17);
+      color: #b98898;
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    .secure-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: #ff4d72;
+      box-shadow: 0 0 9px #ff315b;
+      vertical-align: middle;
+    }
+
+    /* PETITS ÉCRANS */
+
+    @media (max-width: 580px) {
+      .topbar {
+        padding: 22px 18px;
+      }
+
+      .top-label {
+        font-size: 8px;
+        letter-spacing: 1px;
+      }
+
+      main {
+        padding: 30px 15px 65px;
+        min-height: calc(100vh - 70px);
+      }
+
+      .login {
+        padding: 38px 23px 28px;
+      }
+
+      .brand-name {
+        letter-spacing: 2px;
+      }
+
+      #discord {
+        font-size: 10px;
+        letter-spacing: .6px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LUMIÈRES D'AMBIANCE -->
+  <div class="glow one" aria-hidden="true"></div>
+  <div class="glow two" aria-hidden="true"></div>
+
+  <!-- EN-TÊTE -->
+  <header class="topbar">
+    <a class="back" href="index.html">
+      ← RETOUR AU SITE
+    </a>
+
+    <span class="top-label">
+      DYNASTY 8 · ESPACE PROFESSIONNEL
+    </span>
+  </header>
+
+  <main>
+    <section class="login"
+             aria-labelledby="login-title">
+
+      <!-- COURONNE ROUGE NÉON -->
+      <svg class="crown"
+           viewBox="0 0 64 64"
+           fill="none"
+           xmlns="http://www.w3.org/2000/svg"
+           aria-hidden="true">
+        <path
+          d="M8 18L20 31L32 10L44 31L56 18L51 48H13L8 18Z"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linejoin="round"/>
+        <path
+          d="M13 53H51"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"/>
+        <circle cx="8" cy="18" r="3"
+                fill="currentColor"/>
+        <circle cx="32" cy="10" r="3"
+                fill="currentColor"/>
+        <circle cx="56" cy="18" r="3"
+                fill="currentColor"/>
+      </svg>
+
+      <h2 class="brand-name">DYNASTY 8</h2>
+
+      <p class="brand-caption">
+        L'IMMOBILIER D'EXCEPTION
+      </p>
+
+      <div class="separator" aria-hidden="true"></div>
+
+      <span class="eyebrow">
+        ACCÈS PRIVÉ · MEMBRES DE L'AGENCE
+      </span>
+
+      <h1 id="login-title">
+        Portail <em>Prestige</em>
+      </h1>
+
+      <p class="description">
+        Bienvenue dans votre espace professionnel
+        Dynasty 8. Connectez-vous avec votre compte
+        Discord pour accéder aux outils autorisés
+        selon votre rôle au sein de l'agence.
+      </p>
+
+      <!--
+        IMPORTANT :
+        L'identifiant "discord" est conservé
+        pour le JavaScript de connexion existant.
+      -->
+      <button id="discord" type="button">
+
+        <svg class="discord-icon"
+             viewBox="0 0 24 24"
+             fill="currentColor"
+             xmlns="http://www.w3.org/2000/svg"
+             aria-hidden="true">
+          <path d="M19.73 5.03a18.1 18.1 0 0 0-4.47-1.4l-.54 1.12a16.5 16.5 0 0 0-5.44 0l-.54-1.12a18.1 18.1 0 0 0-4.47 1.4C1.45 9.2.68 13.28 1.06 17.31a18.1 18.1 0 0 0 5.48 2.76l1.18-1.92c-.65-.25-1.28-.56-1.87-.92l.46-.36c3.6 1.69 7.79 1.69 11.39 0l.46.36c-.59.36-1.22.67-1.87.92l1.18 1.92a18.1 18.1 0 0 0 5.48-2.76c.45-4.67-.77-8.72-3.22-12.28ZM8.43 14.93c-1.05 0-1.91-.96-1.91-2.13s.84-2.13 1.91-2.13c1.08 0 1.93.96 1.91 2.13 0 1.17-.84 2.13-1.91 2.13Zm7.14 0c-1.05 0-1.91-.96-1.91-2.13s.84-2.13 1.91-2.13c1.08 0 1.93.96 1.91 2.13 0 1.17-.84 2.13-1.91 2.13Z"/>
+        </svg>
+
+        SE CONNECTER AVEC DISCORD
+        <span aria-hidden="true">↗</span>
+      </button>
+
+      <!-- Messages générés par agent-login.js -->
+      <p id="message" role="status"
+         aria-live="polite"></p>
+
+      <footer class="login-footer">
+        <span class="secure-dot"
+              aria-hidden="true"></span>
+        Accès réservé aux membres autorisés
+        · Dynasty 8
+      </footer>
+
+    </section>
+  </main>
+
+</body>
+</html>
