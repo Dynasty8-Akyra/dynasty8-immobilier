@@ -234,6 +234,27 @@
       // Appliquer les autorisations.
       applyPermissions(access);
 
+/* ==========================================
+   DYNASTY 8 — TITRE SELON LE RÔLE DISCORD
+   ========================================== */
+
+const dashboardTitle = document.querySelector(
+  "#dashboard h1"
+);
+
+if (dashboardTitle) {
+  if (access.canEditZones === true) {
+    dashboardTitle.textContent =
+      "Tableau de bord Direction";
+  } else if (access.role === "formation") {
+    dashboardTitle.textContent =
+      "Tableau de bord Formation";
+  } else {
+    dashboardTitle.textContent =
+      "Tableau de bord Agent";
+  }
+}
+
       // Ajouter les boutons de navigation.
       createMapNavigation(access);
 
