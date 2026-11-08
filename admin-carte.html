@@ -372,27 +372,7 @@ body[data-map-mode="admin"] .d8-prestige-heading-right {
   font-size: 11px;
 }
 
-/* DYNASTY 8 — ÉDITEUR REPLIABLE */
 
-#d8-toggle-editor {
-  background: #291238;
-  color: #f8dfff;
-  border: 1px solid #c36cff;
-  border-radius: 10px;
-  padding: 9px 14px;
-  font-size: 12px;
-  cursor: pointer;
-  box-shadow: 0 0 12px #a855f744;
-}
-
-#d8-toggle-editor:hover {
-  background: #48205f;
-}
-
-/* Priorité sur les anciens styles permanents */
-body[data-map-mode="admin"].d8-editor-collapsed #d8-draw-tools {
-  display: none !important;
-}
 
 /* ==========================================
    DYNASTY 8 — CARTE DIRECTION IMMERSIVE
@@ -506,16 +486,6 @@ body[data-map-mode="admin"] #direction-map #viewport {
     🔱 PRESTIGE CIRCLE
   </a>
   
-<button
-  id="d8-toggle-editor"
-  type="button"
-  aria-controls="d8-draw-tools"
-  aria-expanded="true"
-  hidden
->
-  ◉ Masquer l'éditeur
-</button>
-
 </header>
 
 
@@ -621,19 +591,69 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 </script>
 
+
+</script>
+
+<style>
+/* DYNASTY 8 — FLÈCHE DU CADRAN PRESTIGE */
+
+#d8-editor-arrow {
+  position: fixed;
+  top: 50%;
+  right: min(720px, 76vh, 48vw);
+  transform: translate(50%, -50%);
+  z-index: 100001;
+
+  width: 42px;
+  height: 66px;
+
+  border: 1px solid #d982e8;
+  border-radius: 14px;
+  background: #25102f;
+  color: #f5c8ff;
+
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 0 18px #d65cbb77;
+  transition: right .3s ease, background .2s ease;
+}
+
+#d8-editor-arrow:hover {
+  background: #482050;
+}
+
+body[data-map-mode="admin"].d8-editor-collapsed #d8-draw-tools {
+  display: none !important;
+}
+
+body.d8-editor-collapsed #d8-editor-arrow {
+  right: 0;
+  transform: translate(0, -50%);
+  border-radius: 14px 0 0 14px;
+}
+</style>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const button = document.getElementById("d8-toggle-editor");
+  const arrow = document.createElement("button");
 
-  if (!button) return;
+  arrow.id = "d8-editor-arrow";
+  arrow.type = "button";
+  arrow.textContent = "›";
+  arrow.title = "Masquer l'éditeur";
+  arrow.setAttribute("aria-label", "Masquer l'éditeur");
+  arrow.setAttribute("aria-expanded", "true");
+  arrow.hidden = true;
+
+  document.body.appendChild(arrow);
 
   const observer = new MutationObserver(() => {
     const editor = document.getElementById("d8-draw-tools");
 
-    if (editor && !button.dataset.ready) {
-      button.dataset.ready = "true";
-      button.hidden = false;
-    }
+    if (!editor) return;
+
+    arrow.hidden = false;
+    observer.disconnect();
   });
 
   observer.observe(document.body, {
@@ -641,19 +661,18 @@ document.addEventListener("DOMContentLoaded", () => {
     subtree: true
   });
 
-  button.addEventListener("click", () => {
-    const collapsed = document.body.classList.toggle(
+  arrow.addEventListener("click", () => {
+    const closed = document.body.classList.toggle(
       "d8-editor-collapsed"
     );
 
-    button.textContent = collapsed
-      ? "◉ Ouvrir l'éditeur"
-      : "◉ Masquer l'éditeur";
+    arrow.textContent = closed ? "‹" : "›";
+    arrow.title = closed
+      ? "Ouvrir l'éditeur"
+      : "Masquer l'éditeur";
 
-    button.setAttribute(
-      "aria-expanded",
-      String(!collapsed)
-    );
+    arrow.setAttribute("aria-label", arrow.title);
+    arrow.setAttribute("aria-expanded", String(!closed));
   });
 });
 </script>
