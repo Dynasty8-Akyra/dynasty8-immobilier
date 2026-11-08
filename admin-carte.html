@@ -324,62 +324,6 @@ body[data-map-mode="admin"] #viewport {
   <!-- BIBLIOTHÈQUE LEAFLET -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- DYNASTY 8 — TEST TEMPORAIRE PRESTIGE -->
-<div id="d8-prestige-test" style="
-  position:fixed;
-  left:20px;
-  bottom:20px;
-  z-index:999999;
-  background:#190e24;
-  color:#f8d9ed;
-  border:1px solid #b34580;
-  border-radius:14px;
-  padding:16px 20px;
-  font-family:Arial,sans-serif;
-  font-size:13px;
-  box-shadow:0 0 20px #b3458033;
-">
-  🔱 Vérification Prestige en cours...
-</div>
-
-<script>
-(async function () {
-  const panel = document.getElementById(
-    "d8-prestige-test"
-  );
-
-  try {
-    if (!window.D8Cloud) {
-      throw new Error("Connexion non initialisée");
-    }
-
-    const status = await window.D8Cloud.role();
-    const prestige = status.prestige || {};
-
-    const direction =
-      status.role === "direction";
-
-    const prestigeMember =
-      prestige.isMember === true;
-
-    const prestigeDirection =
-      prestige.isDirection === true;
-
-    panel.textContent =
-      "👑 Direction : " +
-      (direction ? "OUI" : "NON") +
-      " | 🔱 Prestige : " +
-      (prestigeMember ? "OUI" : "NON") +
-      " | Gestion Prestige : " +
-      (prestigeDirection ? "AUTORISÉE" : "REFUSÉE");
-
-  } catch (error) {
-    panel.textContent =
-      "🔱 Test impossible : " + error.message;
-  }
-})();
-</script>
-
 </body>
 </html>
 
