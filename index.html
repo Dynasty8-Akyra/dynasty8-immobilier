@@ -530,6 +530,197 @@ footer {
     );
 }
 
+/* ==========================================
+   DYNASTY 8 — RED NEON PRESTIGE
+   ANIMATIONS LUXE
+   ========================================== */
+
+/* Lumières rouges vivantes sur le fond */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -15%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 20% 65%,
+      rgba(255, 0, 55, .48),
+      transparent 42%
+    ),
+    radial-gradient(
+      ellipse at 80% 30%,
+      rgba(230, 0, 45, .38),
+      transparent 45%
+    );
+  mix-blend-mode: screen;
+  animation: d8-red-ambient 10s ease-in-out infinite alternate;
+}
+
+@keyframes d8-red-ambient {
+  0% {
+    transform: translate(-3%, 2%) scale(1);
+    opacity: .65;
+  }
+  100% {
+    transform: translate(3%, -3%) scale(1.12);
+    opacity: 1;
+  }
+}
+
+/* Titre Dynasty 8 lumineux */
+.hero h1 {
+  color: #fff5f6;
+  text-shadow:
+    0 0 12px rgba(255, 80, 100, .35),
+    0 0 35px rgba(240, 0, 45, .28),
+    0 5px 25px #000b;
+  animation: d8-title-glow 5s ease-in-out infinite;
+}
+
+@keyframes d8-title-glow {
+  0%, 100% {
+    text-shadow:
+      0 0 10px #ff476644,
+      0 0 30px #df123844,
+      0 5px 25px #000b;
+  }
+  50% {
+    text-shadow:
+      0 0 18px #ff476688,
+      0 0 50px #e7194b77,
+      0 0 85px #9b092b55;
+  }
+}
+
+/* Couronne néon */
+.hero-crown {
+  animation: d8-crown-pulse 3.5s ease-in-out infinite;
+}
+
+@keyframes d8-crown-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 7px #ff3455);
+  }
+  50% {
+    filter: drop-shadow(0 0 22px #ff3455);
+  }
+}
+
+/* Ligne lumineuse animée */
+.hero-rule {
+  overflow: visible;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #a30d2a,
+    #ff3859,
+    #a30d2a,
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: d8-line-flow 4s linear infinite;
+}
+
+@keyframes d8-line-flow {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* Boutons néon */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(
+    120deg,
+    #65071b,
+    #df1238,
+    #970c29
+  );
+  box-shadow:
+    0 0 12px #f0193b66,
+    0 0 28px #f0193b33,
+    inset 0 0 12px #ff879433;
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    #ffffff44 48%,
+    transparent 75%
+  );
+  transform: translateX(-150%);
+  transition: transform .7s ease;
+}
+
+.btn-primary:hover::after {
+  transform: translateX(150%);
+}
+
+.btn-primary:hover {
+  box-shadow:
+    0 0 18px #ff234c,
+    0 0 42px #ff234c77;
+}
+
+/* Cartes avec éclairage rouge */
+.feature-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform .35s ease,
+    border-color .35s ease,
+    box-shadow .35s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-7px);
+  border-color: #ff3657;
+  box-shadow:
+    0 0 22px #e7194b33,
+    0 15px 40px #0008;
+}
+
+.feature-icon {
+  filter: drop-shadow(0 0 10px #ff244b77);
+}
+
+/* Apparition progressive au défilement */
+.d8-reveal {
+  opacity: 0;
+  transform: translateY(35px);
+  transition:
+    opacity .8s ease,
+    transform .8s ease;
+}
+
+.d8-reveal.d8-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Respect des préférences d'animation */
+@media (prefers-reduced-motion: reduce) {
+  .hero::before,
+  .hero h1,
+  .hero-crown,
+  .hero-rule {
+    animation: none !important;
+  }
+
+  .d8-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 </style>
 </head>
 
@@ -652,22 +843,6 @@ footer {
     </div>
   </section>
 
-  <section class="section agent-section">
-    <div class="section-inner">
-      <div class="agent-panel">
-        <h2>Espace Agent Dynasty 8</h2>
-        <p>
-          Un espace professionnel réservé à notre équipe
-          pour gérer les biens immobiliers et accompagner
-          les clients.
-        </p>
-        <a class="btn btn-outline" href="agent-login.html">
-          ACCÉDER À L'ESPACE AGENT ↗
-        </a>
-      </div>
-    </div>
-  </section>
-
   <section class="section contact-section" id="contact">
     <div class="section-inner">
       <span class="eyebrow">DYNASTY 8 · LOS SANTOS</span>
@@ -713,6 +888,38 @@ document.addEventListener("DOMContentLoaded", () => {
       toggle.setAttribute("aria-label", "Ouvrir le menu");
     });
   });
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const sections = document.querySelectorAll(
+    ".section-heading, .feature-card, .agent-panel, .contact-section h2"
+  );
+
+  if (
+    !("IntersectionObserver" in window) ||
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return;
+  }
+
+  sections.forEach(element => {
+    element.classList.add("d8-reveal");
+  });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+
+      entry.target.classList.add("d8-visible");
+      observer.unobserve(entry.target);
+    });
+  }, {
+    threshold: 0.12
+  });
+
+  sections.forEach(element => observer.observe(element));
 });
 </script>
 
