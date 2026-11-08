@@ -131,6 +131,52 @@
         agent-dashboard.js selon les permissions Discord.
       -->
 
+<!-- DYNASTY 8 — ACCÈS ARCHIVES CLIENTS -->
+<section id="d8-archives-access" class="d8-archives-access" hidden>
+  <a href="archive-clients.html" class="d8-archives-card">
+    <span>♛ ARCHIVES CLIENTS</span>
+    <small>Consulter et créer les dossiers clients RP</small>
+  </a>
+</section>
+
+<style>
+.d8-archives-access {
+  margin: 16px 0 34px;
+}
+
+.d8-archives-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  min-height: 96px;
+  padding: 24px;
+  border: 1px solid #d52a57;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #330b19, #170810);
+  color: #fff0f3;
+  text-decoration: none;
+  box-shadow: 0 0 15px #ff315e22;
+  transition: .25s;
+}
+
+.d8-archives-card span {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.d8-archives-card small {
+  color: #d5a2b2;
+  font-size: 12px;
+}
+
+.d8-archives-card:hover {
+  border-color: #ff557b;
+  box-shadow: 0 0 25px #ff315e66;
+  transform: translateY(-3px);
+}
+</style>
+
       <!-- GESTION DES ANNONCES -->
       <section class="list-section">
 
@@ -186,6 +232,27 @@
   <footer>
     DYNASTY 8 · L'IMMOBILIER D'EXCEPTION
   </footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const archives = document.getElementById("d8-archives-access");
+
+  if (!archives || !window.D8Cloud) return;
+
+  try {
+    const access = await D8Cloud.role();
+
+    if (
+      access.role === "direction" ||
+      access.role === "confirme"
+    ) {
+      archives.hidden = false;
+    }
+  } catch (error) {
+    console.warn("Archives Clients : accès non autorisé.");
+  }
+});
+</script>
 
 </body>
 </html>
