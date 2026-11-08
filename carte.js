@@ -33,13 +33,18 @@ if (!root) {
   // COULEURS DYNASTY 8
   // =====================================
 
+ 
+  // DYNASTY 8 — RED NEON PRESTIGE V2
+  // Palette officielle du site
+
   const COLORS = {
-    lux: "#bb65ff",
-    res: "#4daeff",
-    rural: "#28e6ed",
-    ind: "#ff69b9",
-    excluded: "#8e92a5"
+    lux: "#e51c3d",       // Villas de luxe
+    res: "#c72b45",       // Résidentiel
+    rural: "#722033",     // Rural
+    ind: "#8b2034",       // Garages et commerces
+    excluded: "#260b13"   // Zones inhabitables
   };
+
 
   // =====================================
   // QUARTIERS ET ZONES IMMOBILIERES
@@ -1223,14 +1228,23 @@ if (panel && typeof ResizeObserver !== "undefined") {
     const active = key === id;
     const excluded = zones[key].category === "excluded";
 
+   
     polygon.setStyle({
       weight: active ? 5 : 3,
       opacity: 1,
-      color: excluded ? "#8e92a5" : COLORS[zones[key].category],
-      fillColor: excluded ? "#252633" : COLORS[zones[key].category],
+
+      color: excluded
+        ? "#260b13"
+        : COLORS[zones[key].category],
+
+      fillColor: excluded
+        ? "#16070c"
+        : COLORS[zones[key].category],
+
       fillOpacity: excluded
         ? (active ? 0.82 : 0.72)
         : (active ? 0.52 : 0.38),
+
       dashArray: excluded ? "7 6" : null
     });
   }
@@ -1320,27 +1334,30 @@ if (panel && typeof ResizeObserver !== "undefined") {
     
     const color = COLORS[z.category];
 
+   
     const polygon = L.polygon(z.points, {
-  color: z.category === "excluded" ? "#8e92a5" : color,
-  weight: 3,
-  opacity: 1,
+      color: z.category === "excluded"
+        ? "#260b13"
+        : color,
 
-  fillColor: z.category === "excluded"
-    ? "#252633"
-    : color,
+      weight: 3,
+      opacity: 1,
 
-  fillOpacity: z.category === "excluded"
-    ? 0.72
-    : 0.38,
+      fillColor: z.category === "excluded"
+        ? "#16070c"
+        : color,
 
-  interactive: true,
-  className: "d8-neon-polygon",
+      fillOpacity: z.category === "excluded"
+        ? 0.72
+        : 0.38,
 
-  dashArray: z.category === "excluded"
-    ? "7 6"
-    : null
+      interactive: true,
+      className: "d8-neon-polygon",
 
-});
+      dashArray: z.category === "excluded"
+        ? "7 6"
+        : null
+    });
 
 if (
   currentFilter === "all" ||
