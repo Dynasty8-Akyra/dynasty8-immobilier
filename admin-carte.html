@@ -238,10 +238,31 @@ body[data-map-mode="admin"] #viewport {
 </head>
 
 <body>
-  <header>
-    <a href="agent-dashboard.html">← ESPACE AGENT</a>
-    <span>DYNASTY 8 · DIRECTION</span>
-  </header>
+  
+<header>
+  <a href="agent-dashboard.html">← ESPACE AGENT</a>
+
+  <span>DYNASTY 8 · DIRECTION</span>
+
+  <a
+    id="d8-prestige-entry"
+    href="prestige-circle.html"
+    hidden
+    style="
+      color:#f7d5ff;
+      border:1px solid #a855f7;
+      border-radius:10px;
+      padding:9px 15px;
+      text-decoration:none;
+      font-size:12px;
+      letter-spacing:1px;
+      box-shadow:0 0 15px #a855f733;
+    "
+  >
+    🔱 PRESTIGE CIRCLE
+  </a>
+</header>
+
 
   <main class="direction-main">
     <section class="login" id="access-check">
@@ -323,6 +344,27 @@ body[data-map-mode="admin"] #viewport {
 
   <!-- BIBLIOTHÈQUE LEAFLET -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const entry = document.getElementById("d8-prestige-entry");
+
+  if (!entry || !window.D8Cloud) return;
+
+  try {
+    const status = await window.D8Cloud.role();
+
+    if (
+      status.role === "direction" &&
+      status.prestige?.isDirection === true
+    ) {
+      entry.hidden = false;
+    }
+  } catch (error) {
+    console.warn("Accès Prestige non disponible.");
+  }
+});
+</script>
 
 </body>
 </html>
