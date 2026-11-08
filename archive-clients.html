@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dynasty 8 — Archives Clients</title>
+<style>
+*{box-sizing:border-box}
+:root{--red:#ff315e;--dark:#09070b;--panel:#180d15}
+body{margin:0;background:radial-gradient(ellipse at top right,#501126,transparent 55%),var(--dark);color:#fff;font-family:Segoe UI,Arial,sans-serif}
+header{height:85px;display:flex;align-items:center;justify-content:space-between;padding:0 35px;background:#110910;border-bottom:1px solid #9d2548}
+.logo{font-family:Georgia,serif;font-size:30px;letter-spacing:3px}
+.logo span{color:var(--red);text-shadow:0 0 12px var(--red),0 0 35px var(--red);animation:glow 3s infinite alternate}
+@keyframes glow{from{filter:brightness(.85)}to{filter:brightness(1.5)}}
+.sub{font-size:11px;color:#e68da6;letter-spacing:2px}
+.layout{display:grid;grid-template-columns:330px 1fr;min-height:calc(100vh - 85px)}
+aside{padding:25px 18px;background:#140a12;border-right:1px solid #6b1b35}
+h2{font-family:Georgia,serif;font-size:29px;font-weight:normal}
+input,textarea{background:#24121d;border:1px solid #81304b;color:white;padding:13px;border-radius:9px;width:100%;font:inherit}
+input:focus,textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 15px #ff315e44}
+.client{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:15px;margin-top:8px;background:transparent;border:0;border-left:3px solid transparent;color:white;cursor:pointer;transition:.25s}
+.client:hover{background:#431427;transform:translateX(4px)}
+.client.active{background:linear-gradient(90deg,#80203e,#29101d);border-left-color:var(--red);box-shadow:0 0 20px #ff315e30}
+.avatar{width:43px;height:43px;border-radius:50%;background:#512036;display:flex;align-items:center;justify-content:center;color:#ffc4d4;font:20px Georgia,serif;flex-shrink:0}
+.client small{display:block;color:#c09ba8;margin-top:5px}
+main{padding:35px 45px;min-width:0}
+.crumb{font-size:12px;letter-spacing:2px;color:#d07894}
+.hero{display:flex;align-items:center;gap:22px;padding:28px 0;border-bottom:1px solid #7e2c46}
+.avatar.big{width:88px;height:88px;flex:0 0 88px;font-size:34px;border:1px solid var(--red);box-shadow:0 0 25px #ff315e70;line-height:1;padding:0}
+h1{font:normal 43px Georgia,serif;margin:6px 0}
+.muted{color:#b99ca8;font-size:13px;line-height:1.7}
+.tabs{display:flex;gap:5px;overflow-x:auto;border-bottom:1px solid #713049;margin-top:20px}
+.tab{background:none;border:0;color:#bb94a3;padding:16px;cursor:pointer;white-space:nowrap;transition:.2s}
+.tab:hover{color:white;background:#381326}
+.tab.active{color:#ffbbcd;border-bottom:2px solid var(--red);text-shadow:0 0 12px var(--red)}
+.content{animation:appear .3s ease}
+@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.card{background:linear-gradient(135deg,#381321,#170c13);border:1px solid #83304d;border-radius:12px;padding:22px;transition:.25s}
+.card:hover{transform:translateY(-4px);border-color:var(--red);box-shadow:0 0 25px #ff315e35}
+.card small{color:#c39aaa}
+.card strong{display:block;font-size:23px;margin:12px 0}
+.item{padding:18px 5px;border-bottom:1px solid #59243a;display:flex;justify-content:space-between;gap:15px;align-items:center}
+.item small{display:block;color:#ad8c9b;margin-top:7px}
+.tag{color:#ffb2c7;background:#471428;border:1px solid #9a3856;border-radius:25px;padding:7px 11px;font-size:12px}
+button.action{background:linear-gradient(135deg,#d52a57,#851b3d);border:1px solid #ff6488;color:white;border-radius:9px;padding:12px 18px;cursor:pointer;transition:.2s}
+button.action:hover{box-shadow:0 0 23px #ff315e80;transform:translateY(-2px)}
+.note{background:#2d1120;border-left:2px solid var(--red);padding:16px;margin:12px 0}
+.field{margin:15px 0}
+.field label{display:block;color:#d1a4b4;font-size:13px;margin-bottom:8px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid #713049}.clients{display:flex;overflow:auto}.client{min-width:210px}main{padding:22px}.cards{grid-template-columns:1fr}h1{font-size:30px}header{padding:0 16px}.logo{font-size:22px}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="sub">IMMOBILIER · LOS SANTOS</div>
+    <div class="logo">DYNASTY <span>8</span></div>
+  </div>
+  <div class="sub">♛ ARCHIVE CLIENTS GLOBALE</div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="sub">BASE DE DONNÉES INTERNE</div>
+    <h2>Les archives</h2>
+    <input id="search" placeholder="Rechercher un client...">
+    <div class="clients" id="clients"></div>
+  </aside>
+
+  <main>
+    <div class="crumb">DIRECTION / ARCHIVES / <span id="ref"></span></div>
+    <section class="hero">
+      <div class="avatar big" id="avatar"></div>
+      <div>
+        <div class="sub">DOSSIER INDIVIDUEL · CLIENT RP</div>
+        <h1 id="name"></h1>
+        <div class="muted" id="agent"></div>
+      </div>
+    </section>
+
+    <nav class="tabs" id="tabs"></nav>
+    <section class="content" id="content"></section>
+  </main>
+</div>
+
+<script>
+const clients = [
+  {
+    id:"D8-001",name:"Alex Morgan",discord:"alex_morgan",
+    agent:"Agent Rivera",bank:125000,debts:20000,
+    properties:[{name:"Villa Eclipse",area:"Vinewood Hills",value:2400000}],
+    history:["Acquisition de la Villa Eclipse","Visite immobilière confirmée"],
+    visits:["Visite de suivi — Villa Eclipse"],
+    notes:["Recherche des propriétés à Vinewood Hills."]
+  },
+  {
+    id:"D8-002",name:"Victoria Hayes",discord:"victoria_h",
+    agent:"Agent Laurent",bank:null,debts:null,
+    properties:[
+      {name:"Résidence Royal",area:"Rockford Hills",value:1350000},
+      {name:"Maison des Palmes",area:"Mirror Park",value:780000}
+    ],
+    history:["Ajout au registre immobilier"],
+    visits:[],notes:["Privilégie les propriétés discrètes."]
+  },
+  {
+    id:"D8-003",name:"Jordan Williams",discord:"jordan_w",
+    agent:"Agent Rivera",bank:45000,debts:0,
+    properties:[{name:"Loft Alta",area:"Downtown",value:450000}],
+    history:["Acquisition du Loft Alta"],
+    visits:["Demande de visite en attente"],notes:[]
+  }
+];
+
+const sections = [
+  ["overview","Vue générale"],
+  ["identity","Identité"],
+  ["properties","Patrimoine"],
+  ["finance","Finances"],
+  ["history","Transactions"],
+  ["visits","Visites"],
+  ["notes","Notes"]
+];
+
+let current=0,tab="overview";
+const el=id=>document.getElementById(id);
+const money=n=>n===null?"Non renseigné":n.toLocaleString("fr-FR")+" $";
+const safe=s=>String(s).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",
+  '"':"&quot;","'":"&#39;"
+}[c]));
+
+function renderClients(){
+  const q=el("search").value.toLowerCase();
+  el("clients").innerHTML=clients.map((c,i)=>({c,i}))
+  .filter(({c})=>c.name.toLowerCase().includes(q)||c.id.toLowerCase().includes(q))
+  .map(({c,i})=>`
+    <button class="client ${i===current?"active":""}" onclick="choose(${i})">
+      <span class="avatar">${c.name.split(" ").map(x=>x[0]).join("")}</span>
+      <span><b>${safe(c.name)}</b><small>${c.id} · ${c.properties.length} bien(s)</small></span>
+    </button>
+  `).join("");
+}
+
+function choose(i){
+  current=i;tab="overview";renderClients();render();
+}
+
+function openTab(t){
+  tab=t;render();
+}
+
+function render(){
+  const c=clients[current];
+  el("name").textContent=c.name;
+  el("ref").textContent=c.id;
+  el("agent").textContent=c.id+" · "+c.agent;
+  el("avatar").textContent=c.name.split(" ").map(x=>x[0]).join("");
+
+  el("tabs").innerHTML=sections.map(([id,label])=>`
+    <button class="tab ${tab===id?"active":""}" onclick="openTab('${id}')">
+      ${label}
+    </button>
+  `).join("");
+
+  const total=c.properties.reduce((sum,p)=>sum+p.value,0);
+  const net=c.bank===null||c.debts===null?null:total+c.bank-c.debts;
+  let html="";
+
+  if(tab==="overview"){
+    html=`
+      <h2>Vue générale</h2>
+      <div class="cards">
+        <div class="card"><small>Patrimoine immobilier connu</small>
+          <strong>${money(total)}</strong><small>${c.properties.length} propriété(s)</small></div>
+        <div class="card"><small>Solde bancaire déclaré</small>
+          <strong>${money(c.bank)}</strong><small>Déclaration du joueur</small></div>
+        <div class="card"><small>Patrimoine net estimé</small>
+          <strong>${money(net)}</strong><small>Estimation indicative</small></div>
+      </div>
+      <div class="item"><div><b>Agent référent</b><small>${safe(c.agent)}</small></div>
+      <span class="tag">DOSSIER ACTIF</span></div>
+    `;
+  }
+
+  if(tab==="identity"){
+    html=`<h2>Identité du client</h2>`+
+    [["Nom RP",c.name],["Pseudo Discord",c.discord],["Agent référent",c.agent],
+    ["Référence",c.id]].map(([k,v])=>`
+      <div class="item"><b>${k}</b><span>${safe(v)}</span></div>
+    `).join("");
+  }
+
+  if(tab==="properties"){
+    html=`<h2>Patrimoine immobilier</h2>`+
+    c.properties.map(p=>`
+      <div class="item"><div><b>⌂ ${safe(p.name)}</b><small>${safe(p.area)}</small></div>
+      <span class="tag">${money(p.value)}</span></div>
+    `).join("");
+  }
+
+  if(tab==="finance"){
+    html=`
+      <h2>Informations financières</h2>
+      <p class="muted">Montants déclarés par le joueur, non vérifiés.</p>
+      <div class="field"><label>Solde bancaire déclaré ($)</label>
+      <input id="bank" type="number" min="0" value="${c.bank??""}"></div>
+      <div class="field"><label>Dettes connues ($)</label>
+      <input id="debts" type="number" min="0" value="${c.debts??""}"></div>
+      <button class="action" onclick="saveFinance()">Enregistrer</button>
+    `;
+  }
+
+  if(tab==="history"){
+    html=`<h2>Historique des transactions</h2>`+
+    c.history.map(x=>`<div class="item"><b>${safe(x)}</b><span class="tag">ARCHIVÉ</span></div>`).join("");
+  }
+
+  if(tab==="visits"){
+    html=`<h2>Rendez-vous et visites</h2>`+
+    (c.visits.map(x=>`<div class="item"><b>${safe(x)}</b><span class="tag">SUIVI</span></div>`).join("")||
+    '<p class="muted">Aucune visite enregistrée.</p>');
+  }
+
+  if(tab==="notes"){
+    html=`<h2>Notes internes</h2>`+
+    c.notes.map(n=>`<div class="note">${safe(n)}</div>`).join("")+
+    `<textarea id="note" rows="3" placeholder="Ajouter une note..."></textarea>
+    <p><button class="action" onclick="addNote()">Ajouter une note</button></p>`;
+  }
+
+  el("content").innerHTML=html;
+}
+
+function saveFinance(){
+  const c=clients[current];
+  c.bank=el("bank").value===""?null:Math.max(0,Number(el("bank").value));
+  c.debts=el("debts").value===""?null:Math.max(0,Number(el("debts").value));
+  render();
+  alert("Modification enregistrée dans la démonstration.");
+}
+
+function addNote(){
+  const text=el("note").value.trim();
+  if(!text)return;
+  clients[current].notes.push(text);
+  render();
+}
+
+el("search").addEventListener("input",renderClients);
+renderClients();
+render();
+</script>
+</body>
+</html>
