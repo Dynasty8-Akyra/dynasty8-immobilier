@@ -1103,7 +1103,22 @@ console.log("Zoom :", map.getZoom());
 <div class="chip d8-property-card">
   <span class="d8-property-icon" aria-hidden="true">
     ${
-      /piscine/i.test(item) ? "♒" :
+      /piscine/i.test(item) ? "
+<svg
+  viewBox="0 0 24 24"
+  width="23"
+  height="23"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.8"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+>
+  <path d="M2 8c2.5 0 2.5 3 5 3s2.5-3 5-3 2.5 3 5 3 2.5-3 5-3"/>
+  <path d="M2 15c2.5 0 2.5 3 5 3s2.5-3 5-3 2.5 3 5 3 2.5-3 5-3"/>
+</svg>
+" :
       /appartement|studio|penthouse/i.test(item) ? "▥" :
       /garage|atelier|entrepôt|hangar/i.test(item) ? "▣" :
       /terrain|ferme/i.test(item) ? "❀" :
