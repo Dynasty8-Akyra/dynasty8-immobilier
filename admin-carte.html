@@ -720,7 +720,7 @@ button {
 
 <div class="d8-prestige-heading">
   <div class="d8-prestige-brand">
-    <span class="d8-prestige-crown">
+    
 <svg class="d8-prestige-crown"
      viewBox="0 0 64 64"
      width="30"
@@ -740,7 +740,7 @@ button {
   <circle cx="32" cy="10" r="3" fill="currentColor"/>
   <circle cx="56" cy="18" r="3" fill="currentColor"/>
 </svg>
-</span>
+
     <div>
       <strong>DYNASTY 8</strong>
       <small>PRESTIGE · DIRECTION</small>
@@ -1009,6 +1009,102 @@ body[data-map-mode="admin"] #d8-draw-tools button:hover {
   }
 }
  
+/* ==========================================
+   DYNASTY 8 — DIRECTION PRESTIGE V3
+   Correction des derniers panneaux violets
+   ========================================== */
+
+/* Variables de couleurs pour l'éditeur */
+body[data-map-mode="admin"] #d8-draw-tools {
+  --d8-purple: #e51c3d;
+  --d8-violet: #ff315b;
+  --d8-accent: #ff5576;
+  --d8-border: #9f2945;
+  --d8-panel: #19070f;
+  --d8-text: #fff1f3;
+}
+
+/* Les deux colonnes du cadran */
+body[data-map-mode="admin"] #d8-draw-tools
+.d8-prestige-editor-grid > .d8-prestige-editor-section {
+  background: linear-gradient(
+    160deg,
+    #260b17 0%,
+    #180810 55%,
+    #10060b 100%
+  ) !important;
+  background-color: #180810 !important;
+  border: 1px solid #9f2945 !important;
+  box-shadow:
+    inset 0 0 22px rgba(229,28,61,.07),
+    0 0 12px rgba(229,28,61,.10) !important;
+}
+
+/* Titres des deux panneaux */
+body[data-map-mode="admin"] #d8-draw-tools
+.d8-prestige-editor-label {
+  background: linear-gradient(
+    90deg, #3b0d20, #250a16
+  ) !important;
+  color: #ffd0db !important;
+  border-bottom: 1px solid #a3314e !important;
+}
+
+/* Zone vide des informations */
+body[data-map-mode="admin"] #d8-draw-tools
+.d8-prestige-editor-empty {
+  background: transparent !important;
+  color: #dcb4c0 !important;
+}
+
+/* Contenu des panneaux */
+body[data-map-mode="admin"] #d8-draw-tools
+.d8-prestige-editor-grid {
+  background: transparent !important;
+}
+
+/* Barres de défilement rouges */
+body[data-map-mode="admin"] #d8-draw-tools
+.d8-prestige-editor-section {
+  scrollbar-color: #a82b49 #180810;
+  scrollbar-width: thin;
+}
+
+/* Champs de formulaire */
+body[data-map-mode="admin"] #d8-draw-tools input,
+body[data-map-mode="admin"] #d8-draw-tools select,
+body[data-map-mode="admin"] #d8-draw-tools textarea {
+  background: #10060c !important;
+  border-color: #96334d !important;
+  color: #fff0f4 !important;
+}
+
+/* Couronne du cadran */
+body[data-map-mode="admin"] #d8-draw-tools
+svg.d8-prestige-editor-crown {
+  display: block !important;
+  width: 30px !important;
+  height: 30px !important;
+  margin: 0 auto 6px !important;
+  color: #ff708a !important;
+  filter: drop-shadow(0 0 10px #ff315b);
+}
+
+/* Bouton Enregistrer */
+body[data-map-mode="admin"] #d8-zone-save {
+  background: linear-gradient(
+    120deg, #aa1435, #ed2348
+  ) !important;
+  border: 1px solid #ff849d !important;
+  box-shadow: 0 0 18px #e51c3d40 !important;
+}
+
+/* Bouton Supprimer */
+body[data-map-mode="admin"] #d8-zone-delete {
+  background: #2c0a17 !important;
+  border: 1px solid #a53a55 !important;
+}
+
 </style>
 
 <script>
