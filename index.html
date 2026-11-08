@@ -150,18 +150,33 @@ button { font: inherit; }
   background: #140609;
 }
 
+
 .hero-image {
   position: absolute;
   inset: 0;
   z-index: -3;
+
   background-image:
-    linear-gradient(90deg,rgba(9,3,7,.65),rgba(30,4,11,.2),rgba(9,3,7,.5)),
-    linear-gradient(0deg,#090608 0%,transparent 35%,#09060855 100%),
+    linear-gradient(
+      90deg,
+      rgba(8, 0, 4, .82) 0%,
+      rgba(48, 0, 12, .55) 45%,
+      rgba(8, 0, 4, .72) 100%
+    ),
+    linear-gradient(
+      0deg,
+      #090407 0%,
+      transparent 55%,
+      rgba(8, 0, 4, .55) 100%
+    ),
     url("https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2200&q=85");
+
   background-size: cover;
   background-position: center;
+  filter: brightness(.68) contrast(1.15) saturate(1.25);
   animation: hero-zoom 18s ease-in-out infinite alternate;
 }
+
 
 .hero::before {
   content: "";
