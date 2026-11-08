@@ -233,6 +233,28 @@ body[data-map-mode="admin"] #viewport {
   }
 }
 
+/* DYNASTY 8 — PROTECTION DES BANNIÈRES */
+
+/* Conserver l'en-tête Direction au-dessus de la carte */
+body[data-map-mode="admin"] > header {
+  position: relative;
+  z-index: 1000;
+  isolation: isolate;
+}
+
+/* Conserver la bannière Prestige et les filtres */
+#direction-map .map-toolbar,
+#direction-map .d8-prestige-heading {
+  position: relative;
+  z-index: 100;
+}
+
+/* Éviter que la carte recouvre les bannières */
+#direction-map .map-layout {
+  position: relative;
+  z-index: 1;
+}
+
 </style>
 
 </head>
