@@ -3441,3 +3441,17 @@ body[data-map-mode="public"] #zonePanel .d8-status-dot {
   background: #ff536d !important;
   box-shadow: 0 0 10px #e51c3d !important;
 }
+
+/* COURONNE DYNASTY 8 — ROUGE NÉON */
+
+body[data-map-mode="public"] .d8-prestige-crown {
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+  margin-right: 7px;
+
+  filter:
+    drop-shadow(0 0 5px #e51c3d)
+    drop-shadow(0 0 11px rgba(229,28,61,.5));
+}
