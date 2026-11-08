@@ -5,57 +5,458 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dynasty 8 — Archives Clients</title>
-<style>
-*{box-sizing:border-box}
-:root{--red:#ff315e;--dark:#09070b;--panel:#180d15}
-body{margin:0;background:radial-gradient(ellipse at top right,#501126,transparent 55%),var(--dark);color:#fff;font-family:Segoe UI,Arial,sans-serif}
-header{height:85px;display:flex;align-items:center;justify-content:space-between;padding:0 35px;background:#110910;border-bottom:1px solid #9d2548}
-.logo{font-family:Georgia,serif;font-size:30px;letter-spacing:3px}
-.logo span{color:var(--red);text-shadow:0 0 12px var(--red),0 0 35px var(--red);animation:glow 3s infinite alternate}
-@keyframes glow{from{filter:brightness(.85)}to{filter:brightness(1.5)}}
-.sub{font-size:11px;color:#e68da6;letter-spacing:2px}
-.layout{display:grid;grid-template-columns:330px 1fr;min-height:calc(100vh - 85px)}
-aside{padding:25px 18px;background:#140a12;border-right:1px solid #6b1b35}
-h2{font-family:Georgia,serif;font-size:29px;font-weight:normal}
-input,textarea{background:#24121d;border:1px solid #81304b;color:white;padding:13px;border-radius:9px;width:100%;font:inherit}
-input:focus,textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 15px #ff315e44}
-.client{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:15px;margin-top:8px;background:transparent;border:0;border-left:3px solid transparent;color:white;cursor:pointer;transition:.25s}
-.client:hover{background:#431427;transform:translateX(4px)}
-.client.active{background:linear-gradient(90deg,#80203e,#29101d);border-left-color:var(--red);box-shadow:0 0 20px #ff315e30}
-.avatar{width:43px;height:43px;border-radius:50%;background:#512036;display:flex;align-items:center;justify-content:center;color:#ffc4d4;font:20px Georgia,serif;flex-shrink:0}
-.client small{display:block;color:#c09ba8;margin-top:5px}
-main{padding:35px 45px;min-width:0}
-.crumb{font-size:12px;letter-spacing:2px;color:#d07894}
-.hero{display:flex;align-items:center;gap:22px;padding:28px 0;border-bottom:1px solid #7e2c46}
-.avatar.big{width:88px;height:88px;flex:0 0 88px;font-size:34px;border:1px solid var(--red);box-shadow:0 0 25px #ff315e70;line-height:1;padding:0}
-h1{font:normal 43px Georgia,serif;margin:6px 0}
-.muted{color:#b99ca8;font-size:13px;line-height:1.7}
-.tabs{display:flex;gap:5px;overflow-x:auto;border-bottom:1px solid #713049;margin-top:20px}
-.tab{background:none;border:0;color:#bb94a3;padding:16px;cursor:pointer;white-space:nowrap;transition:.2s}
-.tab:hover{color:white;background:#381326}
-.tab.active{color:#ffbbcd;border-bottom:2px solid var(--red);text-shadow:0 0 12px var(--red)}
-.content{animation:appear .3s ease}
-@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
-.card{background:linear-gradient(135deg,#381321,#170c13);border:1px solid #83304d;border-radius:12px;padding:22px;transition:.25s}
-.card:hover{transform:translateY(-4px);border-color:var(--red);box-shadow:0 0 25px #ff315e35}
-.card small{color:#c39aaa}
-.card strong{display:block;font-size:23px;margin:12px 0}
-.item{padding:18px 5px;border-bottom:1px solid #59243a;display:flex;justify-content:space-between;gap:15px;align-items:center}
-.item small{display:block;color:#ad8c9b;margin-top:7px}
-.tag{color:#ffb2c7;background:#471428;border:1px solid #9a3856;border-radius:25px;padding:7px 11px;font-size:12px}
-button.action{background:linear-gradient(135deg,#d52a57,#851b3d);border:1px solid #ff6488;color:white;border-radius:9px;padding:12px 18px;cursor:pointer;transition:.2s}
-button.action:hover{box-shadow:0 0 23px #ff315e80;transform:translateY(-2px)}
-.note{background:#2d1120;border-left:2px solid var(--red);padding:16px;margin:12px 0}
-.field{margin:15px 0}
-.field label{display:block;color:#d1a4b4;font-size:13px;margin-bottom:8px}
-@media(max-width:850px){.layout{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid #713049}.clients{display:flex;overflow:auto}.client{min-width:210px}main{padding:22px}.cards{grid-template-columns:1fr}h1{font-size:30px}header{padding:0 16px}.logo{font-size:22px}}
-</style>
-  
+
 <script src="supabase-config.js"></script>
 <script src="supabase-client.js"></script>
 
+<style>
+* { box-sizing: border-box; }
+
+:root {
+  --red: #ff315e;
+  --dark: #09070b;
+  --panel: #180d15;
+  --muted: #b99ca8;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #fff;
+  background:
+    radial-gradient(ellipse at top right, #501126, transparent 55%),
+    var(--dark);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+button, input, textarea { font: inherit; }
+
+header {
+  min-height: 85px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 35px;
+  background: #110910;
+  border-bottom: 1px solid #9d2548;
+}
+
+.logo {
+  font-family: Georgia, serif;
+  font-size: 30px;
+  letter-spacing: 3px;
+}
+
+.logo span {
+  color: var(--red);
+  text-shadow: 0 0 12px var(--red), 0 0 35px var(--red);
+  animation: glow 3s infinite alternate;
+}
+
+@keyframes glow {
+  from { filter: brightness(.85); }
+  to { filter: brightness(1.5); }
+}
+
+.sub {
+  font-size: 11px;
+  color: #e68da6;
+  letter-spacing: 2px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 330px minmax(0, 1fr);
+  min-height: calc(100vh - 85px);
+}
+
+aside {
+  padding: 25px 18px;
+  background: #140a12;
+  border-right: 1px solid #6b1b35;
+}
+
+h2 {
+  font-family: Georgia, serif;
+  font-size: 29px;
+  font-weight: normal;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 13px;
+  color: white;
+  background: #24121d;
+  border: 1px solid #81304b;
+  border-radius: 9px;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--red);
+  box-shadow: 0 0 15px #ff315e44;
+}
+
+.clients { margin-top: 16px; }
+
+.client {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 15px;
+  margin-top: 8px;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-left: 3px solid transparent;
+  color: white;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.client:hover {
+  background: #431427;
+  transform: translateX(4px);
+}
+
+.client.active {
+  background: linear-gradient(90deg, #80203e, #29101d);
+  border-left-color: var(--red);
+  box-shadow: 0 0 20px #ff315e30;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  background: #512036;
+  color: #ffc4d4;
+  font: 20px Georgia, serif;
+}
+
+.client small {
+  display: block;
+  color: #c09ba8;
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+}
+
+main {
+  padding: 35px 45px;
+  min-width: 0;
+}
+
+.crumb {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #d07894;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 28px 0;
+  border-bottom: 1px solid #7e2c46;
+}
+
+.avatar.big {
+  width: 88px;
+  height: 88px;
+  flex: 0 0 88px;
+  font-size: 34px;
+  border: 1px solid var(--red);
+  box-shadow: 0 0 25px #ff315e70;
+}
+
+h1 {
+  font: normal 43px Georgia, serif;
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.tabs {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  border-bottom: 1px solid #713049;
+  margin-top: 20px;
+}
+
+.tab {
+  background: none;
+  border: 0;
+  color: #bb94a3;
+  padding: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: white;
+  background: #381326;
+}
+
+.tab.active {
+  color: #ffbbcd;
+  border-bottom: 2px solid var(--red);
+  text-shadow: 0 0 12px var(--red);
+}
+
+.content { animation: appear .3s ease; }
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.card {
+  background: linear-gradient(135deg, #381321, #170c13);
+  border: 1px solid #83304d;
+  border-radius: 12px;
+  padding: 22px;
+  transition: .25s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--red);
+  box-shadow: 0 0 25px #ff315e35;
+}
+
+.card small { color: #c39aaa; }
+
+.card strong {
+  display: block;
+  font-size: 23px;
+  margin: 12px 0;
+  overflow-wrap: anywhere;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 18px 5px;
+  border-bottom: 1px solid #59243a;
+  overflow-wrap: anywhere;
+}
+
+.item small {
+  display: block;
+  color: #ad8c9b;
+  margin-top: 7px;
+}
+
+.tag {
+  display: inline-block;
+  color: #ffb2c7;
+  background: #471428;
+  border: 1px solid #9a3856;
+  border-radius: 25px;
+  padding: 7px 11px;
+  font-size: 12px;
+}
+
+.note {
+  background: #2d1120;
+  border-left: 2px solid var(--red);
+  padding: 16px;
+  margin: 12px 0;
+}
+
+.field { margin: 15px 0; }
+
+.field label {
+  display: block;
+  color: #d1a4b4;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.action {
+  padding: 12px 18px;
+  color: white;
+  background: linear-gradient(135deg, #d52a57, #851b3d);
+  border: 1px solid #ff6488;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.action:hover { box-shadow: 0 0 23px #ff315e80; }
+
+.action:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.status {
+  margin-top: 15px;
+  color: #ffb7ca;
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.empty {
+  padding: 35px 20px;
+  border: 1px dashed #81304b;
+  border-radius: 12px;
+  color: #c9a1af;
+  background: #1a0b15;
+}
+
+.d8-create-btn {
+  position: fixed;
+  right: 25px;
+  bottom: 25px;
+  z-index: 90;
+  padding: 16px 24px;
+  border: 1px solid #ff6b91;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #db2454, #65112d);
+  box-shadow: 0 0 24px #ff315e70;
+}
+
+.d8-create-btn:hover {
+  box-shadow: 0 0 35px #ff315eaa;
+}
+
+.d8-create-btn:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.d8-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(5, 3, 7, .95);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: auto;
+}
+
+.d8-modal.open { display: flex; }
+
+.d8-form {
+  width: min(560px, 100%);
+  max-height: 95vh;
+  overflow: auto;
+  background: linear-gradient(145deg, #351020, #100810);
+  border: 1px solid #c42b58;
+  border-radius: 18px;
+  box-shadow: 0 0 50px #ff315e44;
+  padding: 28px;
+}
+
+.d8-form h2 {
+  margin-top: 0;
+  color: #ffd4e0;
+}
+
+.d8-form label {
+  display: block;
+  margin: 15px 0 7px;
+  color: #e5a5ba;
+  font-size: 13px;
+}
+
+.d8-form input {
+  background: #170b13;
+  border: 1px solid #82334e;
+}
+
+.d8-form input[type=file] { cursor: pointer; }
+
+.d8-preview {
+  display: none;
+  width: 100%;
+  max-height: 250px;
+  object-fit: contain;
+  margin-top: 15px;
+  border: 1px solid #87334d;
+  border-radius: 10px;
+}
+
+.d8-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.d8-actions button {
+  flex: 1;
+  padding: 13px;
+  border-radius: 9px;
+  border: 1px solid #a43b5b;
+  color: white;
+  cursor: pointer;
+  background: #371425;
+}
+
+.d8-actions .d8-submit {
+  background: linear-gradient(135deg, #db2454, #811737);
+}
+
+.d8-actions button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.d8-message {
+  margin-top: 12px;
+  color: #ffb7ca;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media(max-width:850px) {
+  .layout { grid-template-columns: 1fr; }
+  aside { border-right: 0; border-bottom: 1px solid #713049; }
+  .clients { display: flex; overflow-x: auto; }
+  .client { min-width: 210px; }
+  main { padding: 22px; }
+  .cards { grid-template-columns: 1fr; }
+  h1 { font-size: 30px; }
+  header { padding: 15px 16px; }
+  .logo { font-size: 22px; }
+}
+
+@media(max-width:500px) {
+  .d8-create-btn { right: 12px; bottom: 12px; }
+  .hero { gap: 12px; }
+  .avatar.big { width: 65px; height: 65px; flex-basis: 65px; }
+  .d8-form { padding: 20px; }
+}
+</style>
 </head>
+
 <body>
 
 <header>
@@ -70,18 +471,32 @@ button.action:hover{box-shadow:0 0 23px #ff315e80;transform:translateY(-2px)}
   <aside>
     <div class="sub">BASE DE DONNÉES INTERNE</div>
     <h2>Les archives</h2>
-    <input id="search" placeholder="Rechercher un client...">
+
+    <input id="search"
+           type="search"
+           placeholder="Rechercher un client..."
+           aria-label="Rechercher un client">
+
+    <div class="status" id="archive-status" role="status">
+      Vérification de votre accès Discord…
+    </div>
+
     <div class="clients" id="clients"></div>
   </aside>
 
   <main>
-    <div class="crumb">DIRECTION / ARCHIVES / <span id="ref"></span></div>
+    <div class="crumb">
+      DIRECTION / ARCHIVES / <span id="ref">—</span>
+    </div>
+
     <section class="hero">
-      <div class="avatar big" id="avatar"></div>
+      <div class="avatar big" id="avatar">♛</div>
       <div>
         <div class="sub">DOSSIER INDIVIDUEL · CLIENT RP</div>
-        <h1 id="name"></h1>
-        <div class="muted" id="agent"></div>
+        <h1 id="name">Archives Clients</h1>
+        <div class="muted" id="agent">
+          Connexion aux archives en cours…
+        </div>
       </div>
     </section>
 
@@ -90,314 +505,70 @@ button.action:hover{box-shadow:0 0 23px #ff315e80;transform:translateY(-2px)}
   </main>
 </div>
 
-<script>
-
-let clients = [];
-
-async function loadClients() {
-  const list = document.getElementById("clients");
-
-  list.textContent = "Chargement des archives...";
-
-  try {
-    const token = await D8Cloud.accessToken();
-
-    if (!token) {
-      throw new Error("Connexion Discord nécessaire.");
-    }
-
-    const response = await fetch(
-      "/api/client-archives?action=list",
-      {
-        headers: {
-          authorization: "Bearer " + token
-        },
-        cache: "no-store"
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        data.error || "Impossible de charger les archives."
-      );
-    }
-
-    clients = (data.clients || []).map(c => ({
-      id: c.id,
-      name: c.rp_name,
-      discord: c.client_discord_id,
-      phone: c.rp_phone,
-      agent: c.assigned_agent_discord_id || "Non attribué",
-      bank: null,
-      debts: null,
-      properties: [],
-      history: [],
-      visits: [],
-      notes: []
-    }));
-
-    if (!clients.length) {
-      list.textContent = "Aucun dossier client enregistré.";
-      document.getElementById("name").textContent =
-        "Aucun dossier sélectionné";
-      document.getElementById("tabs").innerHTML = "";
-      document.getElementById("content").innerHTML = "";
-      return;
-    }
-
-    current = 0;
-    tab = "overview";
-    loadClients();
-
-  } catch (error) {
-    list.textContent = error.message;
-  }
-}
-
-
-const sections = [
-  ["overview","Vue générale"],
-  ["identity","Identité"],
-  ["properties","Patrimoine"],
-  ["finance","Finances"],
-  ["history","Transactions"],
-  ["visits","Visites"],
-  ["notes","Notes"]
-];
-
-let current=0,tab="overview";
-const el=id=>document.getElementById(id);
-const money=n=>n===null?"Non renseigné":n.toLocaleString("fr-FR")+" $";
-const safe=s=>String(s).replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#39;"
-}[c]));
-
-function renderClients(){
-  const q=el("search").value.toLowerCase();
-  el("clients").innerHTML=clients.map((c,i)=>({c,i}))
-  .filter(({c})=>c.name.toLowerCase().includes(q)||c.id.toLowerCase().includes(q))
-  .map(({c,i})=>`
-    <button class="client ${i===current?"active":""}" onclick="choose(${i})">
-      <span class="avatar">${c.name.split(" ").map(x=>x[0]).join("")}</span>
-      <span><b>${safe(c.name)}</b><small>${c.id} · ${c.properties.length} bien(s)</small></span>
-    </button>
-  `).join("");
-}
-
-function choose(i){
-  current=i;tab="overview";renderClients();render();
-}
-
-function openTab(t){
-  tab=t;render();
-}
-
-function render(){
-  const c=clients[current];
-  el("name").textContent=c.name;
-  el("ref").textContent=c.id;
-  el("agent").textContent=c.id+" · "+c.agent;
-  el("avatar").textContent=c.name.split(" ").map(x=>x[0]).join("");
-
-  el("tabs").innerHTML=sections.map(([id,label])=>`
-    <button class="tab ${tab===id?"active":""}" onclick="openTab('${id}')">
-      ${label}
-    </button>
-  `).join("");
-
-  const total=c.properties.reduce((sum,p)=>sum+p.value,0);
-  const net=c.bank===null||c.debts===null?null:total+c.bank-c.debts;
-  let html="";
-
-  if(tab==="overview"){
-    html=`
-      <h2>Vue générale</h2>
-      <div class="cards">
-        <div class="card"><small>Patrimoine immobilier connu</small>
-          <strong>${money(total)}</strong><small>${c.properties.length} propriété(s)</small></div>
-        <div class="card"><small>Solde bancaire déclaré</small>
-          <strong>${money(c.bank)}</strong><small>Déclaration du joueur</small></div>
-        <div class="card"><small>Patrimoine net estimé</small>
-          <strong>${money(net)}</strong><small>Estimation indicative</small></div>
-      </div>
-      <div class="item"><div><b>Agent référent</b><small>${safe(c.agent)}</small></div>
-      <span class="tag">DOSSIER ACTIF</span></div>
-    `;
-  }
-
-  if(tab==="identity"){
-    html=`<h2>Identité du client</h2>`+
-    [["Nom RP",c.name],["Pseudo Discord",c.discord],["Agent référent",c.agent],
-    ["Référence",c.id]].map(([k,v])=>`
-      <div class="item"><b>${k}</b><span>${safe(v)}</span></div>
-    `).join("");
-  }
-
-  if(tab==="properties"){
-    html=`<h2>Patrimoine immobilier</h2>`+
-    c.properties.map(p=>`
-      <div class="item"><div><b>⌂ ${safe(p.name)}</b><small>${safe(p.area)}</small></div>
-      <span class="tag">${money(p.value)}</span></div>
-    `).join("");
-  }
-
-  if(tab==="finance"){
-    html=`
-      <h2>Informations financières</h2>
-      <p class="muted">Montants déclarés par le joueur, non vérifiés.</p>
-      <div class="field"><label>Solde bancaire déclaré ($)</label>
-      <input id="bank" type="number" min="0" value="${c.bank??""}"></div>
-      <div class="field"><label>Dettes connues ($)</label>
-      <input id="debts" type="number" min="0" value="${c.debts??""}"></div>
-      <button class="action" onclick="saveFinance()">Enregistrer</button>
-    `;
-  }
-
-  if(tab==="history"){
-    html=`<h2>Historique des transactions</h2>`+
-    c.history.map(x=>`<div class="item"><b>${safe(x)}</b><span class="tag">ARCHIVÉ</span></div>`).join("");
-  }
-
-  if(tab==="visits"){
-    html=`<h2>Rendez-vous et visites</h2>`+
-    (c.visits.map(x=>`<div class="item"><b>${safe(x)}</b><span class="tag">SUIVI</span></div>`).join("")||
-    '<p class="muted">Aucune visite enregistrée.</p>');
-  }
-
-  if(tab==="notes"){
-    html=`<h2>Notes internes</h2>`+
-    c.notes.map(n=>`<div class="note">${safe(n)}</div>`).join("")+
-    `<textarea id="note" rows="3" placeholder="Ajouter une note..."></textarea>
-    <p><button class="action" onclick="addNote()">Ajouter une note</button></p>`;
-  }
-
-  el("content").innerHTML=html;
-}
-
-function saveFinance(){
-  const c=clients[current];
-  c.bank=el("bank").value===""?null:Math.max(0,Number(el("bank").value));
-  c.debts=el("debts").value===""?null:Math.max(0,Number(el("debts").value));
-  render();
-  alert("Modification enregistrée dans la démonstration.");
-}
-
-function addNote(){
-  const text=el("note").value.trim();
-  if(!text)return;
-  clients[current].notes.push(text);
-  render();
-}
-
-el("search").addEventListener("input",renderClients);
-renderClients();
-render();
-</script>
- 
-<!-- DYNASTY 8 — CRÉATION DOSSIER CLIENT -->
-<style>
-.d8-create-btn{
-  position:fixed;right:25px;bottom:25px;z-index:90;
-  padding:16px 24px;border:1px solid #ff6b91;
-  border-radius:12px;color:white;cursor:pointer;
-  font-weight:700;letter-spacing:1px;
-  background:linear-gradient(135deg,#db2454,#65112d);
-  box-shadow:0 0 24px #ff315e70;
-}
-.d8-create-btn:hover{box-shadow:0 0 35px #ff315eaa}
-.d8-modal{
-  position:fixed;inset:0;z-index:100;
-  background:#050307eF;
-  display:none;align-items:center;justify-content:center;
-  padding:20px;overflow:auto;
-}
-.d8-modal.open{display:flex}
-.d8-form{
-  width:min(560px,100%);max-height:95vh;overflow:auto;
-  background:linear-gradient(145deg,#351020,#100810);
-  border:1px solid #c42b58;border-radius:18px;
-  box-shadow:0 0 50px #ff315e44;
-  padding:28px;
-}
-.d8-form h2{margin-top:0;color:#ffd4e0}
-.d8-form label{
-  display:block;margin:15px 0 7px;
-  color:#e5a5ba;font-size:13px;
-}
-.d8-form input{
-  width:100%;padding:13px;border-radius:9px;
-  border:1px solid #82334e;background:#170b13;
-  color:white;font:inherit;
-}
-.d8-form input:focus{
-  outline:none;border-color:#ff315e;
-  box-shadow:0 0 14px #ff315e55;
-}
-.d8-form input[type=file]{cursor:pointer}
-.d8-preview{
-  display:none;width:100%;max-height:250px;
-  object-fit:contain;margin-top:15px;
-  border:1px solid #87334d;border-radius:10px;
-}
-.d8-actions{display:flex;gap:12px;margin-top:24px}
-.d8-actions button{
-  flex:1;padding:13px;border-radius:9px;
-  border:1px solid #a43b5b;color:white;cursor:pointer;
-  background:#371425;
-}
-.d8-actions .d8-submit{
-  background:linear-gradient(135deg,#db2454,#811737);
-}
-.d8-actions button:disabled{
-  opacity:.45;cursor:not-allowed;
-}
-.d8-message{margin-top:12px;color:#ffb7ca;font-size:13px}
-</style>
-
-<button class="d8-create-btn" id="d8-open-create">
+<button class="d8-create-btn"
+        id="d8-open-create"
+        type="button"
+        hidden>
   ＋ NOUVEAU DOSSIER
 </button>
 
 <div class="d8-modal" id="d8-create-modal">
   <form class="d8-form" id="d8-create-form">
+
     <div class="sub">DYNASTY 8 · ARCHIVES INTERNES</div>
-    <h2>👑 Nouveau dossier client</h2>
-    <p class="muted">Tous les champs sont obligatoires.</p>
+    <h2>♛ Nouveau dossier client</h2>
+    <p class="muted">
+      Tous les champs sont obligatoires.
+      Utilisez uniquement une CNI fictive RP.
+    </p>
 
     <label for="d8-rp-name">Nom et prénom RP *</label>
-    <input id="d8-rp-name" name="rp_name"
-           maxlength="160" minlength="2"
-           placeholder="Ex. Victoria Hayes" required>
+    <input id="d8-rp-name"
+           name="rp_name"
+           minlength="2"
+           maxlength="160"
+           placeholder="Ex. Victoria Hayes"
+           required>
 
     <label for="d8-rp-phone">Téléphone RP *</label>
-    <input id="d8-rp-phone" name="rp_phone"
-           maxlength="40" minlength="3"
-           placeholder="Ex. 555-0123" required>
+    <input id="d8-rp-phone"
+           name="rp_phone"
+           minlength="3"
+           maxlength="40"
+           pattern="[0-9+(). -]+"
+           placeholder="Ex. 555-0123"
+           required>
 
     <label for="d8-discord-id">ID Discord *</label>
-    <input id="d8-discord-id" name="client_discord_id"
+    <input id="d8-discord-id"
+           name="client_discord_id"
            inputmode="numeric"
            pattern="[0-9]{17,22}"
-           placeholder="ID Discord du client" required>
+           placeholder="ID Discord du client"
+           required>
 
     <label for="d8-cni">Photo de CNI RP *</label>
-    <input id="d8-cni" name="cni" type="file"
+    <input id="d8-cni"
+           name="cni"
+           type="file"
            accept="image/jpeg,image/png,image/webp"
            required>
 
-    <img class="d8-preview" id="d8-cni-preview"
+    <img class="d8-preview"
+         id="d8-cni-preview"
          alt="Aperçu de la CNI RP">
 
-    <div class="d8-message" id="d8-form-message"></div>
+    <div class="d8-message"
+         id="d8-form-message"
+         role="status"></div>
 
     <div class="d8-actions">
       <button type="button" id="d8-cancel-create">
         Annuler
       </button>
-      <button class="d8-submit" type="submit"
+
+      <button class="d8-submit"
+              type="submit"
               id="d8-submit-create">
         Créer le dossier
       </button>
@@ -407,54 +578,535 @@ render();
 
 <script>
 (() => {
-  const modal = document.getElementById("d8-create-modal");
-  const form = document.getElementById("d8-create-form");
-  const cni = document.getElementById("d8-cni");
-  const preview = document.getElementById("d8-cni-preview");
-  const message = document.getElementById("d8-form-message");
-  const submit = document.getElementById("d8-submit-create");
+  "use strict";
 
+  let clients = [];
+  let current = 0;
+  let tab = "overview";
+  let authorized = false;
   let previewURL = null;
 
+  const el = id => document.getElementById(id);
+
+  const sections = [
+    ["overview", "Vue générale"],
+    ["identity", "Identité"],
+    ["properties", "Patrimoine"],
+    ["finance", "Finances"],
+    ["history", "Transactions"],
+    ["visits", "Visites"],
+    ["notes", "Notes"]
+  ];
+
+  const safe = value => String(value ?? "").replace(
+    /[&<>"']/g,
+    character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[character])
+  );
+
+  const money = value =>
+    value === null || value === undefined
+      ? "Non renseigné"
+      : Number(value).toLocaleString("fr-FR") + " $";
+
+  const initials = name =>
+    String(name || "?")
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map(word => word[0] || "")
+      .join("")
+      .toUpperCase();
+
+  function setStatus(text) {
+    el("archive-status").textContent = text;
+  }
+
+  function showEmpty(title, description) {
+    el("ref").textContent = "—";
+    el("name").textContent = title;
+    el("agent").textContent = description;
+    el("avatar").textContent = "♛";
+    el("tabs").innerHTML = "";
+    el("content").innerHTML =
+      '<div class="empty">' + safe(description) + '</div>';
+  }
+
+  function renderClients() {
+    const query = el("search").value.trim().toLowerCase();
+
+    const filtered = clients
+      .map((client, index) => ({ client, index }))
+      .filter(({ client }) =>
+        client.name.toLowerCase().includes(query) ||
+        client.id.toLowerCase().includes(query) ||
+        client.discord.includes(query) ||
+        client.phone.toLowerCase().includes(query)
+      );
+
+    if (!filtered.length) {
+      el("clients").innerHTML = "";
+
+      if (clients.length) {
+        setStatus("Aucun résultat pour cette recherche.");
+      } else {
+        setStatus("Aucun dossier client enregistré.");
+      }
+
+      return;
+    }
+
+    setStatus(clients.length + " dossier(s) client(s).");
+
+    el("clients").innerHTML = filtered.map(({ client, index }) => `
+      <button class="client ${index === current ? "active" : ""}"
+              type="button"
+              data-index="${index}">
+        <span class="avatar">${safe(initials(client.name))}</span>
+        <span>
+          <b>${safe(client.name)}</b>
+          <small>${safe(client.phone)} · ${safe(client.id.slice(0, 8))}</small>
+        </span>
+      </button>
+    `).join("");
+
+    el("clients").querySelectorAll("[data-index]").forEach(button => {
+      button.addEventListener("click", () => {
+        current = Number(button.dataset.index);
+        tab = "overview";
+        renderClients();
+        render();
+      });
+    });
+  }
+
+  function render() {
+    const client = clients[current];
+
+    if (!client) {
+      showEmpty(
+        "Bienvenue dans les Archives Clients",
+        "Aucun dossier sélectionné. Utilisez le bouton ＋ NOUVEAU DOSSIER."
+      );
+      return;
+    }
+
+    el("name").textContent = client.name;
+    el("ref").textContent = client.id.slice(0, 8).toUpperCase();
+    el("agent").textContent =
+      "Téléphone RP : " + client.phone;
+    el("avatar").textContent = initials(client.name);
+
+    el("tabs").innerHTML = sections.map(([id, label]) => `
+      <button class="tab ${tab === id ? "active" : ""}"
+              type="button"
+              data-tab="${id}">
+        ${label}
+      </button>
+    `).join("");
+
+    el("tabs").querySelectorAll("[data-tab]").forEach(button => {
+      button.addEventListener("click", () => {
+        tab = button.dataset.tab;
+        render();
+      });
+    });
+
+    const total = client.properties.reduce(
+      (sum, property) => sum + Number(property.value || 0),
+      0
+    );
+
+    const hasPropertyData = client.propertiesLoaded === true;
+
+    const net =
+      hasPropertyData &&
+      client.bank !== null &&
+      client.debts !== null
+        ? total + client.bank - client.debts
+        : null;
+
+    let html = "";
+
+    if (tab === "overview") {
+      html = `
+        <h2>Vue générale</h2>
+
+        <div class="cards">
+          <div class="card">
+            <small>Patrimoine immobilier connu</small>
+            <strong>${hasPropertyData ? money(total) : "À connecter"}</strong>
+            <small>Synchronisation du patrimoine à venir</small>
+          </div>
+
+          <div class="card">
+            <small>Solde bancaire déclaré</small>
+            <strong>${money(client.bank)}</strong>
+            <small>Déclaration du joueur</small>
+          </div>
+
+          <div class="card">
+            <small>Patrimoine net estimé</small>
+            <strong>${money(net)}</strong>
+            <small>Estimation indicative</small>
+          </div>
+        </div>
+
+        <div class="item">
+          <div>
+            <b>Agent référent</b>
+            <small>${safe(client.agent)}</small>
+          </div>
+          <span class="tag">DOSSIER ACTIF</span>
+        </div>
+      `;
+    }
+
+    if (tab === "identity") {
+      const fields = [
+        ["Nom et prénom RP", client.name],
+        ["Téléphone RP", client.phone],
+        ["ID Discord", client.discord],
+        ["Agent référent (ID Discord)", client.agent],
+        ["Référence du dossier", client.id]
+      ];
+
+      html = "<h2>Identité du client</h2>" +
+        fields.map(([label, value]) => `
+          <div class="item">
+            <b>${safe(label)}</b>
+            <span>${safe(value)}</span>
+          </div>
+        `).join("") +
+        `<p class="muted">
+          La CNI RP est stockée dans un espace privé.
+          Sa consultation sécurisée sera ajoutée prochainement.
+        </p>`;
+    }
+
+    if (tab === "properties") {
+      html = `
+        <h2>Patrimoine immobilier</h2>
+        <p class="muted">
+          La liaison des propriétés avec les dossiers clients
+          sera activée dans une prochaine étape.
+        </p>
+      `;
+    }
+
+    if (tab === "finance") {
+      html = `
+        <h2>Informations financières</h2>
+        <p class="muted">
+          Montants déclarés par le joueur, non vérifiés.
+          L'enregistrement des modifications n'est pas encore activé.
+        </p>
+
+        <div class="field">
+          <label>Solde bancaire déclaré ($)</label>
+          <input type="text"
+                 value="${client.bank === null ? "Non renseigné" : money(client.bank)}"
+                 disabled>
+        </div>
+
+        <div class="field">
+          <label>Dettes connues ($)</label>
+          <input type="text"
+                 value="${client.debts === null ? "Non renseigné" : money(client.debts)}"
+                 disabled>
+        </div>
+
+        <button class="action" disabled>
+          Enregistrement prochainement disponible
+        </button>
+      `;
+    }
+
+    if (tab === "history") {
+      html = `
+        <h2>Historique des transactions</h2>
+        <p class="muted">
+          La synchronisation des transactions sera ajoutée
+          prochainement.
+        </p>
+      `;
+    }
+
+    if (tab === "visits") {
+      html = `
+        <h2>Rendez-vous et visites</h2>
+        <p class="muted">
+          La gestion des visites sera ajoutée prochainement.
+        </p>
+      `;
+    }
+
+    if (tab === "notes") {
+      html = `
+        <h2>Notes internes</h2>
+        <p class="muted">
+          Les notes seront bientôt enregistrées dans Supabase.
+        </p>
+
+        <textarea rows="3"
+                  placeholder="Ajout de notes bientôt disponible..."
+                  disabled></textarea>
+
+        <p>
+          <button class="action" disabled>
+            Ajouter une note
+          </button>
+        </p>
+      `;
+    }
+
+    el("content").innerHTML = html;
+  }
+
+  async function getAccessToken() {
+    if (!window.D8Cloud || !D8Cloud.ready()) {
+      throw new Error(
+        "Configuration Supabase indisponible."
+      );
+    }
+
+    if (typeof D8Cloud.accessToken !== "function") {
+      throw new Error(
+        "La fonction D8Cloud.accessToken manque dans supabase-client.js."
+      );
+    }
+
+    const token = await D8Cloud.accessToken();
+
+    if (!token) {
+      throw new Error(
+        "Session Discord absente ou expirée. Reconnectez-vous au Portail Prestige."
+      );
+    }
+
+    return token;
+  }
+
+  async function apiArchives(action, options = {}) {
+    const token = await getAccessToken();
+
+    const response = await fetch(
+      "/api/client-archives?action=" + encodeURIComponent(action),
+      {
+        ...options,
+        headers: {
+          ...(options.headers || {}),
+          authorization: "Bearer " + token
+        },
+        cache: "no-store"
+      }
+    );
+
+    let data;
+
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error(
+        "Réponse invalide de l'API Archives Clients."
+      );
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || data.message || "Erreur du serveur."
+      );
+    }
+
+    return data;
+  }
+
+  async function loadClients(selectId = null) {
+    setStatus("Chargement des dossiers clients…");
+
+    try {
+      const data = await apiArchives("list");
+
+      clients = (data.clients || []).map(client => ({
+        id: String(client.id || ""),
+        name: String(client.rp_name || "Sans nom"),
+        phone: String(client.rp_phone || "Non renseigné"),
+        discord: String(client.client_discord_id || ""),
+        agent: String(
+          client.assigned_agent_discord_id || "Non attribué"
+        ),
+        bank: null,
+        debts: null,
+        properties: [],
+        propertiesLoaded: false
+      }));
+
+      if (!clients.length) {
+        el("clients").innerHTML = "";
+        setStatus("Aucun dossier client enregistré.");
+
+        showEmpty(
+          "Bienvenue dans les Archives Clients",
+          "Aucun dossier enregistré pour le moment. Créez votre premier dossier avec le bouton ＋ NOUVEAU DOSSIER."
+        );
+
+        return;
+      }
+
+      const selectedIndex = selectId
+        ? clients.findIndex(client => client.id === selectId)
+        : -1;
+
+      current = selectedIndex >= 0 ? selectedIndex : 0;
+      tab = "overview";
+
+      renderClients();
+      render();
+
+    } catch (error) {
+      clients = [];
+      el("clients").innerHTML = "";
+      setStatus(error.message);
+
+      showEmpty(
+        "Archives indisponibles",
+        error.message
+      );
+    }
+  }
+
+  async function initialize() {
+    el("d8-open-create").hidden = true;
+    el("search").disabled = true;
+
+    try {
+      const token = await getAccessToken();
+
+      const response = await fetch(
+        "/api/client-archives?action=status",
+        {
+          headers: {
+            authorization: "Bearer " + token
+          },
+          cache: "no-store"
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Accès aux archives refusé."
+        );
+      }
+
+      if (
+        data.role !== "direction" &&
+        data.role !== "confirme"
+      ) {
+        throw new Error(
+          "Accès réservé à la Direction et aux agents confirmés."
+        );
+      }
+
+      authorized = true;
+      el("search").disabled = false;
+      el("d8-open-create").hidden = false;
+
+      await loadClients();
+
+    } catch (error) {
+      authorized = false;
+      el("clients").innerHTML = "";
+      setStatus(error.message);
+
+      showEmpty(
+        "Accès aux archives indisponible",
+        error.message
+      );
+    }
+  }
+
+  const modal = el("d8-create-modal");
+  const form = el("d8-create-form");
+  const cni = el("d8-cni");
+  const preview = el("d8-cni-preview");
+  const message = el("d8-form-message");
+  const submit = el("d8-submit-create");
+
   function clearPreview() {
-    if (previewURL) URL.revokeObjectURL(previewURL);
+    if (previewURL) {
+      URL.revokeObjectURL(previewURL);
+    }
+
     previewURL = null;
     preview.style.display = "none";
     preview.removeAttribute("src");
   }
 
-  document.getElementById("d8-open-create")
-    .addEventListener("click", () => {
-      modal.classList.add("open");
-    });
+  function closeModal() {
+    if (submit.disabled) return;
 
-  document.getElementById("d8-cancel-create")
-    .addEventListener("click", () => {
-      modal.classList.remove("open");
-      form.reset();
-      clearPreview();
-      message.textContent = "";
-    });
+    modal.classList.remove("open");
+    form.reset();
+    clearPreview();
+    message.textContent = "";
+  }
+
+  el("d8-open-create").addEventListener("click", () => {
+    if (!authorized) return;
+
+    message.textContent = "";
+    modal.classList.add("open");
+    el("d8-rp-name").focus();
+  });
+
+  el("d8-cancel-create").addEventListener(
+    "click",
+    closeModal
+  );
+
+  modal.addEventListener("click", event => {
+    if (event.target === modal) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && modal.classList.contains("open")) {
+      closeModal();
+    }
+  });
 
   cni.addEventListener("change", () => {
     clearPreview();
     message.textContent = "";
 
     const file = cni.files[0];
+
     if (!file) return;
 
     const allowed = [
-      "image/jpeg", "image/png", "image/webp"
+      "image/jpeg",
+      "image/png",
+      "image/webp"
     ];
 
     if (!allowed.includes(file.type)) {
-      message.textContent = "Format accepté : JPG, PNG ou WEBP.";
+      message.textContent =
+        "Format accepté : JPG, PNG ou WEBP.";
       cni.value = "";
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      message.textContent = "La photo ne doit pas dépasser 5 Mo.";
+      message.textContent =
+        "La CNI RP ne doit pas dépasser 5 Mo.";
       cni.value = "";
       return;
     }
@@ -466,85 +1118,65 @@ render();
 
   form.addEventListener("submit", async event => {
     event.preventDefault();
-    message.textContent = "";
+
+    if (!authorized) {
+      message.textContent = "Accès non autorisé.";
+      return;
+    }
 
     if (!form.reportValidity()) return;
 
-   
-submit.disabled = true;
-submit.textContent = "Enregistrement...";
-message.textContent = "Création du dossier en cours...";
+    const file = cni.files[0];
 
-try {
-  if (!window.D8Cloud || !D8Cloud.ready()) {
-    throw new Error("Configuration Supabase indisponible.");
-  }
-
-  // Réutilise la session Discord existante.
-  const session = await D8Cloud.authenticated();
-
-  if (!session) {
-    throw new Error(
-      "Session expirée. Reconnectez-vous via le Portail Prestige."
-    );
-  }
-
-  const role = await D8Cloud.role();
-
-  if (!role.canWrite) {
-    throw new Error(
-      "Accès réservé à la Direction et aux Agents confirmés."
-    );
-  }
-
-  // Récupère un jeton valide, avec renouvellement si nécessaire.
-  // Le jeton est géré par le module existant.
-  const token = await D8Cloud.accessToken();
-
-  if (!token) {
-    throw new Error("Connexion Discord nécessaire.");
-  }
-
-  const response = await fetch(
-    "/api/client-archives?action=create",
-    {
-      method: "POST",
-      headers: {
-        authorization: "Bearer " + token
-      },
-      body: new FormData(form),
-      cache: "no-store"
+    if (!file) {
+      message.textContent = "Ajoutez une CNI RP fictive.";
+      return;
     }
-  );
 
-  const data = await response.json();
+    if (
+      !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
+      file.size > 5 * 1024 * 1024
+    ) {
+      message.textContent =
+        "La CNI RP doit être une image JPG, PNG ou WEBP de 5 Mo maximum.";
+      return;
+    }
 
-  if (!response.ok) {
-    throw new Error(
-      data.error || "Impossible de créer le dossier."
-    );
-  }
+    submit.disabled = true;
+    submit.textContent = "Enregistrement…";
+    message.textContent = "Création du dossier en cours…";
 
-  message.textContent = "Dossier client créé avec succès !";
+    try {
+      const data = await apiArchives("create", {
+        method: "POST",
+        body: new FormData(form)
+      });
 
-  form.reset();
-  clearPreview();
+      message.textContent = "Dossier créé avec succès !";
 
-  setTimeout(() => {
-    modal.classList.remove("open");
-    location.reload();
-  }, 900);
+      const newId = data.client?.id || null;
 
-} catch (error) {
-  message.textContent = error.message;
-} finally {
-  submit.disabled = false;
-  submit.textContent = "Créer le dossier";
-}
+      form.reset();
+      clearPreview();
+      modal.classList.remove("open");
 
+      await loadClients(newId);
+
+    } catch (error) {
+      message.textContent = error.message;
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "Créer le dossier";
+    }
   });
+
+  el("search").addEventListener("input", () => {
+    if (authorized) renderClients();
+  });
+
+  initialize();
 })();
 </script>
- 
+
 </body>
 </html>
