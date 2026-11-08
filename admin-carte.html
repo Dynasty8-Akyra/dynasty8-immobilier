@@ -521,7 +521,27 @@ body[data-map-mode="admin"] #direction-map #viewport {
 
 <div class="d8-prestige-heading">
   <div class="d8-prestige-brand">
-    <span class="d8-prestige-crown">♛</span>
+    <span class="d8-prestige-crown">
+<svg class="d8-prestige-crown"
+     viewBox="0 0 64 64"
+     width="30"
+     height="30"
+     fill="none"
+     xmlns="http://www.w3.org/2000/svg"
+     aria-hidden="true">
+  <path d="M8 18L20 31L32 10L44 31L56 18L51 48H13L8 18Z"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linejoin="round"/>
+  <path d="M13 53H51"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+  <circle cx="8" cy="18" r="3" fill="currentColor"/>
+  <circle cx="32" cy="10" r="3" fill="currentColor"/>
+  <circle cx="56" cy="18" r="3" fill="currentColor"/>
+</svg>
+</span>
     <div>
       <strong>DYNASTY 8</strong>
       <small>PRESTIGE · DIRECTION</small>
@@ -591,9 +611,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 </script>
 
-
-</script>
-
 <style>
 /* DYNASTY 8 — FLÈCHE DU CADRAN PRESTIGE */
 
@@ -632,6 +649,167 @@ body.d8-editor-collapsed #d8-editor-arrow {
   transform: translate(0, -50%);
   border-radius: 14px 0 0 14px;
 }
+ 
+/* =========================================
+   DYNASTY 8 — DIRECTION RED NEON PRESTIGE
+   Habillage uniquement, sans changer
+   la géométrie ni les outils de la carte
+   ========================================= */
+
+body[data-map-mode="admin"] {
+  background: #090508 !important;
+  color: #fff1f3;
+}
+
+body[data-map-mode="admin"] > header {
+  background: linear-gradient(
+    90deg, #0b0509, #2c0a17, #0b0509
+  ) !important;
+  border-bottom: 1px solid #d82a4b !important;
+  box-shadow: 0 0 22px #e51c3d30 !important;
+}
+
+body[data-map-mode="admin"] > header a,
+body[data-map-mode="admin"] > header span {
+  color: #ffd9e2 !important;
+}
+
+body[data-map-mode="admin"] #direction-map .map-page {
+  background: #090508 !important;
+}
+
+/* BANNIÈRE DYNASTY 8 */
+
+body[data-map-mode="admin"] .d8-prestige-heading {
+  background: linear-gradient(
+    110deg, #16070e, #3b0d1d, #16070e
+  ) !important;
+  border: 1px solid #d62b4a !important;
+  box-shadow: 0 0 22px #e51c3d35 !important;
+  animation: d8-red-glow 4s ease-in-out infinite;
+}
+
+body[data-map-mode="admin"] .d8-prestige-crown {
+  color: #ff6582 !important;
+  text-shadow: 0 0 18px #ff315b !important;
+}
+
+body[data-map-mode="admin"] .d8-prestige-brand small,
+body[data-map-mode="admin"] .d8-prestige-heading-right span {
+  color: #ff9bb0 !important;
+}
+
+body[data-map-mode="admin"] .d8-prestige-heading-right {
+  color: #ffe6ec !important;
+}
+
+/* CONTOUR DE LA CARTE */
+
+body[data-map-mode="admin"] #direction-map .map-layout {
+  border: 1px solid #db2b4c !important;
+  box-shadow: 0 0 28px #e51c3d30 !important;
+}
+
+/* FILTRES */
+
+body[data-map-mode="admin"] #direction-map .map-toolbar button {
+  background: #210a14 !important;
+  border: 1px solid #a53a55 !important;
+  color: #ffe6ec !important;
+  box-shadow: 0 0 8px #e51c3d16 !important;
+  transition: background .2s, box-shadow .2s;
+}
+
+body[data-map-mode="admin"] #direction-map .map-toolbar button:hover {
+  background: #4a1024 !important;
+  box-shadow: 0 0 16px #e51c3d55 !important;
+}
+
+body[data-map-mode="admin"] #direction-map .map-toolbar button.on {
+  background: linear-gradient(
+    120deg, #9c1230, #e51c3d
+  ) !important;
+  border-color: #ff8098 !important;
+  box-shadow: 0 0 20px #e51c3d60 !important;
+}
+
+/* BOUTONS DE ZOOM */
+
+body[data-map-mode="admin"] #direction-map .map-buttons button {
+  background: #200a14 !important;
+  border: 1px solid #e51c3d !important;
+  color: white !important;
+  box-shadow: 0 0 14px #e51c3d35 !important;
+}
+
+/* PANNEAU D'INFORMATION DES QUARTIERS */
+
+body[data-map-mode="admin"] #direction-map .zone-panel {
+  background: linear-gradient(
+    145deg, #260c18, #11070d
+  ) !important;
+  border-color: #b82a48 !important;
+  color: #fff1f3 !important;
+  box-shadow: 0 0 20px #e51c3d25 !important;
+}
+
+/* CADRAN DE DIRECTION
+   On préserve sa taille et sa position. */
+
+body[data-map-mode="admin"] #d8-draw-tools {
+  background: linear-gradient(
+    145deg, #230a14, #10060c
+  ) !important;
+  border-color: #f02b50 !important;
+  color: #fff1f3 !important;
+  box-shadow:
+    0 0 35px #e51c3d35,
+    inset 0 0 35px #e51c3d0b !important;
+}
+
+body[data-map-mode="admin"] #d8-draw-tools button {
+  border-color: #b63a55 !important;
+  color: #ffe6ec !important;
+  background: linear-gradient(
+    120deg, #4c1023, #250b17
+  ) !important;
+}
+
+body[data-map-mode="admin"] #d8-draw-tools button:hover {
+  background: #791a35 !important;
+  box-shadow: 0 0 16px #e51c3d50 !important;
+}
+
+/* FLÈCHE D'OUVERTURE / FERMETURE */
+
+#d8-editor-arrow {
+  background: #2b0a18 !important;
+  color: #ffb3c4 !important;
+  border-color: #ff5576 !important;
+  box-shadow: 0 0 20px #e51c3d70 !important;
+}
+
+#d8-editor-arrow:hover {
+  background: #71152f !important;
+}
+
+/* ANIMATION ROUGE */
+
+@keyframes d8-red-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px #e51c3d25;
+  }
+  50% {
+    box-shadow: 0 0 28px #ff315b65;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="admin"] .d8-prestige-heading {
+    animation: none;
+  }
+}
+ 
 </style>
 
 <script>
