@@ -51,6 +51,10 @@ button.action:hover{box-shadow:0 0 23px #ff315e80;transform:translateY(-2px)}
 .field label{display:block;color:#d1a4b4;font-size:13px;margin-bottom:8px}
 @media(max-width:850px){.layout{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid #713049}.clients{display:flex;overflow:auto}.client{min-width:210px}main{padding:22px}.cards{grid-template-columns:1fr}h1{font-size:30px}header{padding:0 16px}.logo{font-size:22px}}
 </style>
+  
+<script src="supabase-config.js"></script>
+<script src="supabase-client.js"></script>
+
 </head>
 <body>
 
@@ -428,14 +432,78 @@ render();
 
     if (!form.reportValidity()) return;
 
-    /*
-      Le formulaire est prêt.
-      L'envoi sera branché sur la session Discord
-      existante après vérification du code
-      de connexion du site.
-    */
-    message.textContent =
-      "Formulaire prêt. Connexion Discord à finaliser avant enregistrement.";
+   
+submit.disabled = true;
+submit.textContent = "Enregistrement...";
+message.textContent = "Création du dossier en cours...";
+
+try {
+  if (!window.D8Cloud || !D8Cloud.ready()) {
+    throw new Error("Configuration Supabase indisponible.");
+  }
+
+  // Réutilise la session Discord existante.
+  const session = await D8Cloud.authenticated();
+
+  if (!session) {
+    throw new Error(
+      "Session expirée. Reconnectez-vous via le Portail Prestige."
+    );
+  }
+
+  const role = await D8Cloud.role();
+
+  if (!role.canWrite) {
+    throw new Error(
+      "Accès réservé à la Direction et aux Agents confirmés."
+    );
+  }
+
+  // Récupère un jeton valide, avec renouvellement si nécessaire.
+  // Le jeton est géré par le module existant.
+  const token = await D8Cloud.accessToken();
+
+  if (!token) {
+    throw new Error("Connexion Discord nécessaire.");
+  }
+
+  const response = await fetch(
+    "/api/client-archives?action=create",
+    {
+      method: "POST",
+      headers: {
+        authorization: "Bearer " + token
+      },
+      body: new FormData(form),
+      cache: "no-store"
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.error || "Impossible de créer le dossier."
+    );
+  }
+
+  message.textContent = "Dossier client créé avec succès !";
+
+  form.reset();
+  clearPreview();
+
+  setTimeout(() => {
+    modal.classList.remove("open");
+    location.reload();
+  }, 900);
+
+} catch (error) {
+  message.textContent = error.message;
+} finally {
+  submit.disabled = false;
+  submit.textContent = "Créer le dossier";
+}
+
   });
 })();
 </script>
