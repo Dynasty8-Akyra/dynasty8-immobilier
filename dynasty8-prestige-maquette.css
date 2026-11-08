@@ -1,0 +1,186 @@
+/* DYNASTY 8 — RED NEON PRESTIGE · MAQUETTE CIRCULAIRE */
+/* Ajouter ce fichier EN DERNIER dans admin-carte.html */
+body[data-map-mode="admin"] #d8-draw-tools {
+  width: min(820px, 88vh, 65vw) !important;
+  height: min(820px, 88vh, 65vw) !important;
+  box-sizing: border-box !important;
+  top: 50% !important;
+  right: 22px !important;
+  transform: translateY(-50%) !important;
+  border: 2px solid #ff4166 !important;
+  border-radius: 50% !important;
+  padding: clamp(30px, 5vh, 55px) clamp(32px, 4.5vw, 65px) clamp(28px, 4vh, 42px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  overflow: hidden !important;
+  background: radial-gradient(ellipse at 50% 50%, #260512 0%, #13040b 64%, #090307 100%) !important;
+  box-shadow: 0 0 8px #ff315b, 0 0 35px #e51c3d60, inset 0 0 65px #7e0a242a !important;
+  color: #fff0f4 !important;
+}
+body[data-map-mode="admin"].d8-editor-collapsed #d8-draw-tools {display:none !important;}
+body[data-map-mode="admin"] #d8-draw-tools::before,
+body[data-map-mode="admin"] #d8-draw-tools::after {pointer-events:none !important;}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-head {
+  flex: 0 0 auto !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 0 9px !important;
+  text-align: center !important;
+  position: relative !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools svg.d8-prestige-editor-crown {
+  width: 36px !important; height: 36px !important;
+  display: block !important; margin: 0 auto 3px !important;
+  color: #ff5578 !important;
+  filter: drop-shadow(0 0 7px #ff315b) !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-draw-title {
+  font: 700 clamp(17px, 2vw, 27px)/1.1 Georgia,serif !important;
+  letter-spacing: 2px !important;
+  color: #ffe4eb !important;
+  text-shadow: 0 0 12px #ff315baa !important;
+  margin: 2px 0 6px !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-subtitle {
+  color: #f9c4d1 !important;
+  font: 600 clamp(8px, .8vw, 11px)/1.3 Georgia,serif !important;
+  letter-spacing: 1.5px !important;
+  padding-bottom: 10px !important;
+  border-bottom: 1px solid #b31e3c !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  background: transparent !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-section {
+  display: flex !important; flex-direction: column !important;
+  gap: 7px !important;
+  min-height: 0 !important;
+  overflow-y: auto !important; overflow-x: hidden !important;
+  padding: 11px !important;
+  border: 1px solid #e23b5c !important;
+  border-radius: 24px !important;
+  background: linear-gradient(150deg, #300916 0%, #18040c 70%, #110309 100%) !important;
+  box-shadow: inset 0 0 25px #b70d2b16, 0 0 12px #e51c3d20 !important;
+  scrollbar-width: thin !important; scrollbar-color: #a62949 transparent !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-label {
+  flex: 0 0 auto !important;
+  background: linear-gradient(90deg,#4b0a20,#250510) !important;
+  color: #ffe1e9 !important;
+  font: 700 clamp(9px, 1vw, 13px)/1.3 Georgia,serif !important;
+  letter-spacing: .2px !important;
+  border: 0 !important; border-bottom: 1px solid #fa4268 !important;
+  text-align: center !important;
+  padding: 6px 3px 9px !important;
+  margin: 0 0 6px !important;
+  text-shadow: 0 0 8px #e51c3d66 !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-section button {
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  min-height: 37px !important;
+  padding: 7px 6px !important;
+  border: 1px solid #f04467 !important;
+  border-radius: 13px !important;
+  background: linear-gradient(100deg,#5b0a24,#340718) !important;
+  color: #fff0f3 !important;
+  font: 700 clamp(9px, .95vw, 12px)/1.3 system-ui,sans-serif !important;
+  letter-spacing: 0 !important;
+  box-shadow: inset 0 1px 0 #ffadc21a !important;
+  cursor: pointer !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-section button:hover:not(:disabled) {
+  background: linear-gradient(100deg,#9c1237,#5c0a25) !important;
+  box-shadow: 0 0 13px #ff315b80 !important;
+  transform: translateY(-1px) !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools #d8-draw-count {
+  margin-top: 4px !important;
+  padding: 7px !important;
+  border: 1px solid #85203c !important;
+  border-radius: 30px !important;
+  background: #2b0614 !important;
+  color: #ffc1d0 !important;
+  font-weight: 700 !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-empty {
+  flex: 1 1 auto !important;
+  min-height: 140px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  position: relative !important;
+  padding: 0 8px 100px !important;
+  background: transparent !important;
+  color: #ffe5ed !important;
+  font: 400 clamp(10px,1vw,13px)/1.6 system-ui,sans-serif !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-empty::before {
+  content: "⌖";
+  position: absolute; top: 12%; left: 50%; transform: translateX(-50%);
+  width: 48px; height: 48px; line-height: 48px;
+  border: 1px solid #c5234a; border-radius: 50%;
+  color: #ff5579; font-size: 34px;
+  text-shadow: 0 0 12px #ff315b;
+  box-shadow: 0 0 0 7px #a0152a15, 0 0 0 14px #a0152a0c;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-empty::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0; height: 105px;
+  background: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20440%20130%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23ee3156%22%20stop-opacity%3D%22.65%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23530719%22%20stop-opacity%3D%22.4%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cg%20fill%3D%22url%28%23g%29%22%3E%3Cpath%20d%3D%22M0%20118V98h14V78h18v40h12V90h18v28h12V60h15v58h8V80h20v38h10V55h12v63h12V71h16v47h8V42h18v76h8V23h15V9h7v14h15v95h9V49h19v69h11V70h16v48h13V58h18v60h11V87h21v31h15V74h18v44h17V92h16v26h13V99h14v19h16V88h16v30h12V104h16v14h18v12H0Z%22%2F%3E%3Cpath%20d%3D%22M24%20103c-12-24-14-39-10-61%209%2018%2014%2028%2017%2043-1-28%206-43%2018-56-4%2025-8%2040-14%2056%2015-18%2024-24%2043-26-13%2015-26%2025-42%2035v24H24zm350%200c-13-22-15-38-12-59%2010%2015%2016%2027%2019%2041-1-26%206-41%2018-54-3%2022-7%2038-14%2054%2014-15%2024-21%2042-22-14%2014-27%2023-42%2032v23h-11z%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M0%20119H440%22%20stroke%3D%22%23e42a4e%22%20stroke-opacity%3D%22.65%22%2F%3E%3C%2Fsvg%3E") bottom center / contain no-repeat;
+  opacity: .8; pointer-events:none;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-section:has(#d8-zone-form:not([hidden])) .d8-prestige-editor-empty {display:none !important;}
+body[data-map-mode="admin"] #d8-draw-tools #d8-zone-form[hidden] {display:none !important;}
+body[data-map-mode="admin"] #d8-draw-tools #d8-zone-form:not([hidden]) {display:flex !important;flex-direction:column !important;gap:4px !important;}
+body[data-map-mode="admin"] #d8-draw-tools #d8-zone-form label {color:#ffceda !important;font-size:10px !important;}
+body[data-map-mode="admin"] #d8-draw-tools #d8-zone-form input,
+body[data-map-mode="admin"] #d8-draw-tools #d8-zone-form select,
+body[data-map-mode="admin"] #d8-draw-tools #d8-zone-form textarea {
+  background:#12040b !important;color:#fff !important;border:1px solid #9d2948 !important;
+  border-radius:9px !important;padding:7px !important;font-size:11px !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-actions {
+  flex: 0 0 auto !important;
+  display:flex !important;flex-direction:row !important;
+  width: min(100%, 78%) !important;
+  gap:12px !important;
+  margin:0 auto !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-actions button {
+  flex:1 1 0 !important; min-width:0 !important;
+  padding:10px 8px !important; border-radius:14px !important;
+  border:1px solid #ee5272 !important;
+  background:#320716 !important;color:#fff1f5 !important;
+  font:700 clamp(10px,1vw,13px)/1.3 Georgia,serif !important;
+  white-space:normal !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools #d8-zone-save {
+  background:linear-gradient(120deg,#aa1235,#ee2149) !important;
+  border-color:#ff91a7 !important;
+  box-shadow:0 0 16px #ff315b65 !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools #d8-zone-delete {background:#320716 !important;}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-actions button:hover:not(:disabled) {box-shadow:0 0 15px #ff315b80 !important;}
+/* La flèche suit le nouveau diamètre du cercle */
+body[data-map-mode="admin"] #d8-editor-arrow {right: calc(min(820px, 88vh, 65vw) + 6px) !important;}
+body[data-map-mode="admin"].d8-editor-collapsed #d8-editor-arrow {right:0 !important;}
+@media (max-width:900px) {
+  body[data-map-mode="admin"] #d8-draw-tools {width:min(88vw,88vh) !important;height:min(88vw,88vh) !important;right:10px !important;padding:30px 34px !important;gap:7px !important;}
+  body[data-map-mode="admin"] #d8-editor-arrow {right:calc(min(88vw,88vh) + 0px) !important;}
+  body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-grid {gap:8px !important;}
+  body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-section {padding:7px !important;}
+  body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-section button {min-height:29px !important;padding:5px !important;}
+  body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-empty::after {height:65px;}
+}
+@media (prefers-reduced-motion:reduce) {
+ body[data-map-mode="admin"] #d8-draw-tools svg.d8-prestige-editor-crown {animation:none !important;}
+}
