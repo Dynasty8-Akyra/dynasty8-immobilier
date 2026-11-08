@@ -27,7 +27,27 @@
    
 drawTools.innerHTML = `
   <div class="d8-prestige-editor-head">
-    <span class="d8-prestige-editor-crown">♛</span>
+    <span class="d8-prestige-editor-crown">
+<svg class="d8-prestige-editor-crown"
+     viewBox="0 0 64 64"
+     width="30"
+     height="30"
+     fill="none"
+     xmlns="http://www.w3.org/2000/svg"
+     aria-hidden="true">
+  <path d="M8 18L20 31L32 10L44 31L56 18L51 48H13L8 18Z"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linejoin="round"/>
+  <path d="M13 53H51"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"/>
+  <circle cx="8" cy="18" r="3" fill="currentColor"/>
+  <circle cx="32" cy="10" r="3" fill="currentColor"/>
+  <circle cx="56" cy="18" r="3" fill="currentColor"/>
+</svg>
+</span>
     <div class="d8-draw-title">ÉDITION DES ZONES</div>
     <div class="d8-prestige-editor-subtitle">
       GESTION DES QUARTIERS DE LOS SANTOS
@@ -327,6 +347,46 @@ prestigeHalo.innerHTML = `
 
 document.body.appendChild(prestigeHalo);
 
+// DYNASTY 8 — HALO ROUGE PRESTIGE
+// Modification visuelle uniquement.
+
+const d8RedPalette = {
+  "#7b2ce3": "#8b102b",
+  "#c16aff": "#ff315b",
+  "#f1b4ff": "#ff9aaf",
+  "#7522c9": "#751027",
+  "#9d4aff": "#b8183d",
+  "#ffd8ff": "#ffe0e7",
+  "#ae58ff": "#ff456a",
+  "#eeb4ff": "#ffafbf",
+  "#9134e5": "#9b1634",
+  "#b94fff": "#f12d54",
+  "#a64cff": "#c51d42",
+  "#a84cff": "#e51c3d",
+  "#ffe5ff": "#ffe0e7",
+  "#f3b8ff": "#ff9fb4",
+  "#ffe2ff": "#ffd2dd",
+  "#f5baff": "#ff718f",
+  "#e8a3ff": "#ff8da6"
+};
+
+prestigeHalo.querySelectorAll(
+  "[stroke], [fill], [stop-color]"
+).forEach(element => {
+  ["stroke", "fill", "stop-color"].forEach(attribute => {
+    const original = element.getAttribute(attribute);
+
+    if (!original) return;
+
+    const replacement =
+      d8RedPalette[original.toLowerCase()];
+
+    if (replacement) {
+      element.setAttribute(attribute, replacement);
+    }
+  });
+});
+
 const zoneNew = document.getElementById("d8-zone-new");
 const zoneSelect = document.getElementById("d8-zone-select");
 let selectingZone = false;
@@ -427,7 +487,7 @@ creatingNewZone = true;
 
   // Effacer uniquement le tracé de travail
   drawing.points = [];
-  drawing.color = "#bb65ff";
+  drawing.color = "#ff315b";
   refreshDrawing();
 
   // Préparer les informations
