@@ -91,33 +91,71 @@ button.action:hover{box-shadow:0 0 23px #ff315e80;transform:translateY(-2px)}
 </div>
 
 <script>
-const clients = [
-  {
-    id:"D8-001",name:"Alex Morgan",discord:"alex_morgan",
-    agent:"Agent Rivera",bank:125000,debts:20000,
-    properties:[{name:"Villa Eclipse",area:"Vinewood Hills",value:2400000}],
-    history:["Acquisition de la Villa Eclipse","Visite immobilière confirmée"],
-    visits:["Visite de suivi — Villa Eclipse"],
-    notes:["Recherche des propriétés à Vinewood Hills."]
-  },
-  {
-    id:"D8-002",name:"Victoria Hayes",discord:"victoria_h",
-    agent:"Agent Laurent",bank:null,debts:null,
-    properties:[
-      {name:"Résidence Royal",area:"Rockford Hills",value:1350000},
-      {name:"Maison des Palmes",area:"Mirror Park",value:780000}
-    ],
-    history:["Ajout au registre immobilier"],
-    visits:[],notes:["Privilégie les propriétés discrètes."]
-  },
-  {
-    id:"D8-003",name:"Jordan Williams",discord:"jordan_w",
-    agent:"Agent Rivera",bank:45000,debts:0,
-    properties:[{name:"Loft Alta",area:"Downtown",value:450000}],
-    history:["Acquisition du Loft Alta"],
-    visits:["Demande de visite en attente"],notes:[]
+
+let clients = [];
+
+async function loadClients() {
+  const list = document.getElementById("clients");
+
+  list.textContent = "Chargement des archives...";
+
+  try {
+    const token = await D8Cloud.accessToken();
+
+    if (!token) {
+      throw new Error("Connexion Discord nécessaire.");
+    }
+
+    const response = await fetch(
+      "/api/client-archives?action=list",
+      {
+        headers: {
+          authorization: "Bearer " + token
+        },
+        cache: "no-store"
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || "Impossible de charger les archives."
+      );
+    }
+
+    clients = (data.clients || []).map(c => ({
+      id: c.id,
+      name: c.rp_name,
+      discord: c.client_discord_id,
+      phone: c.rp_phone,
+      agent: c.assigned_agent_discord_id || "Non attribué",
+      bank: null,
+      debts: null,
+      properties: [],
+      history: [],
+      visits: [],
+      notes: []
+    }));
+
+    if (!clients.length) {
+      list.textContent = "Aucun dossier client enregistré.";
+      document.getElementById("name").textContent =
+        "Aucun dossier sélectionné";
+      document.getElementById("tabs").innerHTML = "";
+      document.getElementById("content").innerHTML = "";
+      return;
+    }
+
+    current = 0;
+    tab = "overview";
+    loadClients();
+
+  } catch (error) {
+    list.textContent = error.message;
   }
-];
+}
+
 
 const sections = [
   ["overview","Vue générale"],
