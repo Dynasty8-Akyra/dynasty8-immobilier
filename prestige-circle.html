@@ -1,0 +1,244 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prestige Circle — Dynasty 8</title>
+
+<style>
+:root {
+  color-scheme:dark;
+  --bg:#080511;
+  --panel:#160d24;
+  --line:#623477;
+  --pink:#f0a5db;
+  --purple:#b66aff;
+  --text:#f8edff;
+  --muted:#b9a5c8;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse at 80% 0%,#54236b55,transparent 45%),
+    radial-gradient(ellipse at 0% 100%,#6b1c5150,transparent 50%),
+    var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+[hidden] { display:none!important; }
+a { color:inherit;text-decoration:none; }
+header {
+  padding:22px 6%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  border-bottom:1px solid #6e3d8155;
+}
+.logo {
+  font:26px Georgia,serif;
+  letter-spacing:4px;
+}
+.logo span { color:var(--pink); }
+.back {
+  color:var(--muted);
+  font-size:13px;
+}
+main {
+  max-width:1200px;
+  margin:auto;
+  padding:65px 25px;
+}
+.eyebrow {
+  color:var(--pink);
+  letter-spacing:5px;
+  font-size:11px;
+}
+h1 {
+  margin:18px 0;
+  font:clamp(42px,7vw,82px) Georgia,serif;
+  font-weight:normal;
+  letter-spacing:3px;
+  text-shadow:0 0 35px #bb5de255;
+}
+.intro {
+  max-width:670px;
+  color:var(--muted);
+  line-height:1.8;
+}
+.rule {
+  width:120px;
+  height:2px;
+  margin:35px 0;
+  background:linear-gradient(90deg,var(--pink),var(--purple));
+  box-shadow:0 0 18px var(--pink);
+}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:20px;
+  margin-top:45px;
+}
+.card {
+  min-height:210px;
+  padding:28px;
+  background:linear-gradient(145deg,#21112e,#100a1d);
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:0 12px 35px #0005;
+}
+.symbol {
+  font-size:30px;
+  margin-bottom:22px;
+}
+.card h2 {
+  font:23px Georgia,serif;
+  margin:0 0 13px;
+}
+.card p {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+}
+.status {
+  max-width:650px;
+  padding:30px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--panel);
+  margin:45px auto;
+  text-align:center;
+  line-height:1.8;
+}
+.status a {
+  display:inline-block;
+  margin-top:15px;
+  color:var(--pink);
+  text-decoration:underline;
+}
+footer {
+  margin-top:65px;
+  padding-top:25px;
+  border-top:1px solid #75418455;
+  color:var(--muted);
+  font-size:11px;
+  letter-spacing:2px;
+  text-align:center;
+}
+@media(max-width:800px) {
+  .grid { grid-template-columns:1fr; }
+  header { flex-wrap:wrap; }
+}
+</style>
+
+<script src="supabase-config.js"></script>
+<script src="supabase-client.js"></script>
+</head>
+
+<body>
+<header>
+  <div class="logo">DYNASTY <span>8</span></div>
+  <a class="back" href="admin-carte.html">
+    ← RETOUR DIRECTION
+  </a>
+</header>
+
+<div id="access-status" class="status" role="status">
+  🔱 Vérification de votre accréditation Prestige…
+</div>
+
+<main id="prestige-content" hidden>
+  <div class="eyebrow">
+    DYNASTY 8 · ACCÈS CONFIDENTIEL
+  </div>
+
+  <h1>Prestige Circle</h1>
+
+  <p class="intro">
+    L'exclusivité ne se revendique pas.
+    Elle se mérite. Un cercle privé dédié
+    aux plus grandes fortunes de Los Santos,
+    sous la supervision de la Direction.
+  </p>
+
+  <div class="rule"></div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="symbol">♛</div>
+      <h2>Admissions</h2>
+      <p>
+        Examiner les candidatures, vérifier
+        les critères de fortune et soumettre
+        les décisions à la Direction Prestige.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="symbol">🔱</div>
+      <h2>Membres privés</h2>
+      <p>
+        Suivre les membres et leurs statuts
+        dans un registre confidentiel.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="symbol">✦</div>
+      <h2>Propriétés exclusives</h2>
+      <p>
+        Préparer les avant-premières et les
+        biens confidentiels réservés aux
+        personnes autorisées.
+      </p>
+    </section>
+  </div>
+
+  <footer>
+    PRESTIGE CIRCLE · PRIVATE DIRECTION ACCESS
+  </footer>
+</main>
+
+<script>
+(async function () {
+  const statusBox = document.getElementById("access-status");
+  const content = document.getElementById("prestige-content");
+
+  try {
+    if (!window.D8Cloud) {
+      throw new Error("Service de connexion indisponible.");
+    }
+
+    const status = await window.D8Cloud.role();
+
+    const allowed =
+      status.role === "direction" &&
+      status.prestige?.isDirection === true &&
+      status.prestige?.canManageMembers === true;
+
+    if (!allowed) {
+      statusBox.textContent =
+        "🔒 Accès réservé à la Direction Prestige.";
+      return;
+    }
+
+    statusBox.hidden = true;
+    content.hidden = false;
+
+  } catch (error) {
+    statusBox.textContent =
+      "🔒 Accès non vérifié. Connectez-vous avec Discord.";
+
+    const link = document.createElement("a");
+    link.href = "agent-login.html";
+    link.textContent = "Se connecter";
+    statusBox.appendChild(document.createElement("br"));
+    statusBox.appendChild(link);
+  }
+})();
+</script>
+</body>
+</html>
