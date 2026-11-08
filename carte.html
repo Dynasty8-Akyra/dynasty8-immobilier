@@ -3,19 +3,366 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090508">
 
   <title>Dynasty 8 | Carte immobilière</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
+  <!-- Styles existants de la carte -->
   <link rel="stylesheet" href="carte.css?v=prestige3">
+
+  <style>
+    /* DYNASTY 8 — RED NEON PRESTIGE V2
+       CARTE IMMOBILIÈRE PUBLIQUE */
+
+    :root {
+      --d8-black: #090508;
+      --d8-panel: #1b0910;
+      --d8-red: #e51c3d;
+      --d8-ruby: #8c142a;
+      --d8-line: rgba(255, 65, 94, .48);
+      --d8-white: #fff1f3;
+    }
+
+    body[data-map-mode="public"] {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          ellipse at 50% 0%,
+          rgba(190, 12, 49, .24),
+          transparent 55%
+        ),
+        linear-gradient(140deg, #12070c, #090508);
+      color: var(--d8-white);
+      font-family: Montserrat, sans-serif;
+    }
+
+    /* EN-TÊTE */
+
+    body[data-map-mode="public"] .d8-header {
+      position: relative;
+      z-index: 1100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 12px 28px;
+      background: rgba(8, 4, 7, .97);
+      border-bottom: 1px solid var(--d8-line);
+      box-shadow: 0 0 25px rgba(210, 14, 51, .18);
+    }
+
+    .d8-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .d8-brand svg {
+      width: 38px;
+      height: 38px;
+      fill: none;
+      stroke: #ff536b;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 9px #e51c3d);
+    }
+
+    .d8-brand strong {
+      display: block;
+      font: 600 29px "Cormorant Garamond", serif;
+      letter-spacing: 2px;
+    }
+
+    .d8-brand small {
+      display: block;
+      color: #e7a3af;
+      font-size: 9px;
+      letter-spacing: 2px;
+    }
+
+    .d8-header-nav {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .d8-header-nav a {
+      color: #f7e7ea;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 600;
+      transition: color .25s;
+    }
+
+    .d8-header-nav a:hover {
+      color: #ff647d;
+    }
+
+    .d8-header-nav .d8-agent-btn {
+      padding: 12px 16px;
+      border: 1px solid #a52a41;
+      border-radius: 9px;
+      background: #270b15;
+      box-shadow: 0 0 12px #e51c3d22;
+    }
+
+    /* PRÉSENTATION */
+
+    .d8-map-heading {
+      position: relative;
+      padding: 23px 20px 20px;
+      text-align: center;
+      background:
+        radial-gradient(
+          ellipse at center,
+          rgba(165, 10, 44, .22),
+          transparent 65%
+        );
+    }
+
+    .d8-map-heading::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 15%;
+      width: 70%;
+      height: 1px;
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          #f0264b,
+          transparent
+        );
+      box-shadow: 0 0 14px #ff1744;
+    }
+
+    .d8-map-heading span {
+      color: #f07689;
+      font-size: 10px;
+      letter-spacing: 4px;
+    }
+
+    .d8-map-heading h1 {
+      margin: 7px 0;
+      font: 500 clamp(34px, 4vw, 51px)
+        "Cormorant Garamond", serif;
+      color: #fff3f4;
+      text-shadow: 0 0 25px #e51c3d44;
+    }
+
+    .d8-map-heading p {
+      margin: 5px 0 0;
+      color: #cbaab1;
+      font-size: 11px;
+    }
+
+    /* CARTE PLEINE LARGEUR */
+
+    body[data-map-mode="public"] .map-page {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 15px 18px 25px;
+      box-sizing: border-box;
+      background: transparent;
+    }
+
+    body[data-map-mode="public"] .map-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    body[data-map-mode="public"] .map-toolbar button {
+      width: auto;
+      min-width: 0;
+      padding: 10px 16px;
+      border: 1px solid #8d3045;
+      border-radius: 30px;
+      background: #1b0b12;
+      color: #f5e4e8;
+      font: 600 11px Montserrat, sans-serif;
+      cursor: pointer;
+      transition:
+        background .25s,
+        border-color .25s,
+        box-shadow .25s,
+        transform .25s;
+    }
+
+    body[data-map-mode="public"] .map-toolbar button:hover {
+      transform: translateY(-2px);
+      border-color: #ff4968;
+      box-shadow: 0 0 16px #f0204a66;
+    }
+
+    body[data-map-mode="public"] .map-toolbar button.on {
+      border-color: #ff5c76;
+      background: linear-gradient(
+        120deg, #870f29, #d7193e
+      );
+      box-shadow: 0 0 20px #e51c3d66;
+    }
+
+    body[data-map-mode="public"] .map-layout {
+      position: relative;
+      width: 100%;
+      min-height: 650px;
+      overflow: hidden;
+      border: 1px solid #a42b43;
+      border-radius: 18px;
+      background: #10070c;
+      box-shadow:
+        0 0 25px #e51c3d33,
+        0 20px 45px #0009;
+    }
+
+    body[data-map-mode="public"] #viewport {
+      width: 100%;
+      height: min(76vh, 850px);
+      min-height: 650px;
+    }
+
+    /* BOUTONS DE CARTE */
+
+    body[data-map-mode="public"] .map-buttons {
+      z-index: 500;
+    }
+
+    body[data-map-mode="public"] .map-buttons button {
+      border: 1px solid #d13a57;
+      background: #250a14;
+      color: #fff;
+      box-shadow: 0 0 14px #e51c3d55;
+    }
+
+    body[data-map-mode="public"] .map-buttons button:hover {
+      background: #94142d;
+      box-shadow: 0 0 23px #f5254c;
+    }
+
+    /* PANNEAU DES QUARTIERS */
+
+    body[data-map-mode="public"] .zone-panel {
+      box-sizing: border-box;
+      border: 1px solid #a62a43;
+      background: rgba(16, 5, 10, .94);
+      color: #f9edf0;
+      box-shadow: 0 0 24px #c51c3b44;
+    }
+
+    /* PETITS TEXTES */
+
+    body[data-map-mode="public"] .map-hint,
+    body[data-map-mode="public"] .map-credit {
+      color: #f3dce1;
+    }
+
+    /* LUEUR ANIMÉE */
+
+    @keyframes d8-map-glow {
+      0%, 100% {
+        box-shadow:
+          0 0 15px #d7193e33,
+          0 20px 45px #0009;
+      }
+      50% {
+        box-shadow:
+          0 0 32px #f0254b66,
+          0 20px 45px #0009;
+      }
+    }
+
+    body[data-map-mode="public"] .map-layout {
+      animation: d8-map-glow 5s ease-in-out infinite;
+    }
+
+    @media (max-width: 750px) {
+      body[data-map-mode="public"] .d8-header {
+        flex-wrap: wrap;
+        padding: 13px 16px;
+      }
+
+      .d8-brand strong {
+        font-size: 23px;
+      }
+
+      .d8-header-nav {
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      body[data-map-mode="public"] .map-page {
+        padding: 10px;
+      }
+
+      body[data-map-mode="public"] #viewport {
+        min-height: 500px;
+        height: 70vh;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body[data-map-mode="public"] .map-layout {
+        animation: none;
+      }
+    }
+  </style>
 </head>
 
 <body data-map-mode="public">
 
+  <!-- NAVIGATION DYNASTY 8 -->
+  <header class="d8-header">
+
+    <a class="d8-brand" href="index.html">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M8 46 L4 16 L18 30 L31 10 L45 30 L60 16 L56 46 Z"/>
+        <path d="M8 46 H56 V54 H8 Z"/>
+        <circle cx="4" cy="16" r="3"/>
+        <circle cx="31" cy="10" r="3"/>
+        <circle cx="60" cy="16" r="3"/>
+      </svg>
+      <div>
+        <strong>DYNASTY 8</strong>
+        <small>AGENCE IMMOBILIÈRE DE PRESTIGE</small>
+      </div>
+    </a>
+
+    <nav class="d8-header-nav"
+         aria-label="Navigation principale">
+      <a href="index.html">ACCUEIL</a>
+      <a href="carte.html" aria-current="page">CARTE IMMOBILIÈRE</a>
+      <a class="d8-agent-btn" href="agent-login.html">
+        ♛ CONNEXION AGENT
+      </a>
+    </nav>
+
+  </header>
+
+  <!-- TITRE DE LA CARTE -->
+  <div class="d8-map-heading">
+    <span>DYNASTY 8 · LOS SANTOS</span>
+    <h1>La carte de vos ambitions.</h1>
+    <p>Explorez les quartiers et découvrez les propriétés de Los Santos.</p>
+  </div>
+
+  <!-- CARTE EXISTANTE -->
   <main class="map-page">
 
     <div class="map-toolbar"
@@ -59,19 +406,10 @@
     </section>
   </main>
 
-  <a class="agent-link" href="agent-login.html">
-    ♛ CONNEXION AGENT
-  </a>
-
-  <a class="home-link" href="index.html">
-    ‹ Accueil
-  </a>
-
+  <!-- SCRIPTS EXISTANTS CONSERVÉS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
   <script src="supabase-config.js"></script>
   <script src="supabase-client.js"></script>
-
   <script src="carte.js"></script>
 
 </body>
