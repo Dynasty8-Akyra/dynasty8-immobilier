@@ -254,5 +254,191 @@ el("search").addEventListener("input",renderClients);
 renderClients();
 render();
 </script>
+ 
+<!-- DYNASTY 8 — CRÉATION DOSSIER CLIENT -->
+<style>
+.d8-create-btn{
+  position:fixed;right:25px;bottom:25px;z-index:90;
+  padding:16px 24px;border:1px solid #ff6b91;
+  border-radius:12px;color:white;cursor:pointer;
+  font-weight:700;letter-spacing:1px;
+  background:linear-gradient(135deg,#db2454,#65112d);
+  box-shadow:0 0 24px #ff315e70;
+}
+.d8-create-btn:hover{box-shadow:0 0 35px #ff315eaa}
+.d8-modal{
+  position:fixed;inset:0;z-index:100;
+  background:#050307eF;
+  display:none;align-items:center;justify-content:center;
+  padding:20px;overflow:auto;
+}
+.d8-modal.open{display:flex}
+.d8-form{
+  width:min(560px,100%);max-height:95vh;overflow:auto;
+  background:linear-gradient(145deg,#351020,#100810);
+  border:1px solid #c42b58;border-radius:18px;
+  box-shadow:0 0 50px #ff315e44;
+  padding:28px;
+}
+.d8-form h2{margin-top:0;color:#ffd4e0}
+.d8-form label{
+  display:block;margin:15px 0 7px;
+  color:#e5a5ba;font-size:13px;
+}
+.d8-form input{
+  width:100%;padding:13px;border-radius:9px;
+  border:1px solid #82334e;background:#170b13;
+  color:white;font:inherit;
+}
+.d8-form input:focus{
+  outline:none;border-color:#ff315e;
+  box-shadow:0 0 14px #ff315e55;
+}
+.d8-form input[type=file]{cursor:pointer}
+.d8-preview{
+  display:none;width:100%;max-height:250px;
+  object-fit:contain;margin-top:15px;
+  border:1px solid #87334d;border-radius:10px;
+}
+.d8-actions{display:flex;gap:12px;margin-top:24px}
+.d8-actions button{
+  flex:1;padding:13px;border-radius:9px;
+  border:1px solid #a43b5b;color:white;cursor:pointer;
+  background:#371425;
+}
+.d8-actions .d8-submit{
+  background:linear-gradient(135deg,#db2454,#811737);
+}
+.d8-actions button:disabled{
+  opacity:.45;cursor:not-allowed;
+}
+.d8-message{margin-top:12px;color:#ffb7ca;font-size:13px}
+</style>
+
+<button class="d8-create-btn" id="d8-open-create">
+  ＋ NOUVEAU DOSSIER
+</button>
+
+<div class="d8-modal" id="d8-create-modal">
+  <form class="d8-form" id="d8-create-form">
+    <div class="sub">DYNASTY 8 · ARCHIVES INTERNES</div>
+    <h2>👑 Nouveau dossier client</h2>
+    <p class="muted">Tous les champs sont obligatoires.</p>
+
+    <label for="d8-rp-name">Nom et prénom RP *</label>
+    <input id="d8-rp-name" name="rp_name"
+           maxlength="160" minlength="2"
+           placeholder="Ex. Victoria Hayes" required>
+
+    <label for="d8-rp-phone">Téléphone RP *</label>
+    <input id="d8-rp-phone" name="rp_phone"
+           maxlength="40" minlength="3"
+           placeholder="Ex. 555-0123" required>
+
+    <label for="d8-discord-id">ID Discord *</label>
+    <input id="d8-discord-id" name="client_discord_id"
+           inputmode="numeric"
+           pattern="[0-9]{17,22}"
+           placeholder="ID Discord du client" required>
+
+    <label for="d8-cni">Photo de CNI RP *</label>
+    <input id="d8-cni" name="cni" type="file"
+           accept="image/jpeg,image/png,image/webp"
+           required>
+
+    <img class="d8-preview" id="d8-cni-preview"
+         alt="Aperçu de la CNI RP">
+
+    <div class="d8-message" id="d8-form-message"></div>
+
+    <div class="d8-actions">
+      <button type="button" id="d8-cancel-create">
+        Annuler
+      </button>
+      <button class="d8-submit" type="submit"
+              id="d8-submit-create">
+        Créer le dossier
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+(() => {
+  const modal = document.getElementById("d8-create-modal");
+  const form = document.getElementById("d8-create-form");
+  const cni = document.getElementById("d8-cni");
+  const preview = document.getElementById("d8-cni-preview");
+  const message = document.getElementById("d8-form-message");
+  const submit = document.getElementById("d8-submit-create");
+
+  let previewURL = null;
+
+  function clearPreview() {
+    if (previewURL) URL.revokeObjectURL(previewURL);
+    previewURL = null;
+    preview.style.display = "none";
+    preview.removeAttribute("src");
+  }
+
+  document.getElementById("d8-open-create")
+    .addEventListener("click", () => {
+      modal.classList.add("open");
+    });
+
+  document.getElementById("d8-cancel-create")
+    .addEventListener("click", () => {
+      modal.classList.remove("open");
+      form.reset();
+      clearPreview();
+      message.textContent = "";
+    });
+
+  cni.addEventListener("change", () => {
+    clearPreview();
+    message.textContent = "";
+
+    const file = cni.files[0];
+    if (!file) return;
+
+    const allowed = [
+      "image/jpeg", "image/png", "image/webp"
+    ];
+
+    if (!allowed.includes(file.type)) {
+      message.textContent = "Format accepté : JPG, PNG ou WEBP.";
+      cni.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      message.textContent = "La photo ne doit pas dépasser 5 Mo.";
+      cni.value = "";
+      return;
+    }
+
+    previewURL = URL.createObjectURL(file);
+    preview.src = previewURL;
+    preview.style.display = "block";
+  });
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+    message.textContent = "";
+
+    if (!form.reportValidity()) return;
+
+    /*
+      Le formulaire est prêt.
+      L'envoi sera branché sur la session Discord
+      existante après vérification du code
+      de connexion du site.
+    */
+    message.textContent =
+      "Formulaire prêt. Connexion Discord à finaliser avant enregistrement.";
+  });
+})();
+</script>
+ 
 </body>
 </html>
