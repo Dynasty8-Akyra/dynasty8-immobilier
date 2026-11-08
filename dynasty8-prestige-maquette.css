@@ -185,97 +185,103 @@ body[data-map-mode="admin"].d8-editor-collapsed #d8-editor-arrow {right:0 !impor
  body[data-map-mode="admin"] #d8-draw-tools svg.d8-prestige-editor-crown {animation:none !important;}
 }
 
-/* ============================================================
-   DYNASTY 8 — PRESTIGE V2 : CADRAGE ET PROPORTIONS
-   Chargé après les règles V1 ; aucune modification fonctionnelle.
-   ============================================================ */
+/* V3 — GEOMETRIE DU CERCLE : zones internes adaptees au disque */
 body[data-map-mode="admin"] #d8-draw-tools {
-  --d8-circle-size: min(820px, calc(100dvh - 32px), 65vw);
-  width: var(--d8-circle-size) !important;
-  height: var(--d8-circle-size) !important;
-  max-height: calc(100dvh - 32px) !important;
+  width: min(700px, calc(100dvh - 110px), calc(100vw - 80px)) !important;
+  height: min(700px, calc(100dvh - 110px), calc(100vw - 80px)) !important;
   top: 50% !important;
   right: 16px !important;
   transform: translateY(-50%) !important;
-  padding: clamp(24px, 3.7vh, 43px) clamp(31px, 4vw, 58px) clamp(22px, 3.1vh, 35px) !important;
-  gap: clamp(5px, 1vh, 10px) !important;
+  padding: 0 !important;
+  display: block !important;
+  overflow: hidden !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-head {
-  padding: 0 0 3px !important;
+  position: absolute !important;
+  top: 5.5% !important;
+  left: 18% !important;
+  width: 64% !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools svg.d8-prestige-editor-crown {
-  width: clamp(21px, 3.4vh, 34px) !important;
-  height: clamp(21px, 3.4vh, 34px) !important;
-  margin-bottom: 1px !important;
+  width: clamp(19px, 3.3vh, 30px) !important;
+  height: clamp(19px, 3.3vh, 30px) !important;
+  margin: 0 auto 2px !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools .d8-draw-title {
-  font-size: clamp(15px, 2.6vh, 25px) !important;
-  line-height: 1.05 !important;
-  margin: 1px 0 3px !important;
+  font-size: clamp(14px, 2.8vh, 23px) !important;
+  margin: 0 0 2px !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-subtitle {
-  font-size: clamp(8px, 1.15vh, 11px) !important;
+  font-size: clamp(7px, 1.2vh, 10px) !important;
   padding-bottom: 5px !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-grid {
-  gap: clamp(8px, 1.3vw, 14px) !important;
+  position: absolute !important;
+  top: 22% !important;
+  left: 9.5% !important;
+  width: 81% !important;
+  height: 57% !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 10px !important;
   min-height: 0 !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-section {
-  gap: clamp(3px, .65vh, 7px) !important;
-  padding: clamp(7px, 1.15vh, 11px) !important;
-  border-radius: clamp(14px, 2vw, 23px) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  box-sizing: border-box !important;
+  padding: 8px !important;
+  gap: 4px !important;
+  border-radius: 19px !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-label {
-  font-size: clamp(9px, 1.45vh, 12px) !important;
   padding: 4px 2px 6px !important;
-  margin-bottom: 2px !important;
+  margin: 0 0 2px !important;
+  font-size: clamp(8px, 1.25vh, 11px) !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-section button {
-  min-height: clamp(26px, 4.2vh, 39px) !important;
-  padding: 4px 5px !important;
-  border-radius: 12px !important;
-  font-size: clamp(9px, 1.5vh, 12px) !important;
+  min-height: 0 !important;
+  height: clamp(25px, 4.2vh, 35px) !important;
+  padding: 3px 4px !important;
+  font-size: clamp(8px, 1.4vh, 11px) !important;
+  border-radius: 11px !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools #d8-draw-count {
-  margin-top: 1px !important;
+  margin-top: 0 !important;
   padding: 4px !important;
-  font-size: 11px !important;
-}
-body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-empty {
-  min-height: 0 !important;
-  padding-bottom: clamp(48px, 10vh, 95px) !important;
+  font-size: 10px !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-actions {
-  width: min(100%, 86%) !important;
+  position: absolute !important;
+  left: 23% !important;
+  bottom: 8% !important;
+  width: 54% !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
   gap: 10px !important;
-  margin: 0 auto !important;
-  flex-shrink: 0 !important;
+  margin: 0 !important;
 }
 body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-actions button {
   min-width: 0 !important;
-  min-height: clamp(38px, 6vh, 54px) !important;
-  padding: 6px 7px !important;
-  font-size: clamp(10px, 1.6vh, 13px) !important;
+  min-height: 42px !important;
+  padding: 6px 5px !important;
+  font-size: clamp(9px, 1.5vh, 12px) !important;
   line-height: 1.2 !important;
   overflow-wrap: anywhere !important;
 }
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-empty {
+  min-height: 0 !important;
+  padding: 0 6px 65px !important;
+}
+body[data-map-mode="admin"] #d8-draw-tools .d8-prestige-editor-empty::after {
+  height: min(85px, 15vh) !important;
+}
 body[data-map-mode="admin"] #d8-editor-arrow {
-  right: calc(min(820px, 100dvh - 32px, 65vw) + 2px) !important;
+  right: calc(min(700px, 100dvh - 110px, 100vw - 80px) + 6px) !important;
 }
 body[data-map-mode="admin"].d8-editor-collapsed #d8-editor-arrow {
   right: 0 !important;
-}
-@media (max-width: 900px) {
-  body[data-map-mode="admin"] #d8-draw-tools {
-    --d8-circle-size: min(820px, calc(100dvh - 24px), 88vw);
-    right: 8px !important;
-    padding: clamp(21px, 3vh, 30px) clamp(24px, 4vw, 37px) !important;
-  }
-  body[data-map-mode="admin"] #d8-editor-arrow {
-    right: calc(min(820px, 100dvh - 24px, 88vw) + 1px) !important;
-  }
-  body[data-map-mode="admin"].d8-editor-collapsed #d8-editor-arrow {
-    right: 0 !important;
-  }
 }
