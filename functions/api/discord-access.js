@@ -4,6 +4,7 @@ import editorSource from "../_lib/carte-editeur.txt";
 const GUILD = "1567889374836957286";
 const DIRECTOR = "1567889789569728583";
 const CONFIRMED = "1567889964639723631";
+const PRESTIGE = "1568940978008760340";
 
 function json(status, data) {
   return new Response(JSON.stringify(data), {
@@ -126,6 +127,31 @@ export async function onRequest(context) {
 
     const roles = member.roles || [];
 
+    // DYNASTY 8 — PRESTIGE CIRCLE
+const isPrestige = roles.includes(PRESTIGE);
+
+const isPrestigeDirection =
+  roles.includes(DIRECTOR) && isPrestige;
+
+const isPrestigeAgent =
+  !roles.includes(DIRECTOR) &&
+  (
+    roles.includes(CONFIRMED) ||
+    (
+      training &&
+      roles.includes(training)
+    )
+  ) &&
+  isPrestige;
+
+const isPrestigeClient =
+  isPrestige &&
+  !roles.includes(DIRECTOR) &&
+  !roles.includes(CONFIRMED) &&
+  !(
+    training &&
+    roles.includes(training)
+  );
     const role = roles.includes(DIRECTOR)
       ? "direction"
       : roles.includes(CONFIRMED)
@@ -146,13 +172,21 @@ const canEditZones = role === 'direction';
       canWrite || role === "formation";
 
     if (action === "status" && method === "GET") {
-      return json(200, {
-        role,
-        canWrite,
-        canViewDashboard,
-        canEditZones
-      });
+  return json(200, {
+    role,
+    canWrite,
+    canViewDashboard,
+    canEditZones,
+
+    prestige: {
+      isMember: isPrestige,
+      isDirection: isPrestigeDirection,
+      isAgent: Boolean(isPrestigeAgent),
+      isClient: isPrestigeClient,
+      canManageMembers: isPrestigeDirection
     }
+  });
+}
 
     // DYNASTY 8 — ÉDITEUR RÉSERVÉ À LA DIRECTION
     if (action === "zone-editor" && method === "GET") {
