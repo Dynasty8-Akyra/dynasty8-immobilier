@@ -1,328 +1,230 @@
 
-/* ==========================================
-   DYNASTY 8 — AGENT DASHBOARD
-   RED NEON PRESTIGE V2
-   ========================================== */
-
+/* DYNASTY 8 — Tableau de bord / Red Neon Prestige V2 */
 (() => {
-  "use strict";
+  'use strict';
 
-  const $ = (id) => document.getElementById(id);
-
+  const $ = id => document.getElementById(id);
   let properties = [];
-  let canWriteDashboard = false;
+  let canWrite = false;
 
-  /* ------------------------------------------
-     OUTILS
-     ------------------------------------------ */
-
-  const currency = (value) => {
-    return new Intl.NumberFormat("fr-FR", {
+  const currency = n =>
+    new Intl.NumberFormat('fr-FR', {
       maximumFractionDigits: 0
-    }).format(Number(value) || 0) + " $";
-  };
+    }).format(Number(n) || 0) + ' $';
 
-  const esc = (value) => {
-    return String(value ?? "").replace(
+  const esc = s =>
+    String(s ?? '').replace(
       /[&<>"']/g,
-      (char) => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[char]
+      c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[c])
     );
-  };
 
-  /* ------------------------------------------
-     AFFICHAGE DES ANNONCES
-     ------------------------------------------ */
+  /* AFFICHAGE DES ANNONCES */
 
   function render() {
-    const search = $("search");
-    const rows = $("rows");
-    const empty = $("empty");
+    const search = $('search');
+    const rows = $('rows');
 
     if (!search || !rows) return;
 
-    const query = search.value
-      .toLocaleLowerCase("fr")
+    const q = search.value
+      .toLocaleLowerCase('fr')
       .trim();
 
-    const filtered = properties.filter((property) => {
-      return [
-        property.name,
-        property.area,
-        property.type
-      ].some((value) =>
-        String(value || "")
-          .toLocaleLowerCase("fr")
-          .includes(query)
-      );
-    });
-
-    rows.innerHTML = filtered.map((property) => `
-      <tr>
-        <td>${esc(property.name)}</td>
-        <td>${esc(property.type)}</td>
-        <td>${esc(property.area)}</td>
-        <td>${currency(property.price)}</td>
-        ${
-          canWriteDashboard
-            ? `<td>
-                <a href="admin-annonces.html?edit=${encodeURIComponent(property.id)}">
-                  MODIFIER ↗
-                </a>
-              </td>`
-            : ""
-        }
-      </tr>
-    `).join("");
-
-    if (empty) {
-      empty.hidden = filtered.length > 0;
-    }
-  }
-
-  /* ------------------------------------------
-     NAVIGATION DES CARTES
-     ------------------------------------------ */
-
-  function createMapNavigation(access) {
-    const dashboard = $("dashboard");
-
-    if (!dashboard) return;
-
-    // Éviter de créer plusieurs fois les boutons.
-    if (dashboard.querySelector(".d8-dashboard-maps")) {
-      return;
-    }
-
-    const navigation = document.createElement("nav");
-
-    navigation.className = "d8-dashboard-maps";
-    navigation.setAttribute(
-      "aria-label",
-      "Navigation des cartes immobilières"
+    const filtered = properties.filter(p =>
+      [p.name, p.area, p.type].some(v =>
+        String(v || '')
+          .toLocaleLowerCase('fr')
+          .includes(q)
+      )
     );
 
-    // Carte immobilière publique.
-    const publicMap = document.createElement("a");
+    rows.innerHTML = filtered.map(p => `
+      <tr>
+        <td>${esc(p.name)}</td>
+        <td>${esc(p.type)}</td>
+        <td>${esc(p.area)}</td>
+        <td>${currency(p.price)}</td>
+        ${canWrite ? `
+          <td>
+            <a href="admin-annonces.html?edit=${encodeURIComponent(p.id)}">
+              MODIFIER ↗
+            </a>
+          </td>
+        ` : ''}
+      </tr>
+    `).join('');
 
-    publicMap.href = "carte.html";
-    publicMap.className = "d8-map-access";
-    publicMap.textContent = "⌖ CARTE IMMOBILIÈRE";
-
-    navigation.appendChild(publicMap);
-
-    // Éditeur réservé à la Direction.
-    if (access.canEditZones === true) {
-      const directionMap = document.createElement("a");
-
-      directionMap.href = "admin-carte.html";
-      directionMap.className =
-        "d8-map-access d8-map-direction";
-
-      directionMap.textContent =
-        "♛ ÉDITEUR DIRECTION";
-
-      navigation.appendChild(directionMap);
+    if ($('empty')) {
+      $('empty').hidden = filtered.length > 0;
     }
-
-    dashboard.prepend(navigation);
   }
 
-  /* ------------------------------------------
-     AUTORISATIONS DU TABLEAU DE BORD
-     ------------------------------------------ */
+  /* PERMISSIONS DISCORD */
 
   function applyPermissions(access) {
-    canWriteDashboard = access.canWrite === true;
+    canWrite = access.canWrite === true;
+    window.canWriteDashboard = canWrite;
 
-    window.canWriteDashboard = canWriteDashboard;
+    if (!canWrite) {
+      document
+        .querySelectorAll('.primary, .bottom a:first-child')
+        .forEach(el => el.hidden = true);
 
-    if (!canWriteDashboard) {
-      // Masquer les actions d'écriture.
-      const primary = document.querySelector(".primary");
+      document
+        .querySelectorAll('thead th:last-child')
+        .forEach(el => el.remove());
+    }
 
-      if (primary) {
-        primary.style.display = "none";
-      }
+    const title = document.querySelector(
+      '#dashboard .intro h1'
+    );
 
-      const bottomAction = document.querySelector(
-        ".bottom a:first-child"
-      );
+    if (title) {
+      const role =
+        access.canEditZones === true
+          ? 'Direction'
+          : access.role === 'formation'
+            ? 'Formation'
+            : 'Agent';
 
-      if (bottomAction) {
-        bottomAction.style.display = "none";
-      }
-
-      // Supprimer la colonne Modifier.
-      const lastHeader = document.querySelector(
-        "thead th:last-child"
-      );
-
-      if (lastHeader) {
-        lastHeader.remove();
-      }
+      title.innerHTML =
+        'Tableau de bord <em>' + role + '</em>';
     }
   }
 
-  /* ------------------------------------------
-     STATISTIQUES
-     ------------------------------------------ */
+  /* NAVIGATION DES CARTES */
 
-  function updateStatistics() {
+  function createMapNavigation(access) {
+    const dashboard = $('dashboard');
+
+    if (
+      !dashboard ||
+      dashboard.querySelector('.d8-dashboard-maps')
+    ) return;
+
+    const nav = document.createElement('nav');
+    nav.className = 'd8-dashboard-maps';
+    nav.setAttribute('aria-label', 'Accès aux cartes');
+
+    const publicMap = document.createElement('a');
+    publicMap.href = 'carte.html';
+    publicMap.className = 'd8-map-access';
+    publicMap.textContent = '⌖ CARTE IMMOBILIÈRE';
+    nav.appendChild(publicMap);
+
+    if (access.canEditZones === true) {
+      const directionMap = document.createElement('a');
+      directionMap.href = 'admin-carte.html';
+      directionMap.className =
+        'd8-map-access d8-map-direction';
+      directionMap.textContent = '♛ ÉDITEUR DIRECTION';
+      nav.appendChild(directionMap);
+    }
+
+    // Placer les cartes SOUS les statistiques.
+    const stats = dashboard.querySelector('.stats');
+
+    if (stats) {
+      stats.insertAdjacentElement('afterend', nav);
+    } else {
+      dashboard.prepend(nav);
+    }
+  }
+
+  /* STATISTIQUES */
+
+  function updateStats() {
     const total = properties.length;
 
     const sum = properties.reduce(
-      (result, property) =>
-        result + (Number(property.price) || 0),
+      (a, p) => a + (Number(p.price) || 0),
       0
     );
 
-    const average = total ? sum / total : 0;
+    const values = {
+      total: String(total),
+      value: currency(sum),
+      average: currency(total ? sum / total : 0),
+      types: String(
+        new Set(properties.map(p => p.type)).size
+      )
+    };
 
-    const types = new Set(
-      properties.map((property) => property.type)
-    ).size;
-
-    if ($("total")) {
-      $("total").textContent = total;
-    }
-
-    if ($("value")) {
-      $("value").textContent = currency(sum);
-    }
-
-    if ($("average")) {
-      $("average").textContent = currency(average);
-    }
-
-    if ($("types")) {
-      $("types").textContent = types;
-    }
+    Object.entries(values).forEach(([id, value]) => {
+      if ($(id)) $(id).textContent = value;
+    });
   }
 
-  /* ------------------------------------------
-     INITIALISATION ET CONNEXION DISCORD
-     ------------------------------------------ */
+  /* CHARGEMENT DU TABLEAU DE BORD */
 
   async function init() {
-    const gate = $("gate");
-    const dashboard = $("dashboard");
-
     try {
       if (
         !window.D8Cloud ||
         !D8Cloud.ready() ||
         !(await D8Cloud.authenticated())
       ) {
-        location.replace("agent-login.html");
+        location.replace('agent-login.html');
         return;
       }
 
-      // Vérifier les permissions Discord côté serveur.
       const access = await D8Cloud.role();
 
       if (access.canViewDashboard !== true) {
-        location.replace("index.html");
+        location.replace('index.html');
         return;
       }
 
-      // Appliquer les autorisations.
       applyPermissions(access);
-
-/* ==========================================
-   DYNASTY 8 — TITRE SELON LE RÔLE DISCORD
-   ========================================== */
-
-const dashboardTitle = document.querySelector(
-  "#dashboard h1"
-);
-
-if (dashboardTitle) {
-  if (access.canEditZones === true) {
-    dashboardTitle.textContent =
-      "Tableau de bord Direction";
-  } else if (access.role === "formation") {
-    dashboardTitle.textContent =
-      "Tableau de bord Formation";
-  } else {
-    dashboardTitle.textContent =
-      "Tableau de bord Agent";
-  }
-}
-
-      // Ajouter les boutons de navigation.
       createMapNavigation(access);
 
-      // Charger les annonces.
       properties = await D8Cloud.list();
 
-      // Calculer les statistiques.
-      updateStatistics();
+      updateStats();
 
-      // Afficher le tableau de bord.
-      if (gate) {
-        gate.hidden = true;
-      }
-
-      if (dashboard) {
-        dashboard.hidden = false;
-      }
+      if ($('gate')) $('gate').hidden = true;
+      if ($('dashboard')) $('dashboard').hidden = false;
 
       render();
 
-      console.log(
-        "DYNASTY 8 — Tableau de bord chargé.",
-        {
-          role: access.role,
-          canWrite: access.canWrite,
-          canEditZones: access.canEditZones
-        }
-      );
-
     } catch (error) {
       console.error(
-        "DYNASTY 8 — Erreur tableau de bord :",
+        'DYNASTY 8 — Tableau de bord :',
         error
       );
 
-      if (gate) {
-        gate.hidden = false;
-        gate.textContent =
-          "Impossible de charger le tableau de bord : " +
+      if ($('gate')) {
+        $('gate').hidden = false;
+        $('gate').textContent =
+          'Impossible de charger le tableau de bord : ' +
           error.message;
       }
     }
   }
 
-  /* ------------------------------------------
-     ÉVÉNEMENTS
-     ------------------------------------------ */
+  /* RECHERCHE */
 
-  const search = $("search");
-
-  if (search) {
-    search.addEventListener("input", render);
+  if ($('search')) {
+    $('search').addEventListener('input', render);
   }
 
-  const logout = $("logout");
+  /* DÉCONNEXION */
 
-  if (logout) {
-    logout.addEventListener("click", async () => {
+  if ($('logout')) {
+    $('logout').addEventListener('click', async () => {
       try {
         await D8Cloud.logout();
       } finally {
-        location.replace("agent-login.html");
+        location.replace('agent-login.html');
       }
     });
   }
 
-  // Démarrer le tableau de bord.
   init();
-
 })();
-
