@@ -2934,3 +2934,273 @@ body[data-map-mode="admin"] #d8-draw-tools {
     animation: none !important;
   }
 }
+
+/* ============================================
+   DYNASTY 8 — RED NEON PRESTIGE V2
+   CARTE PUBLIQUE + DIRECTION
+   ============================================ */
+
+/* 1. CARTE PUBLIQUE : CORRECTION DE L'AFFICHAGE */
+
+html:has(body[data-map-mode="public"]),
+body[data-map-mode="public"] {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+body[data-map-mode="public"] .map-page {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+body[data-map-mode="public"] .map-layout {
+  height: auto !important;
+  min-height: 650px !important;
+}
+
+body[data-map-mode="public"] #viewport {
+  position: relative !important;
+  inset: auto !important;
+  height: min(76vh, 850px) !important;
+  min-height: 650px !important;
+  background: #100609 !important;
+}
+
+/* 2. FILTRES ROUGE NÉON */
+
+body[data-map-mode="public"] .map-toolbar {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  max-width: 100% !important;
+}
+
+body[data-map-mode="public"] .map-toolbar button {
+  border-color: #92283e !important;
+  background: rgba(30, 8, 15, .92) !important;
+  color: #ffe9ee !important;
+}
+
+body[data-map-mode="public"] .map-toolbar button:hover,
+body[data-map-mode="public"] .map-toolbar button.on {
+  border-color: #ff506e !important;
+  background: linear-gradient(
+    120deg, #871028, #d7193e
+  ) !important;
+  box-shadow: 0 0 18px #f0254b66 !important;
+}
+
+/* 3. PANNEAUX IMMOBILIERS */
+
+body[data-map-mode="public"] #zonePanel.zone-panel {
+  --panel-neon: #e51c3d;
+  border-color: #a82b43 !important;
+  background: linear-gradient(
+    115deg,
+    rgba(31, 7, 15, .95),
+    rgba(10, 5, 8, .98)
+  ) !important;
+  box-shadow:
+    0 0 22px #e51c3d44,
+    -15px 0 40px #0007 !important;
+  scrollbar-color: #b92645 #16070d;
+}
+
+body[data-map-mode="public"] #zonePanel.zone-panel.is-open {
+  --panel-neon: #e51c3d;
+  border-color: #d83a57 !important;
+  background:
+    radial-gradient(
+      ellipse at 100% 0%,
+      rgba(176, 16, 48, .18),
+      transparent 45%
+    ),
+    linear-gradient(
+      100deg,
+      rgba(31, 8, 16, .96),
+      rgba(11, 5, 9, .99)
+    ) !important;
+  box-shadow:
+    0 0 30px #e51c3d55,
+    -20px 0 45px #0008 !important;
+  animation: d8-red-panel-pulse 6s ease-in-out infinite;
+}
+
+@keyframes d8-red-panel-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 4px #b7193855);
+  }
+  50% {
+    filter: drop-shadow(0 0 12px #e51c3d77);
+  }
+}
+
+/* 4. CONTENU DES FICHES */
+
+body[data-map-mode="public"] #zonePanel .d8-luxury-card {
+  --zone-accent: #ff536d;
+  color: #fff0f2;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-luxury-banner {
+  background: linear-gradient(
+    125deg, #49101e, #17080e
+  ) !important;
+  border-color: #a72b44 !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-categories .chip {
+  background: linear-gradient(
+    120deg, #3a101e, #1b0b12
+  ) !important;
+  border-color: #9f3048 !important;
+  color: #fff1f3;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-gallery-placeholder {
+  background: linear-gradient(
+    135deg, #350e1b, #10070c
+  ) !important;
+  border-color: #ad3850 !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-lifestyle-section {
+  background: #200c14 !important;
+  border-color: #823044 !important;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-lifestyle-tags span {
+  background: #39101f !important;
+  border-color: #9d3048 !important;
+  color: #ffe6eb;
+}
+
+body[data-map-mode="public"] #zonePanel .d8-contact-teaser {
+  background: linear-gradient(
+    110deg, #67142b, #210b15
+  ) !important;
+  border-color: #d03b58 !important;
+  box-shadow: 0 0 20px #e51c3d33 !important;
+}
+
+/* 5. ÉTIQUETTES ET SURVOLS */
+
+body[data-map-mode="public"] .d8-zone-label,
+body[data-map-mode="public"] .d8-map-label {
+  background-color: rgba(24, 6, 13, .9) !important;
+  color: #fff !important;
+}
+
+body[data-map-mode="public"] .d8-label-tooltip {
+  background: #200911 !important;
+  border-color: #e51c3d !important;
+  box-shadow: 0 0 15px #e51c3d66 !important;
+}
+
+/* 6. ÉDITEUR DIRECTION : RECOLORATION UNIQUEMENT
+   Ne modifie ni sa taille, ni sa position,
+   ni sa flèche, ni son fonctionnement. */
+
+body[data-map-mode="admin"] #d8-draw-tools {
+  border-color: transparent !important;
+  background:
+    linear-gradient(#19080e, #19080e) padding-box,
+    conic-gradient(
+      from var(--d8-halo-angle),
+      #4b1020,
+      #9e1c37,
+      #ff617b,
+      #a51b39,
+      #4b1020
+    ) border-box !important;
+}
+
+body[data-map-mode="admin"] .d8-draw-title,
+body[data-map-mode="admin"] .d8-prestige-editor-crown {
+  color: #ffd6de !important;
+  text-shadow: 0 0 14px #e51c3d !important;
+}
+
+body[data-map-mode="admin"] #d8-draw-tools button {
+  background: linear-gradient(
+    135deg, #5a1528, #210b15
+  ) !important;
+  border-color: #a83b53 !important;
+}
+
+body[data-map-mode="admin"] #d8-draw-tools button:hover {
+  background: #9c1937 !important;
+  box-shadow: 0 0 15px #e51c3d77 !important;
+}
+
+body[data-map-mode="admin"] #d8-zone-form input,
+body[data-map-mode="admin"] #d8-zone-form select,
+body[data-map-mode="admin"] #d8-zone-form textarea {
+  background: #1a0911 !important;
+  border-color: #893047 !important;
+  color: white !important;
+}
+
+@media (max-width: 900px) {
+  body[data-map-mode="public"] #viewport {
+    height: 70vh !important;
+    min-height: 500px !important;
+  }
+
+  body[data-map-mode="public"] .map-layout {
+    min-height: 500px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-map-mode="public"] #zonePanel.zone-panel.is-open {
+    animation: none !important;
+  }
+}
+
+/* DYNASTY 8 — STABILISATION DES FICHES PUBLIQUES */
+
+body[data-map-mode="public"] #zonePanel.zone-panel {
+  z-index: 950 !important;
+  transition:
+    opacity .25s ease,
+    transform .25s ease,
+    visibility .25s ease !important;
+}
+
+/* Le panneau reste affiché tant que la zone est ouverte */
+body[data-map-mode="public"] #zonePanel.zone-panel.is-open {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translate(0, -50%) !important;
+}
+
+/* Éviter les animations de filtre sur le panneau entier */
+body[data-map-mode="public"] #zonePanel.zone-panel.is-open {
+  animation: none !important;
+  filter: none !important;
+}
+
+/* Garder le contenu visible */
+body[data-map-mode="public"] #zonePanel .d8-luxury-card,
+body[data-map-mode="public"] #zonePanel .d8-prestige-banner,
+body[data-map-mode="public"] #zonePanel .d8-luxury-banner {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Garder le panneau au-dessus de la carte Leaflet */
+body[data-map-mode="public"] .map-layout {
+  isolation: isolate;
+}
+
+@media (max-width: 900px) {
+  body[data-map-mode="public"] #zonePanel.zone-panel.is-open {
+    transform: translate(0, -50%) !important;
+  }
+}
