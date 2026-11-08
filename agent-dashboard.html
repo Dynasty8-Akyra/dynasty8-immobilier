@@ -1,1 +1,45 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tableau de bord Agent — Dynasty 8</title><link rel="stylesheet" href="agent-dashboard.css"><script src="supabase-config.js"></script><script src="supabase-client.js"></script><script src="agent-dashboard.js" defer></script></head><body><div class="ambient"></div><header><a class="brand" href="index.html"><img src="dynasty8-banner-neon.png" alt="Dynasty 8"></a><nav><a href="index.html">Site public</a><a href="biens.html">Catalogue</a><button id="logout">Déconnexion</button></nav></header><main><div id="gate" class="gate">Vérification de votre accès Agent Dynasty…</div><div id="dashboard" hidden><div class="intro"><div><span class="overline">DYNASTY 8 · ESPACE PROFESSIONNEL</span><h1>Tableau de bord <em>Agent</em></h1><p>Retrouvez vos propriétés et gérez votre catalogue immobilier.</p></div><a class="primary" href="admin-annonces.html">＋ CRÉER UNE ANNONCE</a></div><section class="stats" aria-label="Statistiques"><article><span>ANNONCES PUBLIÉES</span><strong id="total">—</strong><small>Biens dans le catalogue</small></article><article><span>VALEUR DU PORTEFEUILLE</span><strong id="value">—</strong><small>Total des prix affichés</small></article><article><span>PRIX MOYEN</span><strong id="average">—</strong><small>Par propriété</small></article><article><span>CATÉGORIES</span><strong id="types">—</strong><small>Types de biens représentés</small></article></section><section class="list-section"><div class="section-heading"><div><span class="overline">VOTRE PORTEFEUILLE</span><h2>Gestion des annonces</h2></div><input id="search" type="search" placeholder="Rechercher un bien ou un quartier…" aria-label="Rechercher une annonce"></div><div class="tablewrap"><table><thead><tr><th>PROPRIÉTÉ</th><th>TYPE</th><th>QUARTIER</th><th>PRIX</th><th>ACTION</th></tr></thead><tbody id="rows"></tbody></table></div><p id="empty" hidden>Aucune annonce trouvée. Créez votre première propriété.</p></section><div class="bottom"><a href="admin-annonces.html">✦ Gérer les annonces</a><a href="biens.html">↗ Voir le catalogue public</a></div></div></main><footer>DYNASTY 8 · L'IMMOBILIER D'EXCEPTION</footer></body></html>
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dynasty 8 — Espace professionnel</title>
+<link rel="stylesheet" href="agent-dashboard.css?v=redprestige2">
+<script src="supabase-config.js"></script>
+<script src="supabase-client.js"></script>
+<script src="agent-dashboard.js?v=redprestige2" defer></script>
+</head>
+<body>
+<div class="ambient" aria-hidden="true"></div>
+<header>
+<a class="brand" href="index.html" aria-label="Dynasty 8 — Accueil">
+<svg viewBox="0 0 64 64" fill="none" stroke-width="2.5" stroke-linejoin="round" aria-hidden="true"><path d="M8 46 4 16 18 30 31 10 45 30 60 16 56 46Z"/><path d="M8 46H56V54H8Z"/><circle cx="4" cy="16" r="3"/><circle cx="31" cy="10" r="3"/><circle cx="60" cy="16" r="3"/></svg>
+<span><strong>DYNASTY 8</strong><small>AGENCE IMMOBILIÈRE DE PRESTIGE</small></span>
+</a>
+<nav aria-label="Navigation"><a href="index.html">SITE PUBLIC</a><a href="carte.html">CARTE IMMOBILIÈRE</a><button id="logout" type="button">DÉCONNEXION</button></nav>
+</header>
+<main>
+<div id="gate" class="gate" role="status">Vérification de votre accès Dynasty 8…</div>
+<div id="dashboard" hidden>
+<div class="intro">
+<div><span class="overline">DYNASTY 8 · ESPACE PROFESSIONNEL</span><h1>Tableau de bord <em>Agent</em></h1><p>Gérez votre patrimoine immobilier et accédez à vos outils professionnels.</p></div>
+<a class="primary" href="admin-annonces.html">＋ CRÉER UNE ANNONCE</a>
+</div>
+<section class="stats" aria-label="Statistiques">
+<article><span>ANNONCES PUBLIÉES</span><strong id="total">—</strong><small>Biens dans le portefeuille</small></article>
+<article><span>VALEUR DU PORTEFEUILLE</span><strong id="value">—</strong><small>Total des prix affichés</small></article>
+<article><span>PRIX MOYEN</span><strong id="average">—</strong><small>Par propriété</small></article>
+<article><span>CATÉGORIES</span><strong id="types">—</strong><small>Types de biens représentés</small></article>
+</section>
+<!-- Les liens Carte et Éditeur Direction sont insérés ici par agent-dashboard.js selon les droits Discord. -->
+<section class="list-section" aria-label="Gestion des annonces">
+<div class="section-heading"><div><span class="overline">VOTRE PORTEFEUILLE</span><h2>Gestion des annonces</h2></div><input id="search" type="search" placeholder="Rechercher un bien ou un quartier…" aria-label="Rechercher une annonce"></div>
+<div class="tablewrap"><table><thead><tr><th>PROPRIÉTÉ</th><th>TYPE</th><th>QUARTIER</th><th>PRIX</th><th>ACTION</th></tr></thead><tbody id="rows"></tbody></table></div>
+<p id="empty" hidden>Aucune annonce trouvée.</p>
+</section>
+<div class="bottom"><a href="admin-annonces.html">✦ Gérer les annonces</a><a href="carte.html">↗ Voir la carte publique</a></div>
+</div>
+</main>
+<footer>DYNASTY 8 · L'IMMOBILIER D'EXCEPTION</footer>
+</body>
+</html>
