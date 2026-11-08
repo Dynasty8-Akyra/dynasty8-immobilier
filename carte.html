@@ -322,6 +322,40 @@
         animation: none;
       }
     }
+    
+/* DYNASTY 8 — BANDEAU COMPACT */
+
+body[data-map-mode="public"] .d8-map-heading {
+  padding: 10px 20px 12px !important;
+  background: linear-gradient(
+    90deg, #10060a, #290912 50%, #10060a
+  ) !important;
+}
+
+body[data-map-mode="public"] .d8-map-heading span {
+  font-size: 9px !important;
+  letter-spacing: 3px !important;
+}
+
+body[data-map-mode="public"] .d8-map-heading h1 {
+  margin: 3px 0 !important;
+  font-size: clamp(23px, 2.5vw, 32px) !important;
+  line-height: 1.1 !important;
+}
+
+body[data-map-mode="public"] .d8-map-heading p {
+  margin: 3px 0 0 !important;
+  font-size: 10px !important;
+}
+
+body[data-map-mode="public"] .map-page {
+  padding-top: 10px !important;
+}
+
+body[data-map-mode="public"] .map-toolbar {
+  margin-bottom: 10px !important;
+}
+
   </style>
 </head>
 
@@ -391,10 +425,6 @@
         <button id="reset" aria-label="Vue générale">⌂</button>
       </div>
 
-      <div class="map-hint">
-        Survolez ou cliquez sur une zone · Faites glisser la carte pour vous déplacer
-      </div>
-
       <aside class="zone-panel"
              id="zonePanel"
              aria-live="polite"></aside>
@@ -404,6 +434,11 @@
       </div>
 
     </section>
+    
+     <div class="map-hint">
+        Survolez ou cliquez sur une zone · Faites glisser la carte pour vous déplacer
+      </div>
+    
   </main>
 
   <!-- SCRIPTS EXISTANTS CONSERVÉS -->
