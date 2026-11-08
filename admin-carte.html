@@ -457,6 +457,134 @@ body[data-map-mode="admin"] #direction-map #viewport {
   min-height: 0 !important;
 }
 
+/* ========================================
+   DYNASTY 8 — PRESTIGE CIRCLE V2
+   INTERIEUR ROUGE NEON
+   ======================================== */
+
+#d8-draw-tools .d8-prestige-editor-head {
+  color: #ffe6ec !important;
+  background: linear-gradient(
+    180deg,
+    #310b1b,
+    #18070f
+  ) !important;
+  border-bottom: 1px solid #b82b49 !important;
+}
+
+#d8-draw-tools .d8-prestige-editor-crown {
+  color: #ff6c88 !important;
+  filter: drop-shadow(0 0 12px #ff315b);
+  animation: d8-crown-pulse 3.5s ease-in-out infinite;
+}
+
+#d8-draw-tools .d8-draw-title {
+  color: #ffe6ec !important;
+  text-shadow: 0 0 12px #e51c3d60 !important;
+}
+
+#d8-draw-tools .d8-prestige-editor-subtitle {
+  color: #ff9bb0 !important;
+}
+
+#d8-draw-tools .d8-prestige-editor-section {
+  background: linear-gradient(
+    150deg,
+    #300d1b,
+    #160710
+  ) !important;
+  border: 1px solid #9e2c48 !important;
+  box-shadow:
+    inset 0 1px #ffffff0a,
+    0 0 14px #e51c3d12 !important;
+}
+
+#d8-draw-tools .d8-prestige-editor-label {
+  color: #ffb2c2 !important;
+  background: #350d1d !important;
+  border-bottom: 1px solid #92304a !important;
+  text-shadow: 0 0 8px #e51c3d30 !important;
+}
+
+#d8-draw-tools .d8-prestige-editor-empty {
+  color: #d9acb9 !important;
+}
+
+#d8-draw-tools button {
+  color: #ffe7ed !important;
+  background: linear-gradient(
+    120deg,
+    #581329,
+    #290b18
+  ) !important;
+  border: 1px solid #b73a55 !important;
+  transition:
+    background .2s,
+    box-shadow .2s,
+    transform .2s !important;
+}
+
+#d8-draw-tools button:hover:not(:disabled) {
+  background: linear-gradient(
+    120deg,
+    #a7193d,
+    #5c1028
+  ) !important;
+  box-shadow: 0 0 16px #ff315b60 !important;
+  transform: translateY(-1px);
+}
+
+#d8-draw-tools #d8-zone-save {
+  background: linear-gradient(
+    120deg,
+    #a91435,
+    #e51c3d
+  ) !important;
+  border-color: #ff8ca3 !important;
+  box-shadow: 0 0 16px #e51c3d35 !important;
+}
+
+#d8-draw-tools #d8-zone-delete {
+  background: #330c1a !important;
+  border-color: #a73b53 !important;
+}
+
+#d8-draw-tools input,
+#d8-draw-tools select,
+#d8-draw-tools textarea {
+  background: #10060d !important;
+  color: #fff1f3 !important;
+  border: 1px solid #a03550 !important;
+  border-radius: 8px;
+}
+
+#d8-draw-tools input:focus,
+#d8-draw-tools select:focus,
+#d8-draw-tools textarea:focus {
+  outline: 1px solid #ff708a;
+  box-shadow: 0 0 12px #e51c3d35 !important;
+}
+
+#d8-draw-tools label,
+#d8-draw-tools #d8-draw-count {
+  color: #f2b5c4 !important;
+}
+
+@keyframes d8-crown-pulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 7px #e51c3d);
+  }
+  50% {
+    filter: drop-shadow(0 0 18px #ff315b);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #d8-draw-tools .d8-prestige-editor-crown {
+    animation: none;
+  }
+}
+
 </style>
 
 </head>
