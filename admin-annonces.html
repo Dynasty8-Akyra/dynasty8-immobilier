@@ -1,1 +1,196 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dynasty 8 — Éditeur des annonces</title><link rel="stylesheet" href="biens.css"><style>.admin{max-width:1000px;margin:30px auto;padding:18px}.admin h1{color:#dfb3ff}.notice{padding:13px;background:#30213c;border-left:4px solid #d6a3ff;font-size:13px;line-height:1.6}.layout{display:grid;grid-template-columns:270px 1fr;gap:20px;margin-top:20px}.panel{background:#1b1128;border:1px solid #74479e;border-radius:12px;padding:17px}.entry{display:block;width:100%;background:#29183c;color:white;border:1px solid #694393;border-radius:7px;padding:11px;text-align:left;margin:8px 0;cursor:pointer}.entry.active{background:#67339a}.panel label{display:block;margin-top:13px;color:#d7b8ed;font-size:13px}.panel input,.panel select,.panel textarea{display:block;width:100%;padding:10px;margin-top:5px;background:#100a19;color:white;border:1px solid #7953a2;border-radius:7px;font:inherit}.panel textarea{min-height:90px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.danger{background:#67253c}.status{color:#baffc6;font-size:13px}@media(max-width:650px){.layout{grid-template-columns:1fr}}</style><script src="supabase-config.js"></script><script src="supabase-client.js"></script></head><body><main class="admin"><div id="authGate" class="panel">Vérification de votre accès Agent Dynasty…</div><div id="agentEditor" style="display:none"><a href="agent-dashboard.html" style="color:#dab1ff">← Tableau de bord</a> · <a href="biens.html" style="color:#dab1ff">← Voir les annonces</a> · <a href="admin.html" style="color:#dab1ff">Éditeur des zones</a><h1>✦ ESPACE AGENT DYNASTY</h1><button class="adminbtn" id="logoutAgent">Déconnexion</button><p class="notice">Gestion des annonces en ligne · Accès réservé aux agents autorisés.</p><div class="layout"><aside class="panel"><button class="adminbtn" id="new">+ Nouvelle annonce</button><div id="entries"></div><hr><button class="adminbtn" id="export">Exporter les annonces JSON</button><label for="import">Importer un fichier JSON</label><input type="file" id="import" accept=".json,application/json"></aside><section class="panel"><form id="form"><input type="hidden" id="id"><label>Nom du bien<input id="name" required maxlength="100"></label><label>Type<select id="type"><option>Villa</option><option>Appartement</option><option>Commerce</option><option>Garage</option><option>Entrepôt</option><option>Terrain</option></select></label><label>Quartier<input id="area" required maxlength="100"></label><label>Prix ($)<input id="price" type="number" min="0" step="1" required></label><label>Surface (m²)<input id="surface" type="number" min="0" step="1" required></label><label>Adresse URL de la photo<input id="photo" type="url" placeholder="https://..."></label><label>Description<textarea id="description" maxlength="2000"></textarea></label><div class="actions"><button class="adminbtn" type="submit">Enregistrer</button><button class="adminbtn danger" type="button" id="delete">Supprimer</button></div><p class="status" id="status" aria-live="polite"></p></form></section></div></div></main><script src="supabase-client.js"></script><script src="annonces.js"></script><script src="admin-annonces.js"></script></body></html>
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gestion des annonces — Dynasty 8 Prestige</title>
+
+  <link rel="stylesheet" href="admin-annonces.css?v=prestige2">
+
+  <script src="supabase-config.js"></script>
+  <script src="supabase-client.js"></script>
+</head>
+
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 64 64" fill="none"
+           xmlns="http://www.w3.org/2000/svg"
+           aria-hidden="true">
+        <path d="M8 18L20 31L32 10L44 31L56 18L51 48H13L8 18Z"
+              stroke="currentColor" stroke-width="2.5"
+              stroke-linejoin="round"/>
+        <path d="M13 53H51" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="8" cy="18" r="3" fill="currentColor"/>
+        <circle cx="32" cy="10" r="3" fill="currentColor"/>
+        <circle cx="56" cy="18" r="3" fill="currentColor"/>
+      </svg>
+      <span>
+        <strong>DYNASTY 8</strong>
+        <small>L'IMMOBILIER D'EXCEPTION</small>
+      </span>
+    </a>
+
+    <nav class="topnav" aria-label="Navigation">
+      <a href="agent-dashboard.html">TABLEAU DE BORD</a>
+      <a href="carte.html">CARTE IMMOBILIÈRE</a>
+      <button id="logoutAgent" type="button">DÉCONNEXION</button>
+    </nav>
+  </header>
+
+  <main class="admin">
+    <div id="authGate" class="panel gate" role="status">
+      Vérification de votre accès Dynasty 8…
+    </div>
+
+    <div id="agentEditor" style="display:none">
+      <div class="intro">
+        <div>
+          <span class="overline">
+            DYNASTY 8 · ESPACE PROFESSIONNEL
+          </span>
+          <h1>Gestion des <em>annonces</em></h1>
+          <p>
+            Créez, modifiez et organisez votre portefeuille
+            immobilier depuis votre espace professionnel.
+          </p>
+        </div>
+        <div class="intro-icon" aria-hidden="true">✦</div>
+      </div>
+
+      <div class="notice">
+        <span class="notice-dot" aria-hidden="true"></span>
+        Gestion des annonces en ligne · Accès réservé
+        aux membres autorisés de Dynasty 8.
+      </div>
+
+      <div class="layout">
+        <!-- LISTE DES ANNONCES -->
+        <aside class="panel sidebar">
+          <div class="panel-heading">
+            <span class="overline">VOTRE CATALOGUE</span>
+            <h2>Mes propriétés</h2>
+            <p>Sélectionnez une annonce pour la modifier.</p>
+          </div>
+
+          <button class="adminbtn new-btn" id="new" type="button">
+            ＋ NOUVELLE ANNONCE
+          </button>
+
+          <div id="entries" class="entries"></div>
+
+          <div class="sidebar-bottom">
+            <span class="overline">SAUVEGARDE</span>
+            <button class="adminbtn export-btn"
+                    id="export" type="button">
+              ↓ EXPORTER EN JSON
+            </button>
+
+            <label for="import">Importer un fichier JSON</label>
+            <input type="file" id="import"
+                   accept=".json,application/json">
+            <small>L'importation cloud est désactivée.</small>
+          </div>
+        </aside>
+
+        <!-- FORMULAIRE -->
+        <section class="panel editor-panel">
+          <div class="panel-heading">
+            <span class="overline">ÉDITEUR IMMOBILIER</span>
+            <h2>Fiche de propriété</h2>
+            <p>
+              Renseignez les informations du bien
+              avant de publier votre annonce.
+            </p>
+          </div>
+
+          <form id="form">
+            <input type="hidden" id="id">
+
+            <div class="form-grid">
+              <label class="full">
+                NOM DU BIEN
+                <input id="name" required maxlength="100"
+                       placeholder="Ex. Villa Eclipse">
+              </label>
+
+              <label>
+                TYPE DE PROPRIÉTÉ
+                <select id="type">
+                  <option>Villa</option>
+                  <option>Appartement</option>
+                  <option>Commerce</option>
+                  <option>Garage</option>
+                  <option>Entrepôt</option>
+                  <option>Terrain</option>
+                </select>
+              </label>
+
+              <label>
+                QUARTIER
+                <input id="area" required maxlength="100"
+                       placeholder="Ex. Rockford Hills">
+              </label>
+
+              <label>
+                PRIX ($)
+                <input id="price" type="number"
+                       min="0" step="1" required
+                       placeholder="Ex. 250000">
+              </label>
+
+              <label>
+                SURFACE (M²)
+                <input id="surface" type="number"
+                       min="0" step="1" required
+                       placeholder="Ex. 180">
+              </label>
+
+              <label class="full">
+                ADRESSE URL DE LA PHOTO
+                <input id="photo" type="url"
+                       placeholder="https://exemple.com/photo.jpg">
+                <small>
+                  Utilisez une adresse HTTPS vers une photo du bien.
+                </small>
+              </label>
+
+              <label class="full">
+                DESCRIPTION
+                <textarea id="description" maxlength="2000"
+                  placeholder="Décrivez les atouts de cette propriété…"></textarea>
+              </label>
+            </div>
+
+            <div class="actions">
+              <button class="adminbtn save-btn" type="submit">
+                ✦ ENREGISTRER L'ANNONCE
+              </button>
+
+              <button class="adminbtn danger"
+                      type="button" id="delete">
+                SUPPRIMER
+              </button>
+            </div>
+
+            <p class="status" id="status"
+               role="status" aria-live="polite"></p>
+          </form>
+        </section>
+      </div>
+
+      <footer class="page-footer">
+        DYNASTY 8 · L'IMMOBILIER D'EXCEPTION
+      </footer>
+    </div>
+  </main>
+
+  <!-- Scripts métier conservés -->
+  <script src="annonces.js"></script>
+  <script src="admin-annonces.js"></script>
+</body>
+</html>
