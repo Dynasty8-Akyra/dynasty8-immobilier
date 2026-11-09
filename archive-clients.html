@@ -975,32 +975,49 @@ h1 {
     }
 
     if (tab === "finance") {
-      html = `
-        <h2>Informations financières</h2>
-        <p class="muted">
-          Montants déclarés par le joueur, non vérifiés.
-          L'enregistrement des modifications n'est pas encore activé.
-        </p>
+  html = `
+    <h2>Informations financières</h2>
 
-        <div class="field">
-          <label>Solde bancaire déclaré ($)</label>
-          <input type="text"
-                 value="${client.bank === null ? "Non renseigné" : money(client.bank)}"
-                 disabled>
-        </div>
+    <p class="muted">
+      Solde bancaire RP déclaré, non vérifié par Dynasty 8.
+    </p>
 
-        <div class="field">
-          <label>Dettes connues ($)</label>
-          <input type="text"
-                 value="${client.debts === null ? "Non renseigné" : money(client.debts)}"
-                 disabled>
-        </div>
+    <div class="card" style="margin:20px 0">
+      <small>Solde bancaire enregistré</small>
+      <strong>
+        ${client.bank === null
+          ? "Non renseigné"
+          : money(client.bank)}
+      </strong>
+    </div>
 
-        <button class="action" disabled>
-          Enregistrement prochainement disponible
-        </button>
-      `;
-    }
+    <div class="field">
+      <label for="d8-bank-input">
+        Solde bancaire du client ($)
+      </label>
+
+      <input
+        id="d8-bank-input"
+        type="number"
+        min="0"
+        max="1000000000000"
+        step="0.01"
+        placeholder="Ex. 850000"
+        value="${client.bank ?? ""}">
+    </div>
+
+    <button
+      class="action"
+      id="d8-save-bank"
+      type="button">
+      Enregistrer le solde
+    </button>
+
+    <p class="status"
+       id="d8-bank-status"
+       role="status"></p>
+  `;
+}
 
     if (tab === "history") {
       const transactions = client.transactions || [];
@@ -1075,7 +1092,71 @@ h1 {
     }
 
     el("content").innerHTML = html;
+// DYNASTY 8 — Enregistrement du solde bancaire RP
+if (tab === "finance") {
+  const bankInput = el("d8-bank-input");
+  const saveButton = el("d8-save-bank");
+  const bankStatus = el("d8-bank-status");
 
+  saveButton.addEventListener("click", async () => {
+    const amount = bankInput.value.trim();
+
+    if (
+      !/^\d{1,13}(\.\d{1,2})?$/.test(amount) ||
+      Number(amount) > 1000000000000
+    ) {
+      bankStatus.textContent =
+        "Saisissez un montant positif ou nul, avec deux décimales maximum.";
+      return;
+    }
+
+    saveButton.disabled = true;
+    bankStatus.textContent = "Enregistrement en cours…";
+
+    try {
+      const token = await getAccessToken();
+
+      const response = await fetch(
+        "/api/client-archives?action=finance-update&id=" +
+          encodeURIComponent(client.id),
+        {
+          method: "POST",
+          headers: {
+            authorization: "Bearer " + token,
+            "content-type": "application/json"
+          },
+          body: JSON.stringify({
+            bank_declared: amount
+          }),
+          cache: "no-store"
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Impossible d'enregistrer le solde."
+        );
+      }
+
+      client.bank = Number(data.bank_declared);
+      bankStatus.textContent =
+        "Solde bancaire enregistré avec succès !";
+
+      const display = el("content").querySelector(".card strong");
+
+      if (display) {
+        display.textContent = money(client.bank);
+      }
+
+    } catch (error) {
+      bankStatus.textContent = error.message;
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
+}
     const retryHistory = el("d8-retry-history");
     if (retryHistory) {
       retryHistory.addEventListener("click", () => loadTransactionHistory(client.id));
@@ -1262,7 +1343,10 @@ h1 {
         agent: String(
           client.assigned_agent_discord_id || "Non attribué"
         ),
-        bank: null,
+        bank: client.bank_declared === null ||
+      client.bank_declared === undefined
+        ? null
+        : Number(client.bank_declared),
         debts: null,
         properties: [],
         propertiesLoaded: false,
