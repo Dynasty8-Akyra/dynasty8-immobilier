@@ -924,7 +924,151 @@ export async function onRequest(context) {
       });
     }
 
+// DYNASTY 8 — FINANCES CLIENTS
+// Lecture et modification du solde bancaire RP.
 
+if (
+  (action === "finance-get" && request.method === "GET") ||
+  (action === "finance-update" && request.method === "POST")
+) {
+  const clientId = String(params.get("id") || "").trim();
+
+  // Vérifier le format de l'identifiant client.
+  if (
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clientId)
+  ) {
+    return json(400, {
+      error: "Identifiant client invalide."
+    });
+  }
+
+  // Vérifier que le dossier existe et n'est pas Prestige.
+  const clientURL = new URL(
+    base + "/rest/v1/d8_client_archives"
+  );
+
+  clientURL.searchParams.set(
+    "select",
+    "id,bank_declared,bank_verified_at"
+  );
+
+  clientURL.searchParams.set("id", "eq." + clientId);
+  clientURL.searchParams.set("is_prestige", "eq.false");
+  clientURL.searchParams.set("limit", "1");
+
+  const clientResponse = await api(
+    clientURL.toString(),
+    {
+      headers: storageHeaders(serviceKey)
+    }
+  );
+
+  const matchingClients = await clientResponse.json();
+
+  if (!matchingClients.length) {
+    return json(404, {
+      error: "Dossier client introuvable."
+    });
+  }
+
+  const client = matchingClients[0];
+
+  // LECTURE DU SOLDE BANCAIRE
+  if (action === "finance-get") {
+    return json(200, {
+      ok: true,
+      client_id: clientId,
+      bank_declared: client.bank_declared,
+      bank_verified_at: client.bank_verified_at
+    });
+  }
+
+  // MODIFICATION DU SOLDE BANCAIRE
+  const contentType =
+    request.headers.get("content-type") || "";
+
+  if (
+    !contentType.toLowerCase().startsWith("application/json")
+  ) {
+    return json(415, {
+      error: "Le format JSON est obligatoire."
+    });
+  }
+
+  let body;
+
+  try {
+    body = await request.json();
+  } catch {
+    return json(400, {
+      error: "Données financières invalides."
+    });
+  }
+
+  // Accepter uniquement un montant positif ou nul,
+  // avec deux décimales maximum.
+  const rawAmount = String(body?.bank_declared ?? "").trim();
+
+  if (
+    !/^\d{1,13}(\.\d{1,2})?$/.test(rawAmount)
+  ) {
+    return json(400, {
+      error:
+        "Le solde doit être un montant positif ou nul, " +
+        "avec deux décimales maximum."
+    });
+  }
+
+  const amount = Number(rawAmount);
+
+  if (
+    !Number.isFinite(amount) ||
+    amount < 0 ||
+    amount > 1000000000000
+  ) {
+    return json(400, {
+      error: "Montant bancaire invalide."
+    });
+  }
+
+  // Enregistrer le solde déclaré.
+  const updateURL = new URL(
+    base + "/rest/v1/d8_client_archives"
+  );
+
+  updateURL.searchParams.set("id", "eq." + clientId);
+  updateURL.searchParams.set("is_prestige", "eq.false");
+
+  const updateResponse = await api(
+    updateURL.toString(),
+    {
+      method: "PATCH",
+      headers: storageHeaders(serviceKey, {
+        "content-type": "application/json",
+        Prefer: "return=representation"
+      }),
+      body: JSON.stringify({
+        bank_declared: amount,
+        updated_at: new Date().toISOString()
+      })
+    }
+  );
+
+  const updatedClients = await updateResponse.json();
+
+  if (!updatedClients.length) {
+    return json(404, {
+      error: "Impossible de mettre à jour le dossier."
+    });
+  }
+
+  return json(200, {
+    ok: true,
+    message: "Solde bancaire enregistré avec succès.",
+    client_id: clientId,
+    bank_declared: updatedClients[0].bank_declared
+  });
+}
     // 4 — Lecture des dossiers classiques
     if (action === "list" && request.method === "GET") {
       const endpoint = new URL(
