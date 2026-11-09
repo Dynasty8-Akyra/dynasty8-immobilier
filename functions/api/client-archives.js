@@ -1202,6 +1202,156 @@ if (
       });
     }
 
+    // DYNASTY 8 — SUPPRESSION DÉFINITIVE D'UN DOSSIER
+    if (action === "client-delete" && request.method === "POST") {
+
+      // Autorisation vérifiée côté serveur.
+      if (!isDirection) {
+        return json(403, {
+          error: "Suppression réservée à la Direction."
+        });
+      }
+
+      const clientId = String(params.get("id") || "").trim();
+
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clientId)) {
+        return json(400, {
+          error: "Identifiant client invalide."
+        });
+      }
+
+      const contentType = request.headers.get("content-type") || "";
+
+      if (!contentType.toLowerCase().startsWith("application/json")) {
+        return json(415, {
+          error: "Format JSON obligatoire."
+        });
+      }
+
+      let body;
+
+      try {
+        body = await request.json();
+      } catch {
+        return json(400, {
+          error: "Confirmation invalide."
+        });
+      }
+
+      if (
+        body?.confirmation !== "SUPPRIMER" ||
+        body?.client_id !== clientId
+      ) {
+        return json(400, {
+          error: "Confirmation de suppression incorrecte."
+        });
+      }
+
+      // Rechercher exclusivement un dossier classique.
+      const clientURL = new URL(
+        base + "/rest/v1/d8_client_archives"
+      );
+
+      clientURL.searchParams.set(
+        "select",
+        "id,rp_name,cni_storage_path"
+      );
+      clientURL.searchParams.set("id", "eq." + clientId);
+      clientURL.searchParams.set("is_prestige", "eq.false");
+      clientURL.searchParams.set("limit", "1");
+
+      const clientResponse = await api(
+        clientURL.toString(),
+        {
+          headers: storageHeaders(serviceKey)
+        }
+      );
+
+      const matchingClients = await clientResponse.json();
+
+      if (!matchingClients.length) {
+        return json(404, {
+          error: "Dossier classique introuvable."
+        });
+      }
+
+      const client = matchingClients[0];
+      const cniPath = client.cni_storage_path;
+
+      // Refuser un chemin de stockage inattendu.
+      if (
+        cniPath &&
+        (
+          typeof cniPath !== "string" ||
+          !cniPath.startsWith(clientId + "/") ||
+          !/^[-a-zA-Z0-9_/\.]+$/.test(cniPath) ||
+          cniPath.includes("..")
+        )
+      ) {
+        return json(409, {
+          error: "Chemin CNI invalide. Suppression interrompue."
+        });
+      }
+
+      // Supprimer le dossier et ses données liées en cascade.
+      const deleteURL = new URL(
+        base + "/rest/v1/d8_client_archives"
+      );
+
+      deleteURL.searchParams.set("id", "eq." + clientId);
+      deleteURL.searchParams.set("is_prestige", "eq.false");
+
+      const deleteResponse = await api(
+        deleteURL.toString(),
+        {
+          method: "DELETE",
+          headers: storageHeaders(serviceKey, {
+            Prefer: "return=representation"
+          })
+        }
+      );
+
+      const deletedClients = await deleteResponse.json();
+
+      if (!deletedClients.length) {
+        return json(404, {
+          error: "Dossier introuvable ou déjà supprimé."
+        });
+      }
+
+      // Nettoyer la CNI privée après suppression du dossier.
+      let cniDeleted = !cniPath;
+
+      if (cniPath) {
+        try {
+          const storageResponse = await fetch(
+            base + "/storage/v1/object/" +
+              BUCKET + "/" + cniPath,
+            {
+              method: "DELETE",
+              headers: storageHeaders(serviceKey)
+            }
+          );
+
+          cniDeleted =
+            storageResponse.ok ||
+            storageResponse.status === 404;
+
+        } catch {
+          cniDeleted = false;
+        }
+      }
+
+      return json(200, {
+        ok: true,
+        message: cniDeleted
+          ? "Dossier définitivement supprimé."
+          : "Dossier supprimé, mais nettoyage CNI à vérifier.",
+        client_id: clientId,
+        cni_deleted: cniDeleted
+      });
+    }
+
     // 4 — Lecture des dossiers classiques
     if (action === "list" && request.method === "GET") {
       const endpoint = new URL(
