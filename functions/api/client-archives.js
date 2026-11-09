@@ -656,8 +656,12 @@ export async function onRequest(context) {
           });
         }
 
-        newClientId = crypto.randomUUID();
+       
+        // Identifiant stable pour une même demande.
+        // Permet de retrouver le même dossier lors d'un réessai.
+        newClientId = requestId;
         storagePath = newClientId + "/cni." + format.ext;
+
 
         const uploadURL =
           base + "/storage/v1/object/" +
