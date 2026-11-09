@@ -1173,7 +1173,8 @@ h1 {
     setStatus("Chargement des dossiers clients…");
 
     try {
-      const data = await apiArchives("list");
+    
+    const data = await apiArchives("list");
 
       clients = (data.clients || []).map(client => ({
         id: String(client.id || ""),
@@ -1360,6 +1361,10 @@ h1 {
   });
 
  
+  // DYNASTY 8 — Identifiant de transaction
+  // Conservé en cas de nouvelle tentative.
+  let pendingTransactionId = null;
+
 form.addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -1402,16 +1407,30 @@ form.addEventListener("submit", async event => {
     "Enregistrement de la transaction en cours…";
 
   try {
+    
+    // Créer un identifiant seulement pour une nouvelle opération.
+    if (!pendingTransactionId) {
+      pendingTransactionId = crypto.randomUUID();
+    }
+
+    const transactionData = new FormData(form);
+
+    transactionData.set(
+      "request_id",
+      pendingTransactionId
+    );
+
     const data = await apiArchives(
       "transaction-create",
       {
         method: "POST",
-        body: new FormData(form)
+        body: transactionData
       }
     );
 
-    const clientId = data.client?.id || null;
 
+    const clientId = data.client?.id || null;
+pendingTransactionId = null;
     message.textContent =
       "Transaction immobilière enregistrée avec succès !";
 
