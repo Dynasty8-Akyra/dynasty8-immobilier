@@ -1458,6 +1458,99 @@ h1 {
     }
   });
 
+/* DYNASTY 8 — FORMULAIRE IMMOBILIER INTELLIGENT */
+
+function initializeTransactionForm() {
+  const typeSelect = document.getElementById(
+    "d8-transaction-type"
+  );
+
+  const amountLabel = document.getElementById(
+    "d8-amount-label"
+  );
+
+  const clientMode = document.getElementById(
+    "d8-client-mode"
+  );
+
+  const newFields = document.getElementById(
+    "d8-new-client-fields"
+  );
+
+  const existingFields = document.getElementById(
+    "d8-existing-client-fields"
+  );
+
+  const existingSelect = document.getElementById(
+    "d8-existing-client"
+  );
+
+  if (
+    !typeSelect ||
+    !amountLabel ||
+    !clientMode ||
+    !newFields ||
+    !existingFields ||
+    !existingSelect
+  ) {
+    return;
+  }
+
+  function updateTransactionType() {
+    amountLabel.textContent =
+      typeSelect.value === "rental"
+        ? "Loyer mensuel ($) *"
+        : "Prix de vente ($) *";
+  }
+
+  function updateClientMode() {
+    const isExisting = clientMode.value === "existing";
+
+    newFields.hidden = isExisting;
+    existingFields.hidden = !isExisting;
+
+    newFields.querySelectorAll("input").forEach(input => {
+      input.disabled = isExisting;
+    });
+
+    existingSelect.disabled = !isExisting;
+    existingSelect.required = isExisting;
+
+    if (isExisting) {
+      existingSelect.replaceChildren();
+
+      const placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Choisir un client enregistré";
+      existingSelect.appendChild(placeholder);
+
+      clients.forEach(client => {
+        const option = document.createElement("option");
+
+        option.value = client.id;
+        option.textContent = client.name;
+
+        existingSelect.appendChild(option);
+      });
+    }
+  }
+
+  typeSelect.addEventListener(
+    "change",
+    updateTransactionType
+  );
+
+  clientMode.addEventListener(
+    "change",
+    updateClientMode
+  );
+
+  updateTransactionType();
+  updateClientMode();
+}
+
+initializeTransactionForm();
+
   initialize();
 })();
 </script>
