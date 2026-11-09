@@ -1293,8 +1293,12 @@ h1 {
     preview.removeAttribute("src");
   }
 
+  
   function closeModal() {
     if (submit.disabled) return;
+
+    // Réinitialiser l'identifiant lors de l'annulation.
+    pendingTransactionId = null;
 
     modal.classList.remove("open");
     form.reset();
@@ -1302,13 +1306,32 @@ h1 {
     message.textContent = "";
   }
 
-  el("d8-open-create").addEventListener("click", () => {
-    if (!authorized) return;
 
+  
+  el("d8-open-create").addEventListener("click", () => {
+    if (!authorized || submit.disabled) return;
+
+    // Nouvelle ouverture = nouvelle transaction.
+    pendingTransactionId = null;
+
+    form.reset();
+    clearPreview();
     message.textContent = "";
+
     modal.classList.add("open");
+
+    // Actualiser les champs du formulaire.
+    document.getElementById(
+      "d8-transaction-type"
+    ).dispatchEvent(new Event("change"));
+
+    document.getElementById(
+      "d8-client-mode"
+    ).dispatchEvent(new Event("change"));
+
     el("d8-rp-name").focus();
   });
+
 
   el("d8-cancel-create").addEventListener(
     "click",
