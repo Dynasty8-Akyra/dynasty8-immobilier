@@ -510,6 +510,21 @@ export async function onRequest(context) {
         return json(400, { error: "Impossible de lire le formulaire." });
       }
 
+      // DYNASTY 8 — Identifiant unique de transaction
+      const requestId = String(
+        form.get("request_id") || ""
+      ).trim();
+
+      if (
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+          requestId
+        )
+      ) {
+        return json(400, {
+          error: "Identifiant de transaction invalide."
+        });
+      }
+
       const mode = String(form.get("client_mode") || "");
       const type = String(form.get("transaction_type") || "");
       const propertyId = String(form.get("property_id") || "").trim();
@@ -627,7 +642,9 @@ export async function onRequest(context) {
         uploaded = true;
       }
 
+     
       const payload = {
+        p_request_id: requestId,
         p_client_id: existingClientId,
         p_new_client_id: newClientId,
         p_rp_name: rpName,
