@@ -685,6 +685,80 @@ h1 {
 </div>
 <!-- FIN MODIFICATION DOSSIER CLIENT -->
 
+<!-- DYNASTY 8 — CONFIRMATION SUPPRESSION CLIENT -->
+<div class="d8-modal"
+     id="d8-delete-modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="d8-delete-title">
+
+  <form class="d8-form" id="d8-delete-form">
+
+    <div class="sub">
+      DYNASTY 8 · DIRECTION
+    </div>
+
+    <h2 id="d8-delete-title" style="color:#ff6488">
+      ⚠ Suppression définitive
+    </h2>
+
+    <p class="muted">
+      Vous êtes sur le point de supprimer définitivement
+      un dossier client Dynasty 8.
+    </p>
+
+    <div class="note">
+      <strong id="d8-delete-client-name"></strong>
+      <p class="muted">
+        Le dossier, les transactions, les notes,
+        les événements et les liaisons immobilières
+        associés seront supprimés.
+      </p>
+      <p class="muted">
+        La CNI RP privée sera également nettoyée.
+      </p>
+    </div>
+
+    <label for="d8-delete-name-confirm">
+      Recopiez exactement le nom RP du client *
+    </label>
+    <input
+      id="d8-delete-name-confirm"
+      type="text"
+      autocomplete="off"
+      required>
+
+    <label for="d8-delete-word-confirm">
+      Saisissez SUPPRIMER pour confirmer *
+    </label>
+    <input
+      id="d8-delete-word-confirm"
+      type="text"
+      autocomplete="off"
+      placeholder="SUPPRIMER"
+      required>
+
+    <p class="d8-message"
+       id="d8-delete-message"
+       role="status"></p>
+
+    <div class="d8-actions">
+      <button type="button" id="d8-cancel-delete">
+        Annuler
+      </button>
+
+      <button type="submit"
+              id="d8-submit-delete"
+              style="background:linear-gradient(135deg,#a31438,#480b1d)"
+              disabled>
+        Supprimer définitivement
+      </button>
+    </div>
+
+  </form>
+</div>
+<!-- FIN CONFIRMATION SUPPRESSION CLIENT -->
+
 <div class="d8-modal" id="d8-create-modal">
   <form class="d8-form" id="d8-create-form">
 
