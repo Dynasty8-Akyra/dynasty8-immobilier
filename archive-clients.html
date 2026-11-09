@@ -591,6 +591,100 @@ h1 {
 <!-- FIN VISIONNEUSE CNI RP -->
 
 
+<!-- DYNASTY 8 — MODIFICATION DOSSIER CLIENT -->
+<div class="d8-modal" id="d8-edit-modal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="d8-edit-title">
+
+  <form class="d8-form" id="d8-edit-form">
+
+    <div class="sub">
+      DYNASTY 8 · ADMINISTRATION
+    </div>
+
+    <h2 id="d8-edit-title">
+      ♛ Modifier le dossier client
+    </h2>
+
+    <p class="muted">
+      Mettez à jour les informations du client.
+      Les modifications seront enregistrées
+      dans les archives Dynasty 8.
+    </p>
+
+    <label for="d8-edit-name">
+      Nom et prénom RP *
+    </label>
+    <input
+      id="d8-edit-name"
+      name="rp_name"
+      minlength="2"
+      maxlength="160"
+      required>
+
+    <label for="d8-edit-phone">
+      Téléphone RP *
+    </label>
+    <input
+      id="d8-edit-phone"
+      name="rp_phone"
+      minlength="3"
+      maxlength="40"
+      pattern="[0-9+(). -]+"
+      required>
+
+    <div id="d8-edit-direction-fields" hidden>
+
+      <h3 style="color:#ffb7ca;margin-top:25px">
+        ♛ Accès Direction
+      </h3>
+
+      <label for="d8-edit-discord">
+        Identifiant Discord du client
+      </label>
+      <input
+        id="d8-edit-discord"
+        name="client_discord_id"
+        inputmode="numeric"
+        pattern="[0-9]{17,22}">
+
+      <label for="d8-edit-agent">
+        Identifiant Discord de l'agent référent
+      </label>
+      <input
+        id="d8-edit-agent"
+        name="assigned_agent_discord_id"
+        inputmode="numeric"
+        pattern="[0-9]{17,22}">
+
+      <p class="muted">
+        Ces informations sont modifiables
+        uniquement par la Direction.
+      </p>
+
+    </div>
+
+    <p class="d8-message"
+       id="d8-edit-message"
+       role="status"></p>
+
+    <div class="d8-actions">
+      <button type="button" id="d8-cancel-edit">
+        Annuler
+      </button>
+
+      <button type="submit"
+              class="d8-submit"
+              id="d8-submit-edit">
+        Enregistrer les modifications
+      </button>
+    </div>
+
+  </form>
+</div>
+<!-- FIN MODIFICATION DOSSIER CLIENT -->
+
 <div class="d8-modal" id="d8-create-modal">
   <form class="d8-form" id="d8-create-form">
 
