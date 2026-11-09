@@ -2303,10 +2303,13 @@ function initializeTransactionForm() {
             authorization: "Bearer " + token,
             "content-type": "application/json"
           },
-          body: JSON.stringify({
-            client_id: clientId,
-            confirmation: "SUPPRIMER"
-          }),
+         
+body: JSON.stringify({
+  client_id: clientId,
+  confirmation: "SUPPRIMER",
+  rp_name_confirmation: deleteNameInput.value
+}),
+
           cache: "no-store"
         }
       );
