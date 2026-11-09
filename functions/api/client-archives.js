@@ -1428,7 +1428,8 @@ if (
             }
           );
 
-          cniDeleted = checkResponse.status === 404;
+          cniDeleted = cniDeleted = checkResponse.status === 404 ||
+             checkResponse.status === 400;checkResponse.status === 404;
 
           if (checkResponse.ok) {
             await checkResponse.body?.cancel();
