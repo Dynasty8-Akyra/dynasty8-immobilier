@@ -1277,6 +1277,17 @@ if (
 
       const client = matchingClients[0];
       const cniPath = client.cni_storage_path;
+     
+      // Vérification supplémentaire du nom RP côté serveur.
+      if (
+        typeof body?.rp_name_confirmation !== "string" ||
+        body.rp_name_confirmation !== client.rp_name
+      ) {
+        return json(400, {
+          error: "Le nom RP de confirmation est incorrect."
+        });
+      }
+
 
       // Refuser un chemin de stockage inattendu.
       if (
