@@ -667,6 +667,35 @@ export async function onRequest(context) {
           base + "/storage/v1/object/" +
           BUCKET + "/" + storagePath;
 
+        // Vérifier si la CNI de cette demande existe déjà.
+        const existingCniResponse = await fetch(uploadURL, {
+          method: "GET",
+          headers: storageHeaders(serviceKey)
+        });
+
+        
+        if (existingCniResponse.ok) {
+          // La CNI existe déjà.
+          // Pour le moment, ne pas la remplacer ni la supprimer.
+          // Une reprise sécurisée sera ajoutée après vérification
+          // du contenu et de l'identité de la demande.
+          return json(409, {
+            error:
+              "Une CNI existe déjà pour cette opération. " +
+              "Aucun fichier n'a été modifié. " +
+              "Contactez la Direction pour vérifier la transaction."
+          });
+        }
+
+
+        if (existingCniResponse.status !== 404) {
+          return json(503, {
+            error:
+              "Impossible de vérifier la CNI. " +
+              "Réessayez plus tard."
+          });
+        }
+
         await api(uploadURL, {
           method: "POST",
           headers: storageHeaders(serviceKey, {
@@ -726,8 +755,23 @@ export async function onRequest(context) {
           agent_commission: agentCommission
         });
 
+      
       } catch (error) {
-        if (uploaded && storagePath) {
+        // Ne jamais supprimer automatiquement une CNI ici.
+        // La transaction peut avoir été enregistrée même si
+        // la réponse de Supabase n'est pas arrivée.
+
+        if (error.status === 409) {
+          return json(409, {
+            error:
+              "Conflit lors de l'enregistrement. " +
+              "Vérifiez les archives avant de recommencer."
+          });
+        }
+
+        throw error;
+      }
+
           try {
             await api(
               base + "/storage/v1/object/" +
