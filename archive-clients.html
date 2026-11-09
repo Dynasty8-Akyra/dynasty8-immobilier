@@ -1330,6 +1330,28 @@ if (tab === "overview") {
 
     el("content").innerHTML = html;
     
+    // DYNASTY 8 — Ouvrir la confirmation de suppression
+    const openDeleteButton = el("d8-open-delete");
+
+    if (openDeleteButton && isDirection) {
+      openDeleteButton.addEventListener("click", () => {
+        const deleteModal = el("d8-delete-modal");
+        const deleteForm = el("d8-delete-form");
+
+        deleteForm.reset();
+
+        deleteModal.dataset.clientId = client.id;
+        deleteModal.dataset.clientName = client.name;
+
+        el("d8-delete-client-name").textContent = client.name;
+        el("d8-delete-message").textContent = "";
+        el("d8-submit-delete").disabled = true;
+
+        deleteModal.classList.add("open");
+        el("d8-delete-name-confirm").focus();
+      });
+    }
+
     // DYNASTY 8 — Suppression visible uniquement par la Direction
     const deleteZone = el("d8-delete-zone");
 
@@ -2176,6 +2198,158 @@ function initializeTransactionForm() {
     } finally {
       editSubmit.disabled = false;
       editSubmit.textContent = "Enregistrer les modifications";
+    }
+  });
+
+  // DYNASTY 8 — Suppression définitive des archives clients
+  const deleteModal = el("d8-delete-modal");
+  const deleteForm = el("d8-delete-form");
+  const deleteSubmit = el("d8-submit-delete");
+  const deleteMessage = el("d8-delete-message");
+  const deleteNameInput = el("d8-delete-name-confirm");
+  const deleteWordInput = el("d8-delete-word-confirm");
+
+  let deleteInProgress = false;
+
+  function validateDeleteConfirmation() {
+    const expectedName = deleteModal.dataset.clientName || "";
+
+    const valid =
+      isDirection &&
+      !deleteInProgress &&
+      deleteNameInput.value === expectedName &&
+      deleteWordInput.value === "SUPPRIMER";
+
+    deleteSubmit.disabled = !valid;
+  }
+
+  deleteNameInput.addEventListener(
+    "input",
+    validateDeleteConfirmation
+  );
+
+  deleteWordInput.addEventListener(
+    "input",
+    validateDeleteConfirmation
+  );
+
+  function closeDeleteModal() {
+    if (deleteInProgress) return;
+
+    deleteModal.classList.remove("open");
+    deleteForm.reset();
+
+    deleteSubmit.disabled = true;
+    deleteMessage.textContent = "";
+
+    deleteModal.removeAttribute("data-client-id");
+    deleteModal.removeAttribute("data-client-name");
+  }
+
+  el("d8-cancel-delete").addEventListener(
+    "click",
+    closeDeleteModal
+  );
+
+  deleteModal.addEventListener("click", event => {
+    if (event.target === deleteModal) {
+      closeDeleteModal();
+    }
+  });
+
+  document.addEventListener("keydown", event => {
+    if (
+      event.key === "Escape" &&
+      deleteModal.classList.contains("open")
+    ) {
+      closeDeleteModal();
+    }
+  });
+
+  deleteForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (!authorized || !isDirection || deleteInProgress) {
+      return;
+    }
+
+    validateDeleteConfirmation();
+
+    if (deleteSubmit.disabled) return;
+
+    const clientId = deleteModal.dataset.clientId;
+    const clientName = deleteModal.dataset.clientName;
+
+    if (!clientId || !clientName) {
+      deleteMessage.textContent = "Dossier invalide.";
+      return;
+    }
+
+    deleteInProgress = true;
+    deleteSubmit.disabled = true;
+    deleteSubmit.textContent = "Suppression en cours…";
+    deleteMessage.textContent =
+      "Suppression définitive du dossier en cours…";
+
+    try {
+      const token = await getAccessToken();
+
+      const response = await fetch(
+        "/api/client-archives?action=client-delete&id=" +
+          encodeURIComponent(clientId),
+        {
+          method: "POST",
+          headers: {
+            authorization: "Bearer " + token,
+            "content-type": "application/json"
+          },
+          body: JSON.stringify({
+            client_id: clientId,
+            confirmation: "SUPPRIMER"
+          }),
+          cache: "no-store"
+        }
+      );
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Impossible de supprimer le dossier."
+        );
+      }
+
+      // La suppression en base a réussi.
+      // Signaler explicitement un éventuel échec du nettoyage CNI.
+      const cniWarning = data.cni_deleted === false;
+
+      deleteModal.classList.remove("open");
+      deleteForm.reset();
+      deleteModal.removeAttribute("data-client-id");
+      deleteModal.removeAttribute("data-client-name");
+
+      await loadClients();
+
+      if (cniWarning) {
+        setStatus(
+          "Dossier supprimé, mais nettoyage de la CNI RP à vérifier."
+        );
+        alert(
+          "Le dossier a été supprimé, mais le nettoyage " +
+          "de la CNI RP a échoué. Une vérification du stockage " +
+          "privé Supabase est nécessaire."
+        );
+      } else {
+        setStatus("Dossier supprimé définitivement.");
+      }
+
+    } catch (error) {
+      deleteMessage.textContent =
+        error.message || "Erreur de suppression.";
+    } finally {
+      deleteInProgress = false;
+      deleteSubmit.disabled = true;
+      deleteSubmit.textContent = "Supprimer définitivement";
     }
   });
 
