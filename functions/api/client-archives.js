@@ -1319,28 +1319,39 @@ if (
         });
       }
 
-      // Nettoyer la CNI privée après suppression du dossier.
+     
+      // Nettoyer la CNI privée avec l'API Supabase Storage.
       let cniDeleted = !cniPath;
 
       if (cniPath) {
         try {
           const storageResponse = await fetch(
-            base + "/storage/v1/object/" +
-              BUCKET + "/" + cniPath,
+            base + "/storage/v1/object/" + BUCKET,
             {
               method: "DELETE",
-              headers: storageHeaders(serviceKey)
+              headers: storageHeaders(serviceKey, {
+                "content-type": "application/json"
+              }),
+              body: JSON.stringify({
+                prefixes: [cniPath]
+              })
             }
           );
 
-          cniDeleted =
-            storageResponse.ok ||
-            storageResponse.status === 404;
+          if (storageResponse.ok) {
+            const result = await storageResponse.json();
+            cniDeleted =
+              Array.isArray(result) &&
+              result.some(item => item.name === cniPath);
+          } else {
+            cniDeleted = false;
+          }
 
         } catch {
           cniDeleted = false;
         }
       }
+
 
       return json(200, {
         ok: true,
