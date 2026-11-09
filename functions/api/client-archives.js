@@ -677,8 +677,37 @@ export async function onRequest(context) {
         if (existingCniResponse.ok) {
          
           // Comparer la CNI déjà stockée au fichier envoyé.
+         
+          // Limiter la lecture de la CNI déjà stockée.
+          const existingCniLength = Number(
+            existingCniResponse.headers.get("content-length")
+          );
+
+          if (
+            !Number.isFinite(existingCniLength) ||
+            existingCniLength <= 0 ||
+            existingCniLength > MAX_IMAGE_SIZE
+          ) {
+            await existingCniResponse.body?.cancel();
+
+            return json(413, {
+              error:
+                "Impossible de vérifier la taille de la CNI existante."
+            });
+          }
+
           const existingCniBytes =
             await existingCniResponse.arrayBuffer();
+
+          if (
+            existingCniBytes.byteLength === 0 ||
+            existingCniBytes.byteLength > MAX_IMAGE_SIZE
+          ) {
+            return json(413, {
+              error: "CNI existante trop volumineuse ou invalide."
+            });
+          }
+
 
           const originalBytes = new Uint8Array(existingCniBytes);
           const submittedBytes = new Uint8Array(imageBytes);
