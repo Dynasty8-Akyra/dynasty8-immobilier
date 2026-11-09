@@ -284,6 +284,136 @@ export async function onRequest(context) {
       });
     }
 
+    // DYNASTY 8 — NOTES INTERNES DES CLIENTS
+    // Lecture et création réservées aux rôles autorisés.
+
+    if (
+      (action === "notes-list" && request.method === "GET") ||
+      (action === "notes-create" && request.method === "POST")
+    ) {
+      const clientId = params.get("id") || "";
+
+      if (
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clientId)
+      ) {
+        return json(400, {
+          error: "Identifiant de dossier invalide."
+        });
+      }
+
+      // Vérifier que le dossier est classique, jamais Prestige.
+      const clientURL = new URL(
+        base + "/rest/v1/d8_client_archives"
+      );
+
+      clientURL.searchParams.set("select", "id");
+      clientURL.searchParams.set("id", "eq." + clientId);
+      clientURL.searchParams.set("is_prestige", "eq.false");
+      clientURL.searchParams.set("limit", "1");
+
+      const clientResponse = await api(
+        clientURL.toString(),
+        {
+          headers: storageHeaders(serviceKey)
+        }
+      );
+
+      const existingClients = await clientResponse.json();
+
+      if (!existingClients.length) {
+        return json(404, {
+          error: "Dossier client introuvable."
+        });
+      }
+
+      // Lire les notes enregistrées.
+      if (action === "notes-list") {
+        const notesURL = new URL(
+          base + "/rest/v1/d8_client_notes"
+        );
+
+        notesURL.searchParams.set(
+          "select",
+          "id,client_id,note,created_by_discord_id,created_at"
+        );
+
+        notesURL.searchParams.set("client_id", "eq." + clientId);
+        notesURL.searchParams.set("order", "created_at.desc");
+        notesURL.searchParams.set("limit", "100");
+
+        const notesResponse = await api(
+          notesURL.toString(),
+          {
+            headers: storageHeaders(serviceKey)
+          }
+        );
+
+        const notes = await notesResponse.json();
+
+        return json(200, {
+          ok: true,
+          notes
+        });
+      }
+
+      // Créer une nouvelle note.
+      const contentType =
+        request.headers.get("content-type") || "";
+
+      if (!contentType.toLowerCase().startsWith("application/json")) {
+        return json(415, {
+          error: "Le format JSON est obligatoire."
+        });
+      }
+
+      let body;
+
+      try {
+        body = await request.json();
+      } catch {
+        return json(400, {
+          error: "Contenu de note invalide."
+        });
+      }
+
+      if (
+        !body ||
+        typeof body.note !== "string" ||
+        body.note.trim().length < 1 ||
+        body.note.trim().length > 2000
+      ) {
+        return json(400, {
+          error: "La note doit contenir entre 1 et 2000 caractères."
+        });
+      }
+
+      const newNote = {
+        client_id: clientId,
+        note: body.note.trim(),
+        created_by_discord_id: discordId
+      };
+
+      const createResponse = await api(
+        base + "/rest/v1/d8_client_notes",
+        {
+          method: "POST",
+          headers: storageHeaders(serviceKey, {
+            "content-type": "application/json",
+            Prefer: "return=representation"
+          }),
+          body: JSON.stringify(newNote)
+        }
+      );
+
+      const createdNotes = await createResponse.json();
+
+      return json(201, {
+        ok: true,
+        message: "Note interne enregistrée.",
+        note: createdNotes[0]
+      });
+    }
+
     // 4 — Lecture des dossiers classiques
     if (action === "list" && request.method === "GET") {
       const endpoint = new URL(
