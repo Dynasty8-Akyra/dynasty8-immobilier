@@ -1359,41 +1359,89 @@ h1 {
     preview.style.display = "block";
   });
 
-  form.addEventListener("submit", async event => {
-    event.preventDefault();
+ 
+form.addEventListener("submit", async event => {
+  event.preventDefault();
 
-    if (!authorized) {
-      message.textContent = "Accès non autorisé.";
-      return;
-    }
+  if (!authorized) {
+    message.textContent = "Accès non autorisé.";
+    return;
+  }
 
-    if (!form.reportValidity()) return;
+  if (!form.reportValidity()) return;
 
+  const clientMode = document.getElementById(
+    "d8-client-mode"
+  ).value;
+
+  // La CNI est obligatoire uniquement
+  // lorsqu'on crée un nouveau client.
+  if (clientMode === "new") {
     const file = cni.files[0];
 
     if (!file) {
-      message.textContent = "Ajoutez une CNI RP fictive.";
+      message.textContent =
+        "Ajoutez une CNI RP fictive.";
       return;
     }
 
     if (
-      !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
+      !["image/jpeg", "image/png", "image/webp"]
+        .includes(file.type) ||
       file.size > 5 * 1024 * 1024
     ) {
       message.textContent =
         "La CNI RP doit être une image JPG, PNG ou WEBP de 5 Mo maximum.";
       return;
     }
+  }
 
-    submit.disabled = true;
-    submit.textContent = "Enregistrement…";
-    message.textContent = "Création du dossier en cours…";
+  submit.disabled = true;
+  submit.textContent = "Enregistrement…";
+  message.textContent =
+    "Enregistrement de la transaction en cours…";
 
-    try {
-      const data = await apiArchives("create", {
+  try {
+    const data = await apiArchives(
+      "transaction-create",
+      {
         method: "POST",
         body: new FormData(form)
-      });
+      }
+    );
+
+    const clientId = data.client?.id || null;
+
+    message.textContent =
+      "Transaction immobilière enregistrée avec succès !";
+
+    form.reset();
+    clearPreview();
+
+    // Réinitialiser l'affichage du formulaire.
+    document.getElementById(
+      "d8-transaction-type"
+    ).dispatchEvent(new Event("change"));
+
+    document.getElementById(
+      "d8-client-mode"
+    ).dispatchEvent(new Event("change"));
+
+    modal.classList.remove("open");
+
+    // Actualiser les archives et sélectionner
+    // automatiquement le dossier concerné.
+    await loadClients(clientId);
+
+  } catch (error) {
+    message.textContent =
+      error.message || "Erreur d'enregistrement.";
+  } finally {
+    submit.disabled = false;
+    submit.textContent = "Enregistrer la transaction";
+  }
+});
+
 
       message.textContent = "Dossier créé avec succès !";
 
