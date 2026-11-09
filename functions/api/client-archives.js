@@ -1393,6 +1393,71 @@ if (
       }
 
 
+      // DYNASTY 8 — Finalisation du journal de suppression.
+
+      const deletionStatus = cniDeleted
+        ? "completed"
+        : "cni_cleanup_failed";
+
+      const logUpdateURL = new URL(
+        base + "/rest/v1/d8_client_deletion_log"
+      );
+
+      logUpdateURL.searchParams.set(
+        "id",
+        "eq." + deletionLog.id
+      );
+
+      try {
+        const logUpdateResponse = await fetch(
+          logUpdateURL.toString(),
+          {
+            method: "PATCH",
+            headers: storageHeaders(serviceKey, {
+              "content-type": "application/json",
+              Prefer: "return=representation"
+            }),
+            body: JSON.stringify({
+              status: deletionStatus,
+              completed_at: cniDeleted
+                ? new Date().toISOString()
+                : null
+            })
+          }
+        );
+
+        if (!logUpdateResponse.ok) {
+          return json(503, {
+            error:
+              "Le dossier a été supprimé, mais la mise à jour " +
+              "du journal a échoué. Vérification administrative nécessaire.",
+            client_id: clientId,
+            deletion_log_id: deletionLog.id
+          });
+        }
+
+        const updatedLogs = await logUpdateResponse.json();
+
+        if (!Array.isArray(updatedLogs) || updatedLogs.length !== 1) {
+          return json(503, {
+            error:
+              "Le dossier a été supprimé, mais le journal " +
+              "n'a pas pu être confirmé.",
+            client_id: clientId,
+            deletion_log_id: deletionLog.id
+          });
+        }
+
+      } catch {
+        return json(503, {
+          error:
+            "Le dossier a été supprimé, mais le suivi administratif " +
+            "a rencontré une erreur.",
+          client_id: clientId,
+          deletion_log_id: deletionLog.id
+        });
+      }
+
       return json(200, {
         ok: true,
         message: cniDeleted
