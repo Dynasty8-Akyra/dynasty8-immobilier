@@ -871,6 +871,9 @@ h1 {
       button.addEventListener("click", () => {
         tab = button.dataset.tab;
         render();
+        if (tab === "history") {
+          loadTransactionHistory(client.id);
+        }
       });
     });
 
@@ -1002,13 +1005,47 @@ h1 {
     }
 
     if (tab === "history") {
-      html = `
-        <h2>Historique des transactions</h2>
-        <p class="muted">
-          La synchronisation des transactions sera ajoutée
-          prochainement.
-        </p>
-      `;
+      const transactions = client.transactions || [];
+      const heading = '<h2>Historique des transactions</h2>';
+
+      if (client.transactionsLoading) {
+        html = heading + '<div class="empty">Chargement des transactions…</div>';
+      } else if (client.transactionsError) {
+        html = heading + `
+          <div class="empty">${safe(client.transactionsError)}</div>
+          <p><button class="action" type="button" id="d8-retry-history">Réessayer</button></p>
+        `;
+      } else if (!client.transactionsLoaded) {
+        html = heading + '<div class="empty">Chargement de l’historique en attente…</div>';
+      } else if (!transactions.length) {
+        html = heading + '<div class="empty">Aucune transaction immobilière enregistrée pour ce dossier.</div>';
+      } else {
+        html = heading + `
+          <p class="muted">${transactions.length} transaction(s) enregistrée(s).</p>
+          ${transactions.map(transaction => {
+            const isPurchase = transaction.transaction_type === "purchase";
+            const date = transaction.created_at
+              ? new Date(transaction.created_at)
+              : null;
+            const dateText = date && !Number.isNaN(date.getTime())
+              ? date.toLocaleString("fr-FR")
+              : "Date inconnue";
+            return `
+              <div class="card" style="margin:18px 0">
+                <span class="tag">${isPurchase ? "ACHAT IMMOBILIER" : "LOCATION IMMOBILIÈRE"}</span>
+                <h2>${safe(transaction.property_name || "Bien sans nom")}</h2>
+                <p class="muted">Référence : ${safe(transaction.property_id || "Non renseignée")}</p>
+                <p class="muted">Adresse : ${safe(transaction.property_address || "Non renseignée")}</p>
+                <div class="item"><b>${isPurchase ? "Prix de vente" : "Loyer mensuel"}</b><strong>${money(transaction.amount)}</strong></div>
+                <div class="item"><b>Frais d'agence</b><strong>${money(transaction.agency_fees)}</strong></div>
+                <div class="item"><b>Commission agent</b><strong>${money(transaction.agent_commission)}</strong></div>
+                <p class="muted">Agent Discord : ${safe(transaction.agent_discord_id || "Non renseigné")}</p>
+                <small class="muted">Enregistrée le : ${safe(dateText)}</small>
+              </div>
+            `;
+          }).join("")}
+        `;
+      }
     }
 
     if (tab === "visits") {
@@ -1040,7 +1077,12 @@ h1 {
     }
 
     el("content").innerHTML = html;
-    
+
+    const retryHistory = el("d8-retry-history");
+    if (retryHistory) {
+      retryHistory.addEventListener("click", () => loadTransactionHistory(client.id));
+    }
+
     // DYNASTY 8 — Consultation sécurisée CNI RP
     if (tab === "identity") {
       const button = el("d8-view-cni");
@@ -1169,6 +1211,44 @@ h1 {
     return data;
   }
 
+  // DYNASTY 8 — Historique immobilier via l'API sécurisée Cloudflare.
+  async function loadTransactionHistory(clientId) {
+    const client = clients.find(item => item.id === clientId);
+    if (!client || client.transactionsLoading) return;
+
+    client.transactionsLoading = true;
+    client.transactionsError = null;
+    if (clients[current]?.id === clientId && tab === "history") render();
+
+    try {
+      const token = await getAccessToken();
+      const response = await fetch(
+        "/api/client-archives?action=transactions-list&id=" + encodeURIComponent(clientId),
+        {
+          method: "GET",
+          headers: { authorization: "Bearer " + token },
+          cache: "no-store"
+        }
+      );
+      const data = await response.json().catch(() => {
+        throw new Error("Réponse invalide de l'API Transactions.");
+      });
+      if (!response.ok) {
+        throw new Error(data.error || "Erreur lors du chargement des transactions (HTTP " + response.status + ").");
+      }
+      if (!Array.isArray(data.transactions)) {
+        throw new Error("L'API n'a pas renvoyé de liste de transactions valide.");
+      }
+      client.transactions = data.transactions;
+      client.transactionsLoaded = true;
+    } catch (error) {
+      client.transactionsError = error.message || "Historique indisponible.";
+    } finally {
+      client.transactionsLoading = false;
+      if (clients[current]?.id === clientId && tab === "history") render();
+    }
+  }
+
   async function loadClients(selectId = null) {
     setStatus("Chargement des dossiers clients…");
 
@@ -1187,7 +1267,11 @@ h1 {
         bank: null,
         debts: null,
         properties: [],
-        propertiesLoaded: false
+        propertiesLoaded: false,
+        transactions: [],
+        transactionsLoaded: false,
+        transactionsLoading: false,
+        transactionsError: null
       }));
 
       if (!clients.length) {
