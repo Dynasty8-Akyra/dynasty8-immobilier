@@ -525,38 +525,6 @@ export async function onRequest(context) {
         });
       }
 
-      // DYNASTY 8 — Vérifier si la demande existe déjà
-      const existingRequestResponse = await api(
-        base +
-          "/rest/v1/d8_property_transactions" +
-          "?request_id=eq." +
-          encodeURIComponent(requestId) +
-          "&select=id,client_id,agent_discord_id,property_id,transaction_type,amount" +
-          "&limit=1",
-        {
-          headers: storageHeaders(serviceKey)
-        }
-      );
-
-      const existingRequests =
-        await existingRequestResponse.json();
-
-      if (existingRequests.length > 0) {
-        const saved = existingRequests[0];
-
-        // Ne jamais renvoyer le dossier d'un autre agent.
-        if (saved.agent_discord_id !== discordId) {
-          return json(409, {
-            error: "Identifiant de transaction déjà utilisé."
-          });
-        }
-
-        return json(409, {
-          error:
-            "Cette transaction a déjà été enregistrée. " +
-            "Actualisez les archives avant de recommencer."
-        });
-      }
 
       const mode = String(form.get("client_mode") || "");
       const type = String(form.get("transaction_type") || "");
@@ -784,20 +752,12 @@ export async function onRequest(context) {
             });
           }
 
-          // La CNI existe déjà.
-          // Pour le moment, ne pas la remplacer ni la supprimer.
-          // Une reprise sécurisée sera ajoutée après vérification
-          // du contenu et de l'identité de la demande.
-          return json(409, {
-            error:
-              "Une CNI existe déjà pour cette opération. " +
-              "Aucun fichier n'a été modifié. " +
-              "Contactez la Direction pour vérifier la transaction."
-          });
         }
-
-
-        if (existingCniResponse.status !== 404) {
+ 
+        if (
+          existingCniResponse.status !== 404 &&
+          !reuseExistingCni
+        ) {
           return json(503, {
             error:
               "Impossible de vérifier la CNI. " +
@@ -805,7 +765,6 @@ export async function onRequest(context) {
           });
         }
 
-       
         // Ne télécharger la CNI que si elle n'existe pas déjà.
         if (!reuseExistingCni) {
           await api(uploadURL, {
