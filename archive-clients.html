@@ -1234,6 +1234,38 @@ if (tab === "overview") {
     }
 
     el("content").innerHTML = html;
+    
+    // DYNASTY 8 — Ouverture du formulaire de modification
+    const editButton = el("d8-open-edit");
+
+    if (editButton) {
+      editButton.addEventListener("click", () => {
+        if (!authorized) return;
+
+        const editForm = el("d8-edit-form");
+        editForm.reset();
+
+        el("d8-edit-name").value = client.name;
+        el("d8-edit-phone").value = client.phone;
+
+        el("d8-edit-direction-fields").hidden = !isDirection;
+
+        el("d8-edit-discord").disabled = !isDirection;
+        el("d8-edit-agent").disabled = !isDirection;
+
+        if (isDirection) {
+          el("d8-edit-discord").value = client.discord;
+          el("d8-edit-agent").value = client.agentId;
+        }
+
+        el("d8-edit-message").textContent = "";
+        el("d8-edit-modal").dataset.clientId = client.id;
+        el("d8-edit-modal").classList.add("open");
+
+        el("d8-edit-name").focus();
+      });
+    }
+
 // DYNASTY 8 — Enregistrement du solde bancaire RP
 if (tab === "finance") {
   const bankInput = el("d8-bank-input");
@@ -1937,6 +1969,112 @@ function initializeTransactionForm() {
   updateTransactionType();
   updateClientMode();
 }
+
+  // DYNASTY 8 — Enregistrement des modifications client
+  const editModal = el("d8-edit-modal");
+  const editForm = el("d8-edit-form");
+  const editSubmit = el("d8-submit-edit");
+  const editMessage = el("d8-edit-message");
+
+  function closeEditModal() {
+    if (editSubmit.disabled) return;
+
+    editModal.classList.remove("open");
+    delete editModal.dataset.clientId;
+    editForm.reset();
+    editMessage.textContent = "";
+  }
+
+  el("d8-cancel-edit").addEventListener("click", closeEditModal);
+
+  editModal.addEventListener("click", event => {
+    if (event.target === editModal) closeEditModal();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (
+      event.key === "Escape" &&
+      editModal.classList.contains("open")
+    ) {
+      closeEditModal();
+    }
+  });
+
+  editForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (!authorized || editSubmit.disabled) return;
+    if (!editForm.reportValidity()) return;
+
+    const clientId = editModal.dataset.clientId;
+    const client = clients.find(item => item.id === clientId);
+
+    if (!client) {
+      editMessage.textContent = "Dossier client introuvable.";
+      return;
+    }
+
+    const payload = {
+      rp_name: el("d8-edit-name").value.trim(),
+      rp_phone: el("d8-edit-phone").value.trim()
+    };
+
+    if (isDirection) {
+      payload.client_discord_id =
+        el("d8-edit-discord").value.trim();
+
+      payload.assigned_agent_discord_id =
+        el("d8-edit-agent").value.trim();
+    }
+
+    editSubmit.disabled = true;
+    editSubmit.textContent = "Enregistrement…";
+    editMessage.textContent = "Modification en cours…";
+
+    try {
+      const token = await getAccessToken();
+
+      const response = await fetch(
+        "/api/client-archives?action=client-update&id=" +
+          encodeURIComponent(clientId),
+        {
+          method: "POST",
+          headers: {
+            authorization: "Bearer " + token,
+            "content-type": "application/json"
+          },
+          body: JSON.stringify(payload),
+          cache: "no-store"
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "Impossible de modifier le dossier."
+        );
+      }
+
+      editMessage.textContent =
+        "Dossier client modifié avec succès !";
+
+      editModal.classList.remove("open");
+      delete editModal.dataset.clientId;
+
+      await loadClients(clientId);
+
+      tab = "identity";
+      render();
+
+    } catch (error) {
+      editMessage.textContent =
+        error.message || "Erreur de modification.";
+    } finally {
+      editSubmit.disabled = false;
+      editSubmit.textContent = "Enregistrer les modifications";
+    }
+  });
 
 initializeTransactionForm();
 
