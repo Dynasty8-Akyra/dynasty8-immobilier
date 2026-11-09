@@ -805,16 +805,21 @@ export async function onRequest(context) {
           });
         }
 
-        await api(uploadURL, {
-          method: "POST",
-          headers: storageHeaders(serviceKey, {
-            "content-type": format.mime,
-            "x-upsert": "false"
-          }),
-          body: imageBytes
-        });
+       
+        // Ne télécharger la CNI que si elle n'existe pas déjà.
+        if (!reuseExistingCni) {
+          await api(uploadURL, {
+            method: "POST",
+            headers: storageHeaders(serviceKey, {
+              "content-type": format.mime,
+              "x-upsert": "false"
+            }),
+            body: imageBytes
+          });
 
-        uploaded = true;
+          uploaded = true;
+        }
+
       }
 
      
