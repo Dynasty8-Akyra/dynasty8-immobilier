@@ -847,6 +847,84 @@ export async function onRequest(context) {
      
     }
 
+    // DYNASTY 8 — HISTORIQUE IMMOBILIER SÉCURISÉ
+    if (action === "transactions-list" && request.method === "GET") {
+      const clientId = String(params.get("id") || "").trim();
+
+      if (
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clientId)
+      ) {
+        return json(400, {
+          error: "Identifiant client invalide."
+        });
+      }
+
+      // Vérifier que le client appartient aux archives classiques.
+      const clientURL = new URL(
+        base + "/rest/v1/d8_client_archives"
+      );
+
+      clientURL.searchParams.set("select", "id");
+      clientURL.searchParams.set("id", "eq." + clientId);
+      clientURL.searchParams.set("is_prestige", "eq.false");
+      clientURL.searchParams.set("limit", "1");
+
+      const clientResponse = await api(
+        clientURL.toString(),
+        {
+          headers: storageHeaders(serviceKey)
+        }
+      );
+
+      const matchingClients = await clientResponse.json();
+
+      if (!matchingClients.length) {
+        return json(404, {
+          error: "Dossier client introuvable."
+        });
+      }
+
+      // Récupérer les transactions de ce client uniquement.
+      const transactionsURL = new URL(
+        base + "/rest/v1/d8_property_transactions"
+      );
+
+      transactionsURL.searchParams.set(
+        "select",
+        "id,client_id,property_id,property_name," +
+        "property_address,transaction_type,amount," +
+        "agency_fees,agent_commission,agent_discord_id,created_at"
+      );
+
+      transactionsURL.searchParams.set(
+        "client_id",
+        "eq." + clientId
+      );
+
+      transactionsURL.searchParams.set(
+        "order",
+        "created_at.desc"
+      );
+
+      transactionsURL.searchParams.set("limit", "100");
+
+      const transactionsResponse = await api(
+        transactionsURL.toString(),
+        {
+          headers: storageHeaders(serviceKey)
+        }
+      );
+
+      const transactions = await transactionsResponse.json();
+
+      return json(200, {
+        ok: true,
+        client_id: clientId,
+        transactions
+      });
+    }
+
+
     // 4 — Lecture des dossiers classiques
     if (action === "list" && request.method === "GET") {
       const endpoint = new URL(
