@@ -1304,10 +1304,10 @@ if (
         });
       }
 
-      // DYNASTY 8 — Journal de suppression sécurisé.
-      // Conserver la référence de la CNI avant toute suppression.
+     
+      // DYNASTY 8 — Suppression avec journal et contrôle CNI.
 
-      const deletionLogResponse = await fetch(
+      const logResponse = await fetch(
         base + "/rest/v1/d8_client_deletion_log",
         {
           method: "POST",
@@ -1325,26 +1325,48 @@ if (
         }
       );
 
-      if (!deletionLogResponse.ok) {
-        return json(503, {
-          error:
-            "Impossible de créer le journal de suppression. " +
-            "Aucune donnée n'a été supprimée."
+      if (!logResponse.ok) {
+        return json(409, {
+          error: "Journal indisponible ou suppression déjà en cours. Aucune suppression effectuée."
         });
       }
 
-      const deletionLogs = await deletionLogResponse.json();
-      const deletionLog = deletionLogs[0];
+      const logRows = await logResponse.json().catch(() => []);
+      const logId = logRows[0]?.id;
 
-      if (!deletionLog?.id) {
+      if (!logId) {
         return json(503, {
-          error:
-            "Journal de suppression invalide. " +
-            "Opération interrompue."
+          error: "Journal non confirmé. Suppression interrompue."
         });
       }
 
-      // Supprimer le dossier et ses données liées en cascade.
+      const logURL = new URL(
+        base + "/rest/v1/d8_client_deletion_log"
+      );
+      logURL.searchParams.set("id", "eq." + logId);
+
+      async function updateDeletionLog(status) {
+        const response = await fetch(logURL.toString(), {
+          method: "PATCH",
+          headers: storageHeaders(serviceKey, {
+            "content-type": "application/json",
+            Prefer: "return=representation"
+          }),
+          body: JSON.stringify({
+            status,
+            completed_at: status === "completed"
+              ? new Date().toISOString()
+              : null
+          })
+        });
+
+        if (!response.ok) return false;
+
+        const rows = await response.json().catch(() => []);
+        return Array.isArray(rows) && rows.length === 1;
+      }
+
+      // Suppression du dossier classique.
       const deleteURL = new URL(
         base + "/rest/v1/d8_client_archives"
       );
@@ -1352,50 +1374,64 @@ if (
       deleteURL.searchParams.set("id", "eq." + clientId);
       deleteURL.searchParams.set("is_prestige", "eq.false");
 
-      const deleteResponse = await api(
-        deleteURL.toString(),
-        {
+      let dossierDeleted = false;
+
+      try {
+        const response = await fetch(deleteURL.toString(), {
           method: "DELETE",
           headers: storageHeaders(serviceKey, {
             Prefer: "return=representation"
           })
+        });
+
+        if (response.ok) {
+          const rows = await response.json().catch(() => []);
+          dossierDeleted = Array.isArray(rows) &&
+            rows.some(row => row.id === clientId);
         }
-      );
+      } catch {
+        // Résultat incertain : conserver le journal pending.
+      }
 
-      const deletedClients = await deleteResponse.json();
-
-      if (!deletedClients.length) {
-        return json(404, {
-          error: "Dossier introuvable ou déjà supprimé."
+      if (!dossierDeleted) {
+        return json(503, {
+          error: "Suppression non confirmée. Vérifiez le dossier et le journal avant de réessayer.",
+          deletion_log_id: logId
         });
       }
 
-     
-      // Nettoyer la CNI privée avec l'API Supabase Storage.
+      // Suppression de la CNI dans Supabase Storage.
       let cniDeleted = !cniPath;
 
       if (cniPath) {
+        const storageURL =
+          base + "/storage/v1/object/" + BUCKET;
+
         try {
-          const storageResponse = await fetch(
-            base + "/storage/v1/object/" + BUCKET,
+          await fetch(storageURL, {
+            method: "DELETE",
+            headers: storageHeaders(serviceKey, {
+              "content-type": "application/json"
+            }),
+            body: JSON.stringify({
+              prefixes: [cniPath]
+            })
+          });
+
+          // Vérification indépendante : le fichier doit être absent.
+          const checkResponse = await fetch(
+            storageURL + "/" + cniPath,
             {
-              method: "DELETE",
-              headers: storageHeaders(serviceKey, {
-                "content-type": "application/json"
-              }),
-              body: JSON.stringify({
-                prefixes: [cniPath]
-              })
+              method: "GET",
+              headers: storageHeaders(serviceKey),
+              cache: "no-store"
             }
           );
 
-          if (storageResponse.ok) {
-            const result = await storageResponse.json();
-            cniDeleted =
-              Array.isArray(result) &&
-              result.some(item => item.name === cniPath);
-          } else {
-            cniDeleted = false;
+          cniDeleted = checkResponse.status === 404;
+
+          if (checkResponse.ok) {
+            await checkResponse.body?.cancel();
           }
 
         } catch {
@@ -1403,81 +1439,39 @@ if (
         }
       }
 
-
-      // DYNASTY 8 — Finalisation du journal de suppression.
-
-      const deletionStatus = cniDeleted
+      // Mise à jour du journal administratif.
+      const finalStatus = cniDeleted
         ? "completed"
         : "cni_cleanup_failed";
 
-      const logUpdateURL = new URL(
-        base + "/rest/v1/d8_client_deletion_log"
-      );
-
-      logUpdateURL.searchParams.set(
-        "id",
-        "eq." + deletionLog.id
-      );
+      let logSaved = false;
 
       try {
-        const logUpdateResponse = await fetch(
-          logUpdateURL.toString(),
-          {
-            method: "PATCH",
-            headers: storageHeaders(serviceKey, {
-              "content-type": "application/json",
-              Prefer: "return=representation"
-            }),
-            body: JSON.stringify({
-              status: deletionStatus,
-              completed_at: cniDeleted
-                ? new Date().toISOString()
-                : null
-            })
-          }
-        );
-
-        if (!logUpdateResponse.ok) {
-          return json(503, {
-            error:
-              "Le dossier a été supprimé, mais la mise à jour " +
-              "du journal a échoué. Vérification administrative nécessaire.",
-            client_id: clientId,
-            deletion_log_id: deletionLog.id
-          });
-        }
-
-        const updatedLogs = await logUpdateResponse.json();
-
-        if (!Array.isArray(updatedLogs) || updatedLogs.length !== 1) {
-          return json(503, {
-            error:
-              "Le dossier a été supprimé, mais le journal " +
-              "n'a pas pu être confirmé.",
-            client_id: clientId,
-            deletion_log_id: deletionLog.id
-          });
-        }
-
+        logSaved = await updateDeletionLog(finalStatus);
       } catch {
+        logSaved = false;
+      }
+
+      if (!logSaved) {
         return json(503, {
-          error:
-            "Le dossier a été supprimé, mais le suivi administratif " +
-            "a rencontré une erreur.",
+          error: "Dossier supprimé, mais journal non confirmé. Vérification administrative nécessaire.",
           client_id: clientId,
-          deletion_log_id: deletionLog.id
+          deletion_log_id: logId,
+          cni_deleted: cniDeleted
         });
       }
 
       return json(200, {
         ok: true,
         message: cniDeleted
-          ? "Dossier définitivement supprimé."
-          : "Dossier supprimé, mais nettoyage CNI à vérifier.",
+          ? "Dossier supprimé et CNI absente du stockage."
+          : "Dossier supprimé. Nettoyage CNI à vérifier.",
         client_id: clientId,
+        deletion_log_id: logId,
         cni_deleted: cniDeleted
       });
     }
+
 
     // 4 — Lecture des dossiers classiques
     if (action === "list" && request.method === "GET") {
