@@ -1452,7 +1452,12 @@ form.addEventListener("submit", async event => {
     );
 
 
-    const clientId = data.client?.id || null;
+   
+    const clientId =
+      data.client_id ||
+      data.client?.id ||
+      null;
+
 pendingTransactionId = null;
     message.textContent =
       "Transaction immobilière enregistrée avec succès !";
