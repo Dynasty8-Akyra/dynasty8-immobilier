@@ -891,39 +891,65 @@ h1 {
 
     let html = "";
 
-    if (tab === "overview") {
-      html = `
-        <h2>Vue générale</h2>
 
-        <div class="cards">
-          <div class="card">
-            <small>Patrimoine immobilier connu</small>
-            <strong>${hasPropertyData ? money(total) : "À connecter"}</strong>
-            <small>Synchronisation du patrimoine à venir</small>
-          </div>
+if (tab === "overview") {
+  html = `
+    <h2>Vue générale</h2>
 
-          <div class="card">
-            <small>Solde bancaire déclaré</small>
-            <strong>${money(client.bank)}</strong>
-            <small>Déclaration du joueur</small>
-          </div>
+    <div class="cards">
 
-          <div class="card">
-            <small>Patrimoine net estimé</small>
-            <strong>${money(net)}</strong>
-            <small>Estimation indicative</small>
-          </div>
+      <div class="card">
+        <small>Identité du client</small>
+
+        <div style="margin-top:14px">
+          <small>Nom et prénom RP</small>
+          <strong>${safe(client.name)}</strong>
         </div>
 
-        <div class="item">
-          <div>
-            <b>Agent référent</b>
-            <small>${safe(client.agent)}</small>
-          </div>
-          <span class="tag">DOSSIER ACTIF</span>
+        <div style="margin-top:18px">
+          <small>Téléphone RP</small>
+          <strong style="font-size:17px">
+            ${safe(client.phone)}
+          </strong>
         </div>
-      `;
-    }
+
+        <div style="margin-top:18px">
+          <small>Identifiant Discord</small>
+          <strong style="font-size:15px;overflow-wrap:anywhere">
+            ${safe(client.discord || "Non renseigné")}
+          </strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <small>Situation financière</small>
+
+        <div style="margin-top:14px">
+          <small>Solde bancaire déclaré</small>
+          <strong>${money(client.bank)}</strong>
+          <small>Montant déclaré par le joueur RP</small>
+        </div>
+
+        <div style="margin-top:24px">
+          <small>Statut du dossier</small>
+          <div style="margin-top:10px">
+            <span class="tag">DOSSIER ACTIF</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="item">
+      <div>
+        <b>Agent référent</b>
+        <small>${safe(client.agent)}</small>
+      </div>
+      <span class="tag">ARCHIVES DYNASTY 8</span>
+    </div>
+  `;
+}
+
 
  
     if (tab === "identity") {
