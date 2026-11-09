@@ -844,29 +844,7 @@ export async function onRequest(context) {
 
         throw error;
       }
-
-          try {
-            await api(
-              base + "/storage/v1/object/" +
-                BUCKET + "/" + storagePath,
-              {
-                method: "DELETE",
-                headers: storageHeaders(serviceKey)
-              }
-            );
-          } catch {
-            // Un nettoyage administratif peut être nécessaire.
-          }
-        }
-
-        if (error.status === 409) {
-          return json(409, {
-            error: "Un dossier existe déjà pour cet ID Discord."
-          });
-        }
-
-        throw error;
-      }
+     
     }
 
     // 4 — Lecture des dossiers classiques
