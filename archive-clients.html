@@ -1367,8 +1367,10 @@ if (tab === "finance") {
         phone: String(client.rp_phone || "Non renseigné"),
         discord: String(client.client_discord_id || ""),
         agent: String(
-          client.assigned_agent_discord_id || "Non attribué"
-        ),
+  client.assigned_agent_name ||
+  client.assigned_agent_discord_id ||
+  "Non attribué"
+),
         bank: client.bank_declared === null ||
       client.bank_declared === undefined
         ? null
