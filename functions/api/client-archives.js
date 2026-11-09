@@ -683,11 +683,16 @@ export async function onRequest(context) {
             existingCniResponse.headers.get("content-length")
           );
 
+         
           if (
-            !Number.isFinite(existingCniLength) ||
-            existingCniLength <= 0 ||
-            existingCniLength > MAX_IMAGE_SIZE
+            existingCniResponse.headers.has("content-length") &&
+            (
+              !Number.isFinite(existingCniLength) ||
+              existingCniLength <= 0 ||
+              existingCniLength > MAX_IMAGE_SIZE
+            )
           ) {
+
             await existingCniResponse.body?.cancel();
 
             return json(413, {
