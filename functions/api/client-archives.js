@@ -675,6 +675,28 @@ export async function onRequest(context) {
 
         
         if (existingCniResponse.ok) {
+         
+          // Comparer la CNI déjà stockée au fichier envoyé.
+          const existingCniBytes =
+            await existingCniResponse.arrayBuffer();
+
+          const originalBytes = new Uint8Array(existingCniBytes);
+          const submittedBytes = new Uint8Array(imageBytes);
+
+          const sameCni =
+            originalBytes.length === submittedBytes.length &&
+            originalBytes.every(
+              (byte, index) => byte === submittedBytes[index]
+            );
+
+          if (!sameCni) {
+            return json(409, {
+              error:
+                "Cette demande possède une CNI différente. " +
+                "Aucun fichier n'a été modifié."
+            });
+          }
+
           // La CNI existe déjà.
           // Pour le moment, ne pas la remplacer ni la supprimer.
           // Une reprise sécurisée sera ajoutée après vérification
