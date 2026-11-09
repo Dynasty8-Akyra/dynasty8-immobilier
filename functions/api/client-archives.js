@@ -55,6 +55,78 @@ function validDiscordId(value) {
   return /^\d{17,22}$/.test(value);
 }
 
+/*
+ DYNASTY 8 — FINANCE PRESTIGE
+ Calcul progressif des frais d'agence.
+
+ Achat : frais sur le prix de vente.
+ Location : frais uniques calculés sur
+ le loyer mensuel à la signature du bail.
+
+ Commission agent : 20 % des frais nets.
+*/
+
+function calculateProgressiveFees(amount, brackets) {
+  let remaining = amount;
+  let previousLimit = 0;
+  let total = 0;
+
+  for (const [limit, rate] of brackets) {
+    if (remaining <= 0) break;
+
+    const taxable = Math.min(
+      remaining,
+      limit - previousLimit
+    );
+
+    total += taxable * rate;
+    remaining -= taxable;
+    previousLimit = limit;
+  }
+
+  return Math.round((total + Number.EPSILON) * 100) / 100;
+}
+
+function calculateAgencyFees(type, amount) {
+  if (
+    !Number.isFinite(amount) ||
+    amount <= 0 ||
+    amount > 1000000000000
+  ) {
+    throw new Error("Montant immobilier invalide.");
+  }
+
+  if (type === "purchase") {
+    return calculateProgressiveFees(amount, [
+      [250000, 0.08],
+      [500000, 0.07],
+      [1000000, 0.06],
+      [2000000, 0.05],
+      [5000000, 0.04],
+      [Infinity, 0.03]
+    ]);
+  }
+
+  if (type === "rental") {
+    return calculateProgressiveFees(amount, [
+      [2500, 0.20],
+      [5000, 0.18],
+      [10000, 0.15],
+      [20000, 0.12],
+      [50000, 0.10],
+      [Infinity, 0.08]
+    ]);
+  }
+
+  throw new Error("Type de transaction invalide.");
+}
+
+function calculateAgentCommission(agencyFees) {
+  return Math.round(
+    (agencyFees * 0.20 + Number.EPSILON) * 100
+  ) / 100;
+}
+
 function imageFormat(bytes) {
   const b = new Uint8Array(bytes);
 
