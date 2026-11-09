@@ -597,10 +597,13 @@ export async function onRequest(context) {
       const agencyFees = calculateAgencyFees(type, amount);
       const agentCommission = calculateAgentCommission(agencyFees);
 
+      
       let existingClientId = null;
       let newClientId = null;
       let storagePath = null;
       let uploaded = false;
+      let reuseExistingCni = false;
+
 
       let rpName = null;
       let rpPhone = null;
@@ -762,6 +765,16 @@ export async function onRequest(context) {
             originalBytes.every(
               (byte, index) => byte === submittedBytes[index]
             );
+
+          // Vérifier si la CNI existante correspond
+          // exactement à celle de cette demande.
+          const canReuseExistingCni = sameCni;
+
+        
+          if (canReuseExistingCni) {
+            reuseExistingCni = true;
+          }
+
 
           if (!sameCni) {
             return json(409, {
