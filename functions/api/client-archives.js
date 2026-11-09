@@ -1069,6 +1069,139 @@ if (
     bank_declared: updatedClients[0].bank_declared
   });
 }
+   
+    // DYNASTY 8 — MODIFICATION DES ARCHIVES CLIENTS
+    if (action === "client-update" && request.method === "POST") {
+      const clientId = String(params.get("id") || "").trim();
+
+      if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clientId)) {
+        return json(400, { error: "Identifiant client invalide." });
+      }
+
+      const contentType = request.headers.get("content-type") || "";
+
+      if (!contentType.toLowerCase().startsWith("application/json")) {
+        return json(415, { error: "Format JSON obligatoire." });
+      }
+
+      let body;
+
+      try {
+        body = await request.json();
+      } catch {
+        return json(400, { error: "Formulaire invalide." });
+      }
+
+      const rpName = String(body?.rp_name ?? "").trim();
+      const rpPhone = String(body?.rp_phone ?? "").trim();
+
+      if (rpName.length < 2 || rpName.length > 160) {
+        return json(400, { error: "Nom RP invalide." });
+      }
+
+      if (
+        rpPhone.length < 3 ||
+        rpPhone.length > 40 ||
+        !/^[0-9+(). -]+$/.test(rpPhone)
+      ) {
+        return json(400, { error: "Téléphone RP invalide." });
+      }
+
+      const changes = {
+        rp_name: rpName,
+        rp_phone: rpPhone,
+        updated_at: new Date().toISOString()
+      };
+
+      if (isDirection) {
+        if (body.client_discord_id !== undefined) {
+          const newDiscordId = String(body.client_discord_id).trim();
+
+          if (!validDiscordId(newDiscordId)) {
+            return json(400, { error: "ID Discord invalide." });
+          }
+
+          const duplicateURL = new URL(
+            base + "/rest/v1/d8_client_archives"
+          );
+
+          duplicateURL.searchParams.set("select", "id");
+          duplicateURL.searchParams.set(
+            "client_discord_id",
+            "eq." + newDiscordId
+          );
+          duplicateURL.searchParams.set("id", "neq." + clientId);
+          duplicateURL.searchParams.set("limit", "1");
+
+          const duplicateResponse = await api(
+            duplicateURL.toString(),
+            { headers: storageHeaders(serviceKey) }
+          );
+
+          const duplicates = await duplicateResponse.json();
+
+          if (duplicates.length) {
+            return json(409, {
+              error: "Cet ID Discord appartient déjà à un dossier."
+            });
+          }
+
+          changes.client_discord_id = newDiscordId;
+        }
+
+        if (body.assigned_agent_discord_id !== undefined) {
+          const agentId = String(
+            body.assigned_agent_discord_id
+          ).trim();
+
+          if (!validDiscordId(agentId)) {
+            return json(400, {
+              error: "Identifiant de l'agent invalide."
+            });
+          }
+
+          changes.assigned_agent_discord_id = agentId;
+        }
+      } else if (
+        body.client_discord_id !== undefined ||
+        body.assigned_agent_discord_id !== undefined
+      ) {
+        return json(403, {
+          error: "Modification réservée à la Direction."
+        });
+      }
+
+      const updateURL = new URL(
+        base + "/rest/v1/d8_client_archives"
+      );
+
+      updateURL.searchParams.set("id", "eq." + clientId);
+      updateURL.searchParams.set("is_prestige", "eq.false");
+
+      const response = await api(updateURL.toString(), {
+        method: "PATCH",
+        headers: storageHeaders(serviceKey, {
+          "content-type": "application/json",
+          Prefer: "return=representation"
+        }),
+        body: JSON.stringify(changes)
+      });
+
+      const updated = await response.json();
+
+      if (!updated.length) {
+        return json(404, {
+          error: "Dossier classique introuvable."
+        });
+      }
+
+      return json(200, {
+        ok: true,
+        message: "Dossier client modifié avec succès.",
+        client: updated[0]
+      });
+    }
+
     // 4 — Lecture des dossiers classiques
     if (action === "list" && request.method === "GET") {
       const endpoint = new URL(
