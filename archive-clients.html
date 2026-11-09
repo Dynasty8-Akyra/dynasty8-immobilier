@@ -741,6 +741,7 @@ h1 {
   let current = 0;
   let tab = "overview";
   let authorized = false;
+  let isDirection = false;
   let previewURL = null;
 
   const el = id => document.getElementById(id);
@@ -988,6 +989,27 @@ if (tab === "overview") {
             <p class="status" id="d8-cni-status"></p>
           </div>
         `;
+    }
+
+    if (tab === "identity") {
+      html += `
+        <div class="card" style="margin-top:25px">
+          <small>DYNASTY 8 · ADMINISTRATION</small>
+          <h2>Gestion du dossier client</h2>
+
+          <p class="muted">
+            Modifier les informations personnelles RP
+            enregistrées dans les archives.
+          </p>
+
+          <button
+            class="action"
+            type="button"
+            id="d8-open-edit">
+            ✎ Modifier le dossier
+          </button>
+        </div>
+      `;
     }
 
     if (tab === "properties") {
@@ -1366,6 +1388,7 @@ if (tab === "finance") {
         name: String(client.rp_name || "Sans nom"),
         phone: String(client.rp_phone || "Non renseigné"),
         discord: String(client.client_discord_id || ""),
+        agentId: String(client.assigned_agent_discord_id || ""),
         agent: String(
   client.assigned_agent_name ||
   client.assigned_agent_discord_id ||
@@ -1453,6 +1476,7 @@ if (tab === "finance") {
       }
 
       authorized = true;
+      isDirection = data.role === "direction";
       el("search").disabled = false;
       el("d8-open-create").hidden = false;
 
