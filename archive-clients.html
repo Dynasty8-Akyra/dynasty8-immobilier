@@ -590,51 +590,129 @@ h1 {
 </div>
 <!-- FIN VISIONNEUSE CNI RP -->
 
+
 <div class="d8-modal" id="d8-create-modal">
   <form class="d8-form" id="d8-create-form">
 
-    <div class="sub">DYNASTY 8 · ARCHIVES INTERNES</div>
-    <h2>♛ Nouveau dossier client</h2>
+    <div class="sub">DYNASTY 8 · GESTION IMMOBILIÈRE</div>
+    <h2>♛ Nouvelle transaction immobilière</h2>
+
     <p class="muted">
-      Tous les champs sont obligatoires.
-      Utilisez uniquement une CNI fictive RP.
+      Enregistrez un achat ou une location et associez-le
+      au dossier du client.
     </p>
 
-    <label for="d8-rp-name">Nom et prénom RP *</label>
-    <input id="d8-rp-name"
-           name="rp_name"
-           minlength="2"
+    <h3>01 · Type de transaction</h3>
+
+    <label for="d8-transaction-type">Opération *</label>
+    <select id="d8-transaction-type"
+            name="transaction_type"
+            required>
+      <option value="purchase">Achat immobilier</option>
+      <option value="rental">Location immobilière</option>
+    </select>
+
+    <h3>02 · Client</h3>
+
+    <label for="d8-client-mode">Dossier client *</label>
+    <select id="d8-client-mode" name="client_mode">
+      <option value="new">Nouveau client</option>
+      <option value="existing">Client existant</option>
+    </select>
+
+    <div id="d8-new-client-fields">
+
+      <label for="d8-rp-name">Nom et prénom RP *</label>
+      <input id="d8-rp-name"
+             name="rp_name"
+             minlength="2"
+             maxlength="160"
+             placeholder="Ex. Victoria Hayes"
+             required>
+
+      <label for="d8-rp-phone">Téléphone RP *</label>
+      <input id="d8-rp-phone"
+             name="rp_phone"
+             minlength="3"
+             maxlength="40"
+             pattern="[0-9+(). -]+"
+             placeholder="Ex. 555-0123"
+             required>
+
+      <label for="d8-discord-id">ID Discord *</label>
+      <input id="d8-discord-id"
+             name="client_discord_id"
+             inputmode="numeric"
+             pattern="[0-9]{17,22}"
+             placeholder="ID Discord du client"
+             required>
+
+      <label for="d8-cni">Photo de CNI RP *</label>
+      <input id="d8-cni"
+             name="cni"
+             type="file"
+             accept="image/jpeg,image/png,image/webp"
+             required>
+
+      <p class="muted">
+        Utilisez uniquement une carte d'identité fictive RP.
+      </p>
+
+      <img class="d8-preview"
+           id="d8-cni-preview"
+           alt="Aperçu de la CNI RP">
+
+    </div>
+
+    <div id="d8-existing-client-fields" hidden>
+      <label for="d8-existing-client">Sélectionner un client *</label>
+
+      <select id="d8-existing-client"
+              name="existing_client_id"
+              disabled>
+        <option value="">Choisir un client enregistré</option>
+      </select>
+    </div>
+
+    <h3>03 · Bien immobilier</h3>
+
+    <label for="d8-property-id">Référence du bien *</label>
+    <input id="d8-property-id"
+           name="property_id"
+           maxlength="100"
+           placeholder="Ex. VINEWOOD-001"
+           required>
+
+    <label for="d8-property-name">Nom du bien *</label>
+    <input id="d8-property-name"
+           name="property_name"
            maxlength="160"
-           placeholder="Ex. Victoria Hayes"
+           placeholder="Ex. Villa Vinewood Hills"
            required>
 
-    <label for="d8-rp-phone">Téléphone RP *</label>
-    <input id="d8-rp-phone"
-           name="rp_phone"
-           minlength="3"
-           maxlength="40"
-           pattern="[0-9+(). -]+"
-           placeholder="Ex. 555-0123"
+    <label for="d8-property-address">Adresse RP du bien</label>
+    <input id="d8-property-address"
+           name="property_address"
+           maxlength="250"
+           placeholder="Ex. Vinewood Hills, Los Santos">
+
+    <label for="d8-transaction-amount"
+           id="d8-amount-label">Prix de vente ($) *</label>
+
+    <input id="d8-transaction-amount"
+           name="amount"
+           type="number"
+           min="0.01"
+           step="0.01"
+           placeholder="Ex. 1250000"
            required>
 
-    <label for="d8-discord-id">ID Discord *</label>
-    <input id="d8-discord-id"
-           name="client_discord_id"
-           inputmode="numeric"
-           pattern="[0-9]{17,22}"
-           placeholder="ID Discord du client"
-           required>
+    <h3>04 · Finalisation</h3>
 
-    <label for="d8-cni">Photo de CNI RP *</label>
-    <input id="d8-cni"
-           name="cni"
-           type="file"
-           accept="image/jpeg,image/png,image/webp"
-           required>
-
-    <img class="d8-preview"
-         id="d8-cni-preview"
-         alt="Aperçu de la CNI RP">
+    <p class="muted">
+      Les frais d'agence et la commission seront calculés
+      et vérifiés automatiquement par le serveur.
+    </p>
 
     <div class="d8-message"
          id="d8-form-message"
@@ -648,9 +726,10 @@ h1 {
       <button class="d8-submit"
               type="submit"
               id="d8-submit-create">
-        Créer le dossier
+        Enregistrer la transaction
       </button>
     </div>
+
   </form>
 </div>
 
