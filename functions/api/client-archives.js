@@ -696,8 +696,48 @@ export async function onRequest(context) {
             });
           }
 
-          const existingCniBytes =
-            await existingCniResponse.arrayBuffer();
+         
+          // Lire la CNI par morceaux avec une limite stricte.
+          const reader = existingCniResponse.body?.getReader();
+
+          if (!reader) {
+            return json(503, {
+              error: "Impossible de lire la CNI existante."
+            });
+          }
+
+          const chunks = [];
+          let totalBytes = 0;
+
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+
+              if (done) break;
+
+              totalBytes += value.byteLength;
+
+              if (totalBytes > MAX_IMAGE_SIZE) {
+                await reader.cancel();
+
+                return json(413, {
+                  error: "La CNI existante dépasse la taille autorisée."
+                });
+              }
+
+              chunks.push(value);
+            }
+          } finally {
+            reader.releaseLock();
+          }
+
+          const existingCniBytes = new Uint8Array(totalBytes);
+          let offset = 0;
+
+          for (const chunk of chunks) {
+            existingCniBytes.set(chunk, offset);
+            offset += chunk.byteLength;
+          }
 
           if (
             existingCniBytes.byteLength === 0 ||
