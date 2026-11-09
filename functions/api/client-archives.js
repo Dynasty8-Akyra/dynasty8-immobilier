@@ -1293,6 +1293,46 @@ if (
         });
       }
 
+      // DYNASTY 8 — Journal de suppression sécurisé.
+      // Conserver la référence de la CNI avant toute suppression.
+
+      const deletionLogResponse = await fetch(
+        base + "/rest/v1/d8_client_deletion_log",
+        {
+          method: "POST",
+          headers: storageHeaders(serviceKey, {
+            "content-type": "application/json",
+            Prefer: "return=representation"
+          }),
+          body: JSON.stringify({
+            client_id: clientId,
+            rp_name: client.rp_name,
+            cni_storage_path: cniPath || null,
+            requested_by_discord_id: discordId,
+            status: "pending"
+          })
+        }
+      );
+
+      if (!deletionLogResponse.ok) {
+        return json(503, {
+          error:
+            "Impossible de créer le journal de suppression. " +
+            "Aucune donnée n'a été supprimée."
+        });
+      }
+
+      const deletionLogs = await deletionLogResponse.json();
+      const deletionLog = deletionLogs[0];
+
+      if (!deletionLog?.id) {
+        return json(503, {
+          error:
+            "Journal de suppression invalide. " +
+            "Opération interrompue."
+        });
+      }
+
       // Supprimer le dossier et ses données liées en cascade.
       const deleteURL = new URL(
         base + "/rest/v1/d8_client_archives"
