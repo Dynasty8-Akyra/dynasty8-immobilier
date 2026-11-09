@@ -852,7 +852,7 @@ export async function onRequest(context) {
       const clientId = String(params.get("id") || "").trim();
 
       if (
-        !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clientId)
+       !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clientId)
       ) {
         return json(400, {
           error: "Identifiant client invalide."
