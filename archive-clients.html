@@ -1102,6 +1102,27 @@ if (tab === "overview") {
             id="d8-open-edit">
             ✎ Modifier le dossier
           </button>
+          
+<div id="d8-delete-zone"
+     style="margin-top:22px;padding-top:20px;border-top:1px solid #713049">
+
+  <small style="color:#ff8da8">
+    ZONE DANGEREUSE · DIRECTION UNIQUEMENT
+  </small>
+
+  <p class="muted">
+    La suppression définitive efface le dossier client
+    et son historique associé. Cette action est irréversible.
+  </p>
+
+  <button
+    class="action"
+    type="button"
+    id="d8-open-delete"
+    style="background:linear-gradient(135deg,#8f1736,#390916);border-color:#ff315e">
+    ✕ Supprimer définitivement le dossier
+  </button>
+</div>
         </div>
       `;
     }
@@ -1235,6 +1256,14 @@ if (tab === "overview") {
 
     el("content").innerHTML = html;
     
+    // DYNASTY 8 — Suppression visible uniquement par la Direction
+    const deleteZone = el("d8-delete-zone");
+
+    if (deleteZone) {
+      deleteZone.hidden = !isDirection;
+      deleteZone.style.display = isDirection ? "block" : "none";
+    }
+
     // DYNASTY 8 — Ouverture du formulaire de modification
     const editButton = el("d8-open-edit");
 
