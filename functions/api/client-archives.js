@@ -486,6 +486,218 @@ export async function onRequest(context) {
       });
     }
 
+    // DYNASTY 8 — ENREGISTREMENT D'UNE TRANSACTION
+    if (action === "transaction-create" && request.method === "POST") {
+      const contentType = request.headers.get("content-type") || "";
+
+      if (!contentType.startsWith("multipart/form-data")) {
+        return json(415, { error: "Formulaire invalide." });
+      }
+
+      const declaredLength = Number(
+        request.headers.get("content-length") || 0
+      );
+
+      if (declaredLength > MAX_IMAGE_SIZE + 100000) {
+        return json(413, { error: "Formulaire trop volumineux." });
+      }
+
+      let form;
+
+      try {
+        form = await request.formData();
+      } catch {
+        return json(400, { error: "Impossible de lire le formulaire." });
+      }
+
+      const mode = String(form.get("client_mode") || "");
+      const type = String(form.get("transaction_type") || "");
+      const propertyId = String(form.get("property_id") || "").trim();
+      const propertyName = String(form.get("property_name") || "").trim();
+      const propertyAddress = String(
+        form.get("property_address") || ""
+      ).trim();
+
+      const rawAmount = String(form.get("amount") || "").trim();
+      const amount = Number(rawAmount);
+
+      if (!["new", "existing"].includes(mode)) {
+        return json(400, { error: "Mode client invalide." });
+      }
+
+      if (!["purchase", "rental"].includes(type)) {
+        return json(400, { error: "Type de transaction invalide." });
+      }
+
+      if (
+        !propertyId || propertyId.length > 100 ||
+        !propertyName || propertyName.length > 160 ||
+        propertyAddress.length > 250
+      ) {
+        return json(400, { error: "Informations du bien invalides." });
+      }
+
+      if (
+        !/^\d{1,13}(\.\d{1,2})?$/.test(rawAmount) ||
+        !Number.isFinite(amount) ||
+        amount <= 0 ||
+        amount > 1000000000000
+      ) {
+        return json(400, { error: "Montant immobilier invalide." });
+      }
+
+      const agencyFees = calculateAgencyFees(type, amount);
+      const agentCommission = calculateAgentCommission(agencyFees);
+
+      let existingClientId = null;
+      let newClientId = null;
+      let storagePath = null;
+      let uploaded = false;
+
+      let rpName = null;
+      let rpPhone = null;
+      let clientDiscordId = null;
+
+      if (mode === "existing") {
+        existingClientId = String(
+          form.get("existing_client_id") || ""
+        ).trim();
+
+        if (
+          !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+            existingClientId
+          )
+        ) {
+          return json(400, { error: "Client existant invalide." });
+        }
+      } else {
+        rpName = String(form.get("rp_name") || "").trim();
+        rpPhone = String(form.get("rp_phone") || "").trim();
+        clientDiscordId = String(
+          form.get("client_discord_id") || ""
+        ).trim();
+
+        const cni = form.get("cni");
+
+        if (
+          rpName.length < 2 || rpName.length > 160 ||
+          rpPhone.length < 3 || rpPhone.length > 40 ||
+          !/^[0-9+(). -]+$/.test(rpPhone) ||
+          !validDiscordId(clientDiscordId)
+        ) {
+          return json(400, { error: "Identité client invalide." });
+        }
+
+        if (
+          !cni ||
+          typeof cni.arrayBuffer !== "function" ||
+          !cni.size ||
+          cni.size > MAX_IMAGE_SIZE
+        ) {
+          return json(400, {
+            error: "CNI RP obligatoire, 5 Mo maximum."
+          });
+        }
+
+        const imageBytes = await cni.arrayBuffer();
+        const format = imageFormat(imageBytes);
+
+        if (!format || cni.type !== format.mime) {
+          return json(415, {
+            error: "CNI RP : JPG, PNG ou WEBP uniquement."
+          });
+        }
+
+        newClientId = crypto.randomUUID();
+        storagePath = newClientId + "/cni." + format.ext;
+
+        const uploadURL =
+          base + "/storage/v1/object/" +
+          BUCKET + "/" + storagePath;
+
+        await api(uploadURL, {
+          method: "POST",
+          headers: storageHeaders(serviceKey, {
+            "content-type": format.mime,
+            "x-upsert": "false"
+          }),
+          body: imageBytes
+        });
+
+        uploaded = true;
+      }
+
+      const payload = {
+        p_client_id: existingClientId,
+        p_new_client_id: newClientId,
+        p_rp_name: rpName,
+        p_rp_phone: rpPhone,
+        p_client_discord_id: clientDiscordId,
+        p_cni_storage_path: storagePath,
+        p_agent_discord_id: discordId,
+        p_property_id: propertyId,
+        p_property_name: propertyName,
+        p_property_address: propertyAddress,
+        p_transaction_type: type,
+        p_amount: amount,
+        p_agency_fees: agencyFees,
+        p_agent_commission: agentCommission
+      };
+
+      try {
+        const response = await api(
+          base + "/rest/v1/rpc/d8_register_classic_transaction",
+          {
+            method: "POST",
+            headers: storageHeaders(serviceKey, {
+              "content-type": "application/json"
+            }),
+            body: JSON.stringify(payload)
+          }
+        );
+
+        const result = await response.json();
+        const saved = Array.isArray(result) ? result[0] : result;
+
+        if (!saved?.saved_client_id || !saved?.saved_transaction_id) {
+          throw new Error("Réponse de transaction invalide.");
+        }
+
+        return json(201, {
+          ok: true,
+          message: "Transaction enregistrée.",
+          client: { id: saved.saved_client_id },
+          transaction: { id: saved.saved_transaction_id },
+          agency_fees: agencyFees,
+          agent_commission: agentCommission
+        });
+
+      } catch (error) {
+        if (uploaded && storagePath) {
+          try {
+            await api(
+              base + "/storage/v1/object/" +
+                BUCKET + "/" + storagePath,
+              {
+                method: "DELETE",
+                headers: storageHeaders(serviceKey)
+              }
+            );
+          } catch {
+            // Un nettoyage administratif peut être nécessaire.
+          }
+        }
+
+        if (error.status === 409) {
+          return json(409, {
+            error: "Un dossier existe déjà pour cet ID Discord."
+          });
+        }
+
+        throw error;
+      }
+    }
+
     // 4 — Lecture des dossiers classiques
     if (action === "list" && request.method === "GET") {
       const endpoint = new URL(
