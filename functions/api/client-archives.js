@@ -1076,11 +1076,11 @@ if (
       );
 
       endpoint.searchParams.set(
-        "select",
-        "id,rp_name,rp_phone,client_discord_id," +
-        "assigned_agent_discord_id,created_by_discord_id," +
-        "created_at,updated_at"
-      );
+  "select",
+  "id,rp_name,rp_phone,client_discord_id," +
+  "assigned_agent_discord_id,created_by_discord_id," +
+  "bank_declared,created_at,updated_at"
+);
 
       endpoint.searchParams.set("is_prestige", "eq.false");
       endpoint.searchParams.set("order", "created_at.desc");
