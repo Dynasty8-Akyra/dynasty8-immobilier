@@ -1091,7 +1091,53 @@ if (
       });
 
       const clients = await response.json();
+// DYNASTY 8 — Résolution des pseudos Discord des agents
+const agentIds = [
+  ...new Set(
+    clients
+      .map(client => client.assigned_agent_discord_id)
+      .filter(id => validDiscordId(String(id || "")))
+  )
+];
 
+const agentNames = {};
+
+await Promise.all(
+  agentIds.map(async id => {
+    try {
+      const response = await fetch(
+        "https://discord.com/api/v10/guilds/" +
+          GUILD_ID + "/members/" + id,
+        {
+          headers: {
+            authorization: "Bot " + botToken
+          }
+        }
+      );
+
+      if (response.ok) {
+        const member = await response.json();
+
+        agentNames[id] =
+          member.nick ||
+          member.user?.global_name ||
+          member.user?.username ||
+          id;
+      } else {
+        agentNames[id] = id;
+      }
+    } catch {
+      agentNames[id] = id;
+    }
+  })
+);
+
+for (const client of clients) {
+  const id = client.assigned_agent_discord_id;
+
+  client.assigned_agent_name =
+    agentNames[id] || "Non attribué";
+}
       return json(200, {
         ok: true,
         clients
