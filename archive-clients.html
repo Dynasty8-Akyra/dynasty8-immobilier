@@ -1485,24 +1485,6 @@ pendingTransactionId = null;
 });
 
 
-      message.textContent = "Dossier créé avec succès !";
-
-      const newId = data.client?.id || null;
-
-      form.reset();
-      clearPreview();
-      modal.classList.remove("open");
-
-      await loadClients(newId);
-
-    } catch (error) {
-      message.textContent = error.message;
-    } finally {
-      submit.disabled = false;
-      submit.textContent = "Créer le dossier";
-    }
-  });
-
   el("search").addEventListener("input", () => {
     if (authorized) renderClients();
   });
