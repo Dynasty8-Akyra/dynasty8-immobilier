@@ -2278,6 +2278,7 @@ function initializeTransactionForm() {
     if (deleteSubmit.disabled) return;
 
     const clientId = deleteModal.dataset.clientId;
+    console.log("DYNASTY 8 - ID suppression :", JSON.stringify(clientId));
     const clientName = deleteModal.dataset.clientName;
 
     if (!clientId || !clientName) {
