@@ -556,3 +556,20 @@ body {
   cursor: not-allowed;
   transform: none;
 }
+/* Navigation du formulaire */
+.wizard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+
+.wizard-actions .adminbtn {
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.wizard-actions #previousStep {
+  margin-right: auto;
+}
