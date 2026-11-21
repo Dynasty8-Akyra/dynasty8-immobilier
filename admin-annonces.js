@@ -87,3 +87,95 @@ showPropertyStep(1);
    du nouveau formulaire à Supabase. */
 publishPropertyButton.disabled = true;
 
+
+/* DYNASTY 8 — PRÉVISUALISATION IMMOBILIÈRE */
+
+let previewImageUrls = [];
+
+function formatPropertyPrice(value) {
+  if (value === '' || value == null) return null;
+  const amount = Number(value);
+  if (!Number.isFinite(amount) || amount < 0) return null;
+  return new Intl.NumberFormat('fr-FR').format(amount) + ' $';
+}
+
+function renderPropertyPreview() {
+  const get = id => document.getElementById(id);
+  const preview = get('propertyPreview');
+  if (!preview) return;
+
+  // Libère les anciennes images temporaires.
+  previewImageUrls.forEach(url => URL.revokeObjectURL(url));
+  previewImageUrls = [];
+
+  const name = get('name').value.trim() || 'Propriété sans nom';
+  const type = get('type').value;
+  const area = get('area');
+  const areaName = area.selectedOptions[0]?.textContent || 'Quartier';
+
+  const purchase = formatPropertyPrice(get('purchasePrice').value);
+  const rental = formatPropertyPrice(get('rentalPrice').value);
+
+  const thumbnail = get('thumbnail').files[0];
+  const gallery = Array.from(get('gallery').files);
+
+  const images = [thumbnail, ...gallery].filter(Boolean).map(file => {
+    const url = URL.createObjectURL(file);
+    previewImageUrls.push(url);
+    return url;
+  });
+
+  const escapeText = value => String(value ?? '').replace(
+    /[&<>"']/g,
+    char => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[char]
+  );
+
+  const imageHtml = images.length
+    ? `<img src="${images[0]}" alt="Aperçu de la propriété">`
+    : '<div class="preview-no-image">Aucune photo sélectionnée</div>';
+
+  const priceHtml = [
+    purchase && `<div><small>PRIX D'ACHAT</small><strong>${purchase}</strong></div>`,
+    rental && `<div><small>PRIX DE LOCATION</small><strong>${rental}</strong></div>`
+  ].filter(Boolean).join('');
+
+  preview.innerHTML = `
+    <article class="d8-property-preview">
+      <div class="preview-image">${imageHtml}</div>
+
+      <div class="preview-content">
+        <span class="preview-eyebrow">DYNASTY 8 · PROPRIÉTÉ</span>
+        <h3>${escapeText(name)}</h3>
+        <p class="preview-location">
+          ${escapeText(areaName)} · ${escapeText(type)}
+        </p>
+
+        <div class="preview-features">
+          <span>KG COFFRE : ${escapeText(get('storageKg').value || '—')}</span>
+          <span>PIÈCES : ${escapeText(get('rooms').value || '—')}</span>
+          <span>EXTÉRIEUR : ${get('exterior').value === 'true' ? 'Oui' : 'Non'}</span>
+          <span>GARAGE : ${get('garage').value === 'true' ? 'Oui' : 'Non'}</span>
+        </div>
+
+        <p class="preview-description">
+          ${escapeText(get('description').value.trim() || 'Aucune description renseignée.')}
+        </p>
+
+        <div class="preview-prices">${priceHtml}</div>
+      </div>
+    </article>
+  `;
+}
+
+// Actualise l'aperçu lorsqu'on arrive à l'étape 03.
+nextStepButton.addEventListener('click', () => {
+  if (currentPropertyStep === 3) {
+    renderPropertyPreview();
+  }
+});
