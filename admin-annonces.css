@@ -796,3 +796,62 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* DYNASTY 8 — GALERIE PHOTO INTERACTIVE */
+
+.preview-gallery {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #090608;
+}
+
+.preview-gallery img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.preview-gallery-controls {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 6px 10px;
+  border: 1px solid #A5092C;
+  border-radius: 30px;
+  background: rgba(9, 6, 8, .88);
+  color: #FFF1ED;
+}
+
+.preview-gallery-controls button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid #510B1A;
+  border-radius: 50%;
+  background: #260C18;
+  color: #FFF1ED;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.preview-gallery-controls button:hover {
+  border-color: #E11928;
+  background: #A5092C;
+}
+
+.preview-gallery-controls span {
+  min-width: 35px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+}
