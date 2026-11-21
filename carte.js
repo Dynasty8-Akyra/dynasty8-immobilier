@@ -1248,17 +1248,126 @@ console.log("Zoom :", map.getZoom());
     interieurContent.className = "d8-interieur-content";
     interieurContent.hidden = true;
 
+    
     interieurContent.innerHTML = `
       <div class="d8-luxury-section">
         <div class="d8-luxury-heading">
           <span>01</span>
           INTÉRIEURS DISPONIBLES
         </div>
-        <p>Les intérieurs de ${escapeHTML(z.name)}
-           seront bientôt présentés ici.</p>
-        <p>Photos, descriptions et tarifs à venir.</p>
+
+        <p>
+          Découvrez les différents types d'intérieurs
+          proposés dans le quartier de ${escapeHTML(z.name)}.
+        </p>
+
+        <div class="d8-interior-list">
+          ${
+            interiors.length
+              ? interiors.map((item, index) => `
+                <details style="
+                  margin:12px 0;
+                  border:1px solid #510B1A;
+                  border-radius:8px;
+                  background:#11090D;
+                  overflow:hidden;
+                ">
+                  <summary style="
+                    display:flex;
+                    align-items:center;
+                    gap:12px;
+                    padding:12px;
+                    cursor:pointer;
+                    color:#fff;
+                  ">
+                    <div style="
+                      width:76px;
+                      height:60px;
+                      flex-shrink:0;
+                      display:grid;
+                      place-items:center;
+                      background:linear-gradient(135deg,#510B1A,#090608);
+                      border:1px solid #A5092C;
+                      border-radius:5px;
+                      color:#E11928;
+                      font-size:27px;
+                    ">⌂</div>
+
+                    <div style="flex:1;min-width:0;">
+                      <small style="
+                        display:block;
+                        color:#E11928;
+                        letter-spacing:1px;
+                        margin-bottom:5px;
+                      ">INTÉRIEUR ${String(index + 1).padStart(2, "0")}</small>
+
+                      <strong style="font-size:14px;">
+                        ${escapeHTML(item)}
+                      </strong>
+                    </div>
+
+                    <span style="color:#E11928;">⌄</span>
+                  </summary>
+
+                  <div style="padding:0 14px 16px;">
+                    <div class="d8-gallery-placeholder">
+                      <div class="d8-gallery-content">
+                        <div class="d8-gallery-symbol">▧</div>
+                        <strong>Photos à venir</strong>
+                        <small>Galerie de cet intérieur</small>
+                      </div>
+
+                      <div class="d8-gallery-navigation">
+                        <button type="button"
+                          class="d8-gallery-arrow"
+                          disabled
+                          aria-label="Photo précédente">‹</button>
+
+                        <span class="d8-gallery-counter">
+                          00 / 00
+                        </span>
+
+                        <button type="button"
+                          class="d8-gallery-arrow"
+                          disabled
+                          aria-label="Photo suivante">›</button>
+                      </div>
+                    </div>
+
+                    <p style="margin-top:16px;">
+                      Description de cet intérieur à venir.
+                    </p>
+
+                    <p style="color:#E11928;font-weight:700;">
+                      Prix à définir
+                    </p>
+
+                    <button type="button" disabled style="
+                      width:100%;
+                      padding:13px;
+                      margin-top:10px;
+                      border:1px solid #A5092C;
+                      border-radius:5px;
+                      background:#510B1A;
+                      color:#fff;
+                      opacity:.65;
+                      cursor:not-allowed;
+                    ">
+                      Contacter l'agent pour ce bien
+                    </button>
+                  </div>
+                </details>
+              `).join("")
+              : `
+                <p>
+                  Aucun intérieur renseigné pour ce quartier.
+                </p>
+              `
+          }
+        </div>
       </div>
     `;
+
 
     tabs.append(quartierBtn, interieurBtn);
     header.after(tabs, quartierContent, interieurContent);
