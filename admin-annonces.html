@@ -194,13 +194,34 @@
 </label>
 
 
-              <label>
-                PRIX ($)
-                <input id="price" type="number"
-                       min="0" step="1" required
-                       placeholder="Ex. 250000">
-              </label>
+              
+<label>
+  PRIX D'ACHAT ($)
+  <input
+    id="purchasePrice"
+    type="number"
+    min="0"
+    step="1"
+    placeholder="Ex. 1250000">
+  <small>
+    Laisser vide si le bien n'est pas à vendre.
+  </small>
+</label>
 
+<label>
+  PRIX DE LOCATION ($)
+  <input
+    id="rentalPrice"
+    type="number"
+    min="0"
+    step="1"
+    placeholder="Ex. 15000">
+  <small>
+    Laisser vide si le bien n'est pas à louer.
+  </small>
+</label>
+
+<input type="hidden" id="price" value="0">
               <label>
                 SURFACE (M²)
                 <input id="surface" type="number"
@@ -268,15 +289,6 @@
     visible lorsque la fiche est dépliée.
   </small>
 </label>
-
-              <label class="full">
-                ADRESSE URL DE LA PHOTO
-                <input id="photo" type="url"
-                       placeholder="https://exemple.com/photo.jpg">
-                <small>
-                  Utilisez une adresse HTTPS vers une photo du bien.
-                </small>
-              </label>
 
               <label class="full">
                 DESCRIPTION
