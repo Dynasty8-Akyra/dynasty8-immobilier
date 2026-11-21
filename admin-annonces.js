@@ -139,6 +139,38 @@ const images = gallery.map(file => {
   );
 
  
+/* DYNASTY 8 — APERÇU DE LA FICHE REPLIÉE */
+
+const thumbnailUrl = thumbnail
+  ? URL.createObjectURL(thumbnail)
+  : null;
+
+if (thumbnailUrl) {
+  previewImageUrls.push(thumbnailUrl);
+}
+
+const collapsedPreviewHtml = `
+  <div class="preview-collapsed-section">
+    <span class="preview-eyebrow">APERÇU · FICHE REPLIÉE</span>
+
+    <div class="preview-collapsed-card">
+      <div class="preview-thumbnail">
+        ${thumbnailUrl
+          ? `<img src="${thumbnailUrl}" alt="Miniature de la propriété">`
+          : '<span>Aucune miniature</span>'}
+      </div>
+
+      <div class="preview-collapsed-info">
+        <strong>${escapeText(name)}</strong>
+        <small>${escapeText(type)} · ${escapeText(areaName)}</small>
+      </div>
+
+      <span class="preview-collapsed-chevron"
+            aria-hidden="true">⌄</span>
+    </div>
+  </div>
+`;
+
 const imageHtml = images.length
   ? `
     <div class="preview-gallery">
@@ -169,6 +201,7 @@ const imageHtml = images.length
   ].filter(Boolean).join('');
 
   preview.innerHTML = `
+  ${collapsedPreviewHtml}
     <article class="d8-property-preview">
       <div class="preview-image">${imageHtml}</div>
 
