@@ -755,9 +755,10 @@ export async function onRequest(context) {
         }
  
         if (
-          existingCniResponse.status !== 404 &&
-          !reuseExistingCni
-        ) {
+  existingCniResponse.status !== 404 &&
+  existingCniResponse.status !== 400 &&
+  !reuseExistingCni
+) {
           return json(503, {
             error:
               "Impossible de vérifier la CNI. " +
