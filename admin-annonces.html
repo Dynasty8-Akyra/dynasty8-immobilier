@@ -158,11 +158,41 @@
   </select>
 </label>
 
-              <label>
-                QUARTIER
-                <input id="area" required maxlength="100"
-                       placeholder="Ex. Rockford Hills">
-              </label>
+             
+<label>
+  QUARTIER
+  <select id="area" required>
+    <option value="">Sélectionner un quartier</option>
+
+    <optgroup label="LOS SANTOS">
+      <option value="richman">Richman</option>
+      <option value="rockford">Rockford Hills</option>
+      <option value="vinewood">Vinewood</option>
+      <option value="mirror_park">Mirror Park</option>
+      <option value="vespucci">Vespucci</option>
+      <option value="little_seoul">Little Seoul</option>
+      <option value="downtown">Centre-ville</option>
+      <option value="south_ls">South Los Santos</option>
+      <option value="east_ls">East Los Santos</option>
+      <option value="la_puerta">La Puerta</option>
+      <option value="port">Port de Los Santos</option>
+      <option value="airport">Aéroport de Los Santos</option>
+    </optgroup>
+
+    <optgroup label="BLAINE COUNTY & ENVIRONS">
+      <option value="paleto">Paleto Bay</option>
+      <option value="grapeseed">Grapeseed</option>
+      <option value="sandy">Sandy Shores</option>
+      <option value="chumash">Chumash</option>
+    </optgroup>
+
+    <optgroup label="ZONES SPÉCIALES">
+      <option value="zancudo">Fort Zancudo</option>
+      <option value="power">Centrale électrique</option>
+    </optgroup>
+  </select>
+</label>
+
 
               <label>
                 PRIX ($)
