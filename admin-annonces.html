@@ -208,6 +208,67 @@
                        placeholder="Ex. 180">
               </label>
 
+<!-- ÉTAPE 02 — PHOTOS & CARACTÉRISTIQUES -->
+<div class="form-section-heading full">
+  <span class="overline">ÉTAPE 02 / 03</span>
+  <h3>Photos & caractéristiques</h3>
+  <p>
+    Personnalisez la présentation du bien
+    et renseignez ses équipements.
+  </p>
+</div>
+
+<label class="full">
+  PHOTO MINIATURE
+  <input id="thumbnail" type="file"
+         accept="image/jpeg,image/png,image/webp">
+  <small>
+    Photo principale affichée sur la carte
+    lorsque la fiche de propriété est repliée.
+  </small>
+</label>
+
+<label>
+  KG COFFRE
+  <input id="storageKg" type="number"
+         min="0" step="1"
+         placeholder="Ex. 250">
+</label>
+
+<label>
+  NOMBRE DE PIÈCES
+  <input id="rooms" type="number"
+         min="0" step="1"
+         placeholder="Ex. 5">
+</label>
+
+<label>
+  EXTÉRIEUR
+  <select id="exterior">
+    <option value="false">Non</option>
+    <option value="true">Oui</option>
+  </select>
+</label>
+
+<label>
+  GARAGE
+  <select id="garage">
+    <option value="false">Non</option>
+    <option value="true">Oui</option>
+  </select>
+</label>
+
+<label class="full">
+  GALERIE PHOTO
+  <input id="gallery" type="file"
+         accept="image/jpeg,image/png,image/webp"
+         multiple>
+  <small>
+    Sélectionnez plusieurs photos pour la galerie
+    visible lorsque la fiche est dépliée.
+  </small>
+</label>
+
               <label class="full">
                 ADRESSE URL DE LA PHOTO
                 <input id="photo" type="url"
