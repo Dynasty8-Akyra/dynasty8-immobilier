@@ -3621,3 +3621,31 @@ body[data-map-mode="public"] #zonePanel .d8-gallery-arrow:disabled {
   opacity: 0.45 !important;
   cursor: not-allowed !important;
 }
+
+/* DYNASTY 8 CLASSIQUE — ONGLET INTÉRIEURS (ajout isolé) */
+.d8-interior-tabs{display:flex;gap:8px;margin:16px 0 20px;padding:4px;border:1px solid #6b263a;border-radius:12px;background:#16070d}
+.d8-interior-tab{flex:1;padding:10px 12px;background:transparent;border:0;border-radius:9px;color:#d7b7c0;cursor:pointer;font:inherit;font-weight:600}
+.d8-interior-tab.is-active{background:#650e27;color:#fff0ed;box-shadow:inset 0 0 0 1px #b52b48}
+.d8-interior-view[hidden],.d8-interior-details[hidden]{display:none!important}
+.d8-interior-view{padding:4px 0 16px}
+.d8-interior-empty{color:#c5a9b2;padding:20px 10px;font-size:14px}
+.d8-interior-item{margin:10px 0;border:1px solid #67263b;border-radius:12px;background:#220a14;overflow:hidden}
+.d8-interior-toggle{display:flex;align-items:center;gap:12px;width:100%;padding:9px;text-align:left;border:0;background:transparent;color:#fff0ed;cursor:pointer}
+.d8-interior-thumb{display:flex;align-items:center;justify-content:center;width:90px;min-width:90px;height:68px;overflow:hidden;border-radius:7px;background:#390f20;color:#c55b75}
+.d8-interior-thumb img{width:100%;height:100%;object-fit:cover}
+.d8-interior-no-photo{font-size:30px}
+.d8-interior-label{display:flex;flex:1;min-width:0;flex-direction:column;gap:5px}
+.d8-interior-label strong{font-size:14px}.d8-interior-label small{color:#c9a5b1;font-size:12px}
+.d8-interior-chevron{font-size:23px;color:#ff617f;transition:transform .2s}
+.d8-interior-toggle[aria-expanded=true] .d8-interior-chevron{transform:rotate(180deg)}
+.d8-interior-details{padding:12px;border-top:1px solid #623043}
+.d8-interior-main-photo,.d8-interior-empty-photo{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:#32101d}
+.d8-interior-empty-photo{display:flex;align-items:center;justify-content:center;color:#bd91a0}
+.d8-interior-photo-controls{display:flex;align-items:center;justify-content:space-between;margin:8px 0 12px;color:#d6b0bd}
+.d8-interior-photo-controls button{width:34px;height:30px;border:1px solid #793148;border-radius:7px;background:#250c17;color:#fff;font-size:22px;cursor:pointer}
+.d8-interior-photo-controls button:disabled{opacity:.35;cursor:default}
+.d8-interior-details p{color:#e0c9d0;font-size:14px;line-height:1.6}
+.d8-interior-price{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:14px 0;color:#d0aab6;font-size:12px}
+.d8-interior-price strong{color:#ff6683;font-size:18px}
+.d8-interior-contact{width:100%;padding:12px;border:1px solid #ad2342;border-radius:8px;background:#7d1430;color:white;font-weight:600}
+.d8-interior-contact:disabled{opacity:.65;cursor:not-allowed}
