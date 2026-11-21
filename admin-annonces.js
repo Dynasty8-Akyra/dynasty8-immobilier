@@ -196,10 +196,15 @@ const imageHtml = images.length
   `;
 }
 
-// Actualise l'aperçu lorsqu'on arrive à l'étape 03.
+
+/* Actualise l'aperçu lorsqu'on arrive à l'étape 03. */
 nextStepButton.addEventListener('click', () => {
   if (currentPropertyStep === 3) {
-    renderPropertyPreview()
+    previewGalleryIndex = 0;
+    renderPropertyPreview();
+  }
+});
+
 /* DYNASTY 8 — CARROUSEL DE PRÉVISUALISATION */
 
 let previewGalleryIndex = 0;
