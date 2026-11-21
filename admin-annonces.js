@@ -119,11 +119,13 @@ function renderPropertyPreview() {
   const thumbnail = get('thumbnail').files[0];
   const gallery = Array.from(get('gallery').files);
 
-  const images = [thumbnail, ...gallery].filter(Boolean).map(file => {
-    const url = URL.createObjectURL(file);
-    previewImageUrls.push(url);
-    return url;
-  });
+  
+const images = gallery.map(file => {
+  const url = URL.createObjectURL(file);
+  previewImageUrls.push(url);
+  return url;
+});
+
 
   const escapeText = value => String(value ?? '').replace(
     /[&<>"']/g,
@@ -136,9 +138,30 @@ function renderPropertyPreview() {
     })[char]
   );
 
-  const imageHtml = images.length
-    ? `<img src="${images[0]}" alt="Aperçu de la propriété">`
-    : '<div class="preview-no-image">Aucune photo sélectionnée</div>';
+ 
+const imageHtml = images.length
+  ? `
+    <div class="preview-gallery">
+      <img
+        id="previewGalleryImage"
+        src="${images[0]}"
+        alt="Photo 1 de la propriété">
+
+      <div class="preview-gallery-controls">
+        <button type="button" id="previewGalleryPrevious"
+                aria-label="Photo précédente">‹</button>
+
+        <span id="previewGalleryCounter">
+          1 / ${images.length}
+        </span>
+
+        <button type="button" id="previewGalleryNext"
+                aria-label="Photo suivante">›</button>
+      </div>
+    </div>
+  `
+  : '<div class="preview-no-image">Aucune photo de galerie sélectionnée</div>';
+
 
   const priceHtml = [
     purchase && `<div><small>PRIX D'ACHAT</small><strong>${purchase}</strong></div>`,
@@ -176,6 +199,36 @@ function renderPropertyPreview() {
 // Actualise l'aperçu lorsqu'on arrive à l'étape 03.
 nextStepButton.addEventListener('click', () => {
   if (currentPropertyStep === 3) {
-    renderPropertyPreview();
-  }
-});
+    renderPropertyPreview()
+/* DYNASTY 8 — CARROUSEL DE PRÉVISUALISATION */
+
+let previewGalleryIndex = 0;
+
+document.getElementById('propertyPreview')
+  .addEventListener('click', event => {
+
+    const previous = event.target.closest('#previewGalleryPrevious');
+    const next = event.target.closest('#previewGalleryNext');
+
+    if (!previous && !next) return;
+
+    const files = Array.from(
+      document.getElementById('gallery').files
+    );
+
+    if (!files.length) return;
+
+    previewGalleryIndex = (
+      previewGalleryIndex + (next ? 1 : -1) + files.length
+    ) % files.length;
+
+    const image = document.getElementById('previewGalleryImage');
+    const counter = document.getElementById('previewGalleryCounter');
+
+    if (!image || !counter) return;
+
+    image.src = previewImageUrls[previewGalleryIndex];
+    image.alt = `Photo ${previewGalleryIndex + 1} de la propriété`;
+    counter.textContent =
+      `${previewGalleryIndex + 1} / ${files.length}`;
+  });
