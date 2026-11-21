@@ -432,3 +432,55 @@ body {
     transition: none !important;
   }
 }
+/* DYNASTY 8 — PARCOURS DE CRÉATION */
+
+.property-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.property-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 82px;
+  padding: 12px 8px;
+  text-align: center;
+  color: #b9a7ac;
+  background: #12090e;
+  border: 1px solid #51202b;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.property-step.active {
+  color: #fff1ed;
+  background: linear-gradient(145deg, #510b1a, #230910);
+  border-color: #e11928;
+  box-shadow: 0 0 18px #e1192825;
+}
+
+.step-number {
+  color: #e11928;
+  font: 700 23px 'Cormorant Garamond', Georgia, serif;
+}
+
+.property-step.active .step-number {
+  color: #fff1ed;
+}
+
+@media (max-width: 650px) {
+  .property-steps {
+    gap: 6px;
+  }
+
+  .property-step {
+    padding: 10px 5px;
+    font-size: 9px;
+  }
+}
