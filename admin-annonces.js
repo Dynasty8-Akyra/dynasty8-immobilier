@@ -10,3 +10,80 @@ $('delete').onclick=async()=>{if(!selected||!confirm('Supprimer cette annonce ?'
 $('export').onclick=()=>{let blob=new Blob([JSON.stringify(items,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='dynasty8-annonces.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
 $('import').disabled=true;$('import').title='Import non disponible en mode cloud.';
 $('logoutAgent').onclick=async()=>{await D8Cloud.logout();location.href='agent-login.html'};gate();
+
+/* DYNASTY 8 — NAVIGATION DU FORMULAIRE */
+
+let currentPropertyStep = 1;
+
+const propertyPages = [
+  document.getElementById('step1'),
+  document.getElementById('step2'),
+  document.getElementById('step3')
+];
+
+const propertyStepIndicators =
+  document.querySelectorAll('.property-step');
+
+const previousStepButton =
+  document.getElementById('previousStep');
+
+const nextStepButton =
+  document.getElementById('nextStep');
+
+const publishPropertyButton =
+  document.getElementById('publishProperty');
+
+function showPropertyStep(step) {
+  currentPropertyStep = Math.max(1, Math.min(3, step));
+
+  propertyPages.forEach((page, index) => {
+    if (page) {
+      page.hidden = index + 1 !== currentPropertyStep;
+    }
+  });
+
+  propertyStepIndicators.forEach((indicator, index) => {
+    indicator.classList.toggle(
+      'active',
+      index + 1 === currentPropertyStep
+    );
+  });
+
+  previousStepButton.hidden = currentPropertyStep === 1;
+  nextStepButton.hidden = currentPropertyStep === 3;
+
+  publishPropertyButton.hidden = currentPropertyStep !== 3;
+}
+
+nextStepButton.addEventListener('click', () => {
+  if (currentPropertyStep === 1) {
+    const name = document.getElementById('name');
+    const area = document.getElementById('area');
+    const purchase = document.getElementById('purchasePrice').value;
+    const rental = document.getElementById('rentalPrice').value;
+
+    if (!name.reportValidity() || !area.reportValidity()) {
+      return;
+    }
+
+    if (purchase.trim() === '' && rental.trim() === '') {
+      document.getElementById('status').textContent =
+        "Renseignez au moins un prix : achat ou location.";
+      return;
+    }
+  }
+
+  document.getElementById('status').textContent = '';
+  showPropertyStep(currentPropertyStep + 1);
+});
+
+previousStepButton.addEventListener('click', () => {
+  showPropertyStep(currentPropertyStep - 1);
+});
+
+showPropertyStep(1);
+
+/* Publication désactivée jusqu'à la connexion
+   du nouveau formulaire à Supabase. */
+publishPropertyButton.disabled = true;
+
