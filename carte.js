@@ -1219,6 +1219,72 @@ console.log("Zoom :", map.getZoom());
     </div>
   `;
 
+  // DYNASTY 8 — ONGLET INTÉRIEURS
+  const card = panel.querySelector(".d8-luxury-card");
+  const header = card?.querySelector(".d8-panel-top");
+
+  if (card && header) {
+    const tabs = document.createElement("div");
+    tabs.className = "d8-interior-tabs";
+    tabs.style.cssText = "display:flex;gap:8px;margin:18px 0;";
+
+    const quartierBtn = document.createElement("button");
+    quartierBtn.type = "button";
+    quartierBtn.textContent = "Quartier";
+
+    const interieurBtn = document.createElement("button");
+    interieurBtn.type = "button";
+    interieurBtn.textContent = "Intérieurs";
+
+    const quartierContent = document.createElement("div");
+    quartierContent.className = "d8-quartier-content";
+
+    // On conserve tous les éléments existants du quartier.
+    while (header.nextSibling) {
+      quartierContent.appendChild(header.nextSibling);
+    }
+
+    const interieurContent = document.createElement("div");
+    interieurContent.className = "d8-interieur-content";
+    interieurContent.hidden = true;
+
+    interieurContent.innerHTML = `
+      <div class="d8-luxury-section">
+        <div class="d8-luxury-heading">
+          <span>01</span>
+          INTÉRIEURS DISPONIBLES
+        </div>
+        <p>Les intérieurs de ${escapeHTML(z.name)}
+           seront bientôt présentés ici.</p>
+        <p>Photos, descriptions et tarifs à venir.</p>
+      </div>
+    `;
+
+    tabs.append(quartierBtn, interieurBtn);
+    header.after(tabs, quartierContent, interieurContent);
+
+    function selectTab(showInterieurs) {
+      quartierContent.hidden = showInterieurs;
+      interieurContent.hidden = !showInterieurs;
+
+      [quartierBtn, interieurBtn].forEach((btn, index) => {
+        const active = index === (showInterieurs ? 1 : 0);
+        btn.style.cssText = `
+          flex:1;padding:12px;cursor:pointer;
+          border:1px solid ${active ? "#E11928" : "#510B1A"};
+          background:${active ? "#510B1A" : "#090608"};
+          color:#fff;border-radius:6px;
+          font-weight:${active ? "700" : "400"};
+        `;
+        btn.setAttribute("aria-pressed", String(active));
+      });
+    }
+
+    quartierBtn.addEventListener("click", () => selectTab(false));
+    interieurBtn.addEventListener("click", () => selectTab(true));
+    selectTab(false);
+  }
+
   // Portail ADN : couleur du quartier sur le grand panneau.
   panel.dataset.zoneId = id;
   panel.style.setProperty("--panel-neon", color);
