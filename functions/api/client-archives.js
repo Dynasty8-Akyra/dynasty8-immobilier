@@ -1149,19 +1149,6 @@ if (
           changes.client_discord_id = newDiscordId;
         }
 
-        if (body.assigned_agent_discord_id !== undefined) {
-          const agentId = String(
-            body.assigned_agent_discord_id
-          ).trim();
-
-          if (!validDiscordId(agentId)) {
-            return json(400, {
-              error: "Identifiant de l'agent invalide."
-            });
-          }
-
-          changes.assigned_agent_discord_id = agentId;
-        }
       } else if (
         body.client_discord_id !== undefined ||
         body.assigned_agent_discord_id !== undefined
