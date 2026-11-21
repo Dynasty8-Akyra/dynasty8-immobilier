@@ -991,6 +991,10 @@ console.log("Zoom :", map.getZoom());
     }[ch]));
   }
 
+  // Données d'intérieurs à compléter avec les biens réellement proposés sur le serveur.
+  // La carte reste utilisable même si aucun intérieur n'est encore configuré.
+  const interiorListings = {};
+
   function render(id) {
   if (!panel || !zones[id]) return;
 
@@ -1205,6 +1209,8 @@ console.log("Zoom :", map.getZoom());
         </div>
       ` : ""}
 
+      ${!excluded ? `</div>` : ""}
+
       <div class="d8-luxury-footer">
         <span>✦ DYNASTY 8</span>
         <small>L'immobilier d'exception</small>
@@ -1214,6 +1220,7 @@ console.log("Zoom :", map.getZoom());
   `;
 
   // Portail ADN : couleur du quartier sur le grand panneau.
+  panel.dataset.zoneId = id;
   panel.style.setProperty("--panel-neon", color);
   panel.classList.add("is-open", "d8-portal-active");
 
@@ -1541,6 +1548,48 @@ refreshZones().catch(error => {
 
   if (panel) {
     panel.addEventListener("click", event => {
+      const tab = event.target.closest(".d8-interior-tab");
+      if (tab) {
+        const view = tab.dataset.tab;
+        panel.querySelectorAll(".d8-interior-tab").forEach(button => {
+          const active = button === tab;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-selected", String(active));
+        });
+        panel.querySelectorAll(".d8-interior-view").forEach(section => {
+          section.hidden = section.dataset.view !== view;
+        });
+        return;
+      }
+      const toggle = event.target.closest(".d8-interior-toggle");
+      if (toggle) {
+        const item = toggle.closest(".d8-interior-item");
+        const details = item.querySelector(".d8-interior-details");
+        const willOpen = details.hidden;
+        panel.querySelectorAll(".d8-interior-item").forEach(other => {
+          other.querySelector(".d8-interior-details").hidden = true;
+          other.querySelector(".d8-interior-toggle").setAttribute("aria-expanded", "false");
+        });
+        details.hidden = !willOpen;
+        toggle.setAttribute("aria-expanded", String(willOpen));
+        return;
+      }
+      const galleryButton = event.target.closest(".d8-interior-prev, .d8-interior-next");
+      if (galleryButton) {
+        const item = galleryButton.closest(".d8-interior-item");
+        const gallery = item.querySelector(".d8-interior-gallery");
+        const zoneId = panel.dataset.zoneId;
+        const entry = interiorListings[zoneId]?.[Number(item.dataset.interior)];
+        const photos = Array.isArray(entry?.photos) ? entry.photos.filter(src => typeof src === "string" && /^(\/|https:\/\/)/.test(src)) : [];
+        if (!photos.length) return;
+        const delta = galleryButton.classList.contains("d8-interior-next") ? 1 : -1;
+        const next = (Number(gallery.dataset.photo || 0) + delta + photos.length) % photos.length;
+        gallery.dataset.photo = String(next);
+        const image = gallery.querySelector(".d8-interior-main-photo");
+        if (image) image.src = photos[next];
+        gallery.querySelector(".d8-interior-photo-count").textContent = `${String(next + 1).padStart(2,"0")} / ${String(photos.length).padStart(2,"0")}`;
+        return;
+      }
       if (event.target.closest(".d8-close")) {
         close();
       }
