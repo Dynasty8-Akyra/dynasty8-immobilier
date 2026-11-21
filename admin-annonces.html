@@ -127,6 +127,7 @@
 
           <form id="form">
             <input type="hidden" id="id">
+            <div id="step1" class="wizard-page">
 <!-- ÉTAPE 1 — INFORMATIONS -->
 <div class="form-section-heading">
   <span class="overline">ÉTAPE 01 / 03</span>
@@ -228,7 +229,9 @@
                        min="0" step="1" required
                        placeholder="Ex. 180">
               </label>
+</div>
 
+<div id="step2" class="wizard-page" hidden>
 <!-- ÉTAPE 02 — PHOTOS & CARACTÉRISTIQUES -->
 <div class="form-section-heading full">
   <span class="overline">ÉTAPE 02 / 03</span>
@@ -295,18 +298,45 @@
                 <textarea id="description" maxlength="2000"
                   placeholder="Décrivez les atouts de cette propriété…"></textarea>
               </label>
+                       </div>
+          </div>
+
+          <div id="step3" class="wizard-page" hidden>
+            <div class="form-section-heading">
+              <span class="overline">ÉTAPE 03 / 03</span>
+              <h3>Prévisualisation</h3>
+              <p>
+                Vérifiez les informations et les photos
+                avant de publier la propriété.
+              </p>
             </div>
 
-            <div class="actions">
-              <button class="adminbtn save-btn" type="submit">
-                ✦ ENREGISTRER L'ANNONCE
-              </button>
-
-              <button class="adminbtn danger"
-                      type="button" id="delete">
-                SUPPRIMER
-              </button>
+            <div id="propertyPreview" class="property-preview">
+              La prévisualisation sera affichée ici.
             </div>
+          </div>
+
+            <div class="actions wizard-actions">
+  <button class="adminbtn export-btn"
+          id="previousStep" type="button" hidden>
+    ← PRÉCÉDENT
+  </button>
+
+  <button class="adminbtn save-btn"
+          id="nextStep" type="button">
+    SUIVANT →
+  </button>
+
+  <button class="adminbtn save-btn"
+          id="publishProperty" type="submit" hidden disabled>
+    ✦ VALIDER ET PUBLIER
+  </button>
+
+  <button class="adminbtn danger"
+          type="button" id="delete">
+    SUPPRIMER
+  </button>
+</div>
 
             <p class="status" id="status"
                role="status" aria-live="polite"></p>
