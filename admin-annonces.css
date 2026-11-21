@@ -504,3 +504,29 @@ body {
   font-size: 11px;
   line-height: 1.8;
 }
+/* DYNASTY 8 — SECTIONS DU FORMULAIRE */
+
+.form-grid .form-section-heading {
+  grid-column: 1 / -1;
+  margin-top: 20px;
+}
+
+.form-grid input[type="file"] {
+  cursor: pointer;
+  padding: 13px;
+}
+
+.form-grid input[type="file"]::file-selector-button {
+  margin-right: 14px;
+  padding: 10px 14px;
+  border: 1px solid #A5092C;
+  border-radius: 7px;
+  background: #510B1A;
+  color: #FFF1ED;
+  font: 600 10px Montserrat, Arial, sans-serif;
+  cursor: pointer;
+}
+
+.form-grid input[type="file"]::file-selector-button:hover {
+  background: #A5092C;
+}
