@@ -1697,7 +1697,6 @@ for (const client of clients) {
         client_discord_id: clientDiscordId,
         cni_storage_path: storagePath,
         created_by_discord_id: discordId,
-        assigned_agent_discord_id: discordId,
         is_prestige: false
       };
 
