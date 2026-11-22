@@ -699,5 +699,5 @@ export async function onRequest(context) {
           : "Vérification sécurisée indisponible. Réessayez plus tard."
     }
   );
+  }
 }
-
