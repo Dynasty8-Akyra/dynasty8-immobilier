@@ -926,3 +926,129 @@ body {
   color: #E11928;
   font-size: 24px;
 }
+
+/* =====================================================
+   DYNASTY 8 — GESTION DES PHOTOS
+   NEON MAX — PRESTIGE
+   ===================================================== */
+
+.property-photo-manager {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  margin: 8px 0 20px;
+}
+
+.property-photo-manager h4 {
+  margin: 0;
+  color: #FFF1ED;
+  font: 600 22px "Cormorant Garamond", Georgia, serif;
+}
+
+.property-photo-manager p {
+  margin: 0;
+  color: #C6A0AE;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.property-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(140px, 1fr)
+  );
+  gap: 14px;
+}
+
+.property-photo-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #510B1A;
+  border-radius: 10px;
+  background: #190B11;
+}
+
+.property-photo-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.property-photo-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px;
+}
+
+.property-photo-actions button {
+  min-width: 32px;
+  min-height: 32px;
+  padding: 7px 9px;
+  border: 1px solid #A5092C;
+  border-radius: 7px;
+  background: #260C18;
+  color: #FFF1ED;
+  font-size: 12px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.property-photo-actions button:hover {
+  background: #A5092C;
+  border-color: #E11928;
+}
+
+.property-photo-actions button:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+
+.property-photo-add {
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 145px;
+  padding: 20px;
+  border: 1px dashed #A5092C;
+  border-radius: 10px;
+  background: #10070C;
+  color: #FFF1ED;
+  text-align: center;
+}
+
+.property-photo-add strong {
+  color: #E11928;
+  font-size: 22px;
+}
+
+.property-photo-empty {
+  padding: 20px;
+  border: 1px dashed #510B1A;
+  border-radius: 10px;
+  color: #C6A0AE;
+  background: #10070C;
+  text-align: center;
+  font-size: 11px;
+}
+
+.property-photo-note {
+  color: #C6A0AE;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+@media (max-width: 480px) {
+  .property-photo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .property-photo-actions {
+    padding: 7px;
+  }
+}
