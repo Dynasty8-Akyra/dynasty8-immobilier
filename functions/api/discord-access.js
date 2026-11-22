@@ -339,11 +339,15 @@ const canEditZones = role === 'direction';
       });
     }
 
-    if (!canWrite) {
-      return json(403, {
-        error: "Seuls la Direction et les Agents confirmés peuvent gérer les annonces."
-      });
-    }
+   
+/* DYNASTY 8 — PROPRIÉTÉS RÉSERVÉES À LA DIRECTION */
+
+if (role !== "direction") {
+  return json(403, {
+    error: "La gestion des propriétés est réservée à la Direction Dynasty 8."
+  });
+}
+
 
     const endpoint = url + "/rest/v1/properties";
 
