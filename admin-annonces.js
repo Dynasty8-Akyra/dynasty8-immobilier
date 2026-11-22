@@ -743,12 +743,65 @@ $('propertyPreview')?.addEventListener('click', event => {
     `${previewGalleryIndex + 1} / ${previewImages.length}`;
 });
 
+
 /* ==========================================================
-   PUBLICATION — PROCHAINE ÉTAPE
+   DYNASTY 8 — PUBLICATION SÉCURISÉE
+   SUPABASE STORAGE + BASE DE DONNÉES
    ========================================================== */
 
-$('form').onsubmit = event => {
+let propertySaving = false;
+
+async function uploadPropertyImage(file) {
+  validateImage(file);
+
+  const token = await D8Cloud.accessToken();
+
+  if (!token) {
+    throw new Error(
+      'Votre session a expiré. Reconnectez-vous.'
+    );
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch('/api/property-images', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + token
+    },
+    body: formData
+  });
+
+  const result = await response.json();
+
+  if (!response.ok || !result.ok || !result.url) {
+    throw new Error(
+      result.error || "Impossible d'envoyer cette image."
+    );
+  }
+
+  return result.url;
+}
+
+function validatePropertyCharacteristics(property) {
+  const values = [
+    property.storage_kg,
+    property.rooms
+  ];
+
+  return !values.some(value =>
+    value !== null &&
+    (!Number.isInteger(value) || value < 0)
+  );
+}
+
+$('form').setAttribute('novalidate', '');
+
+$('form').onsubmit = async event => {
   event.preventDefault();
+
+  if (propertySaving) return;
 
   if (!validateFirstStep()) {
     showPropertyStep(1);
@@ -757,27 +810,116 @@ $('form').onsubmit = event => {
 
   const property = buildPropertyData();
 
-  if (
-    [property.storage_kg, property.rooms].some(value =>
-      value !== null &&
-      (!Number.isInteger(value) || value < 0)
-    )
-  ) {
-    setStatus('Vérifiez les caractéristiques.');
+  if (!validatePropertyCharacteristics(property)) {
     showPropertyStep(2);
+    setStatus('Vérifiez les caractéristiques du bien.');
     return;
   }
 
-  setStatus(
-    'Prévisualisation prête. La publication sera activée ' +
-    'après connexion de l’enregistrement sécurisé.'
-  );
+  if (galleryPhotos.length > 30) {
+    showPropertyStep(2);
+    setStatus('La galerie est limitée à 30 photos.');
+    return;
+  }
+
+  if (!confirm(
+    'Confirmer la publication des modifications de cette propriété ?'
+  )) {
+    return;
+  }
+
+  propertySaving = true;
+  publishPropertyButton.disabled = true;
+  nextStepButton.disabled = true;
+  previousStepButton.disabled = true;
+
+  try {
+    /* 1 — ENVOI DE LA MINIATURE */
+
+    let thumbnailUrl = property.thumbnail_url;
+
+    if (thumbnailPhoto?.file) {
+      setStatus('Envoi de la miniature...');
+
+      thumbnailUrl = await uploadPropertyImage(
+        thumbnailPhoto.file
+      );
+    }
+
+    /* 2 — ENVOI DES PHOTOS DE GALERIE */
+
+    const finalGalleryUrls = [];
+
+    for (let index = 0; index < galleryPhotos.length; index++) {
+      const photo = galleryPhotos[index];
+
+      if (photo.file) {
+        setStatus(
+          `Envoi des photos : ${index + 1} / ${galleryPhotos.length}`
+        );
+
+        const uploadedUrl = await uploadPropertyImage(
+          photo.file
+        );
+
+        finalGalleryUrls.push(uploadedUrl);
+      } else {
+        finalGalleryUrls.push(photo.url);
+      }
+    }
+
+    /* 3 — PRÉPARATION DES DONNÉES */
+
+    property.thumbnail_url = thumbnailUrl || null;
+    property.gallery_urls = finalGalleryUrls;
+
+    if (thumbnailUrl) {
+      property.photo = thumbnailUrl;
+    } else if (finalGalleryUrls.length) {
+      property.photo = finalGalleryUrls[0];
+    }
+
+    /* 4 — SAUVEGARDE SUPABASE */
+
+    setStatus('Enregistrement de la propriété...');
+
+    await D8Cloud.upsert(property);
+
+    /* 5 — ACTUALISATION DU CATALOGUE */
+
+    const savedId = property.id;
+
+    items = await D8Cloud.list();
+    choose(savedId);
+
+    setStatus(
+      '✓ Propriété enregistrée avec succès dans Dynasty 8.'
+    );
+
+  } catch (error) {
+    console.error('DYNASTY 8 — Erreur publication :', error);
+
+    setStatus(
+      'Erreur lors de la publication : ' + error.message
+    );
+
+  } finally {
+    propertySaving = false;
+
+    publishPropertyButton.disabled = false;
+    nextStepButton.disabled = false;
+    previousStepButton.disabled = false;
+  }
 };
 
-// Ne pas activer avant la connexion des uploads et de la sauvegarde.
+/* ==========================================================
+   ACTIVATION DU BOUTON DE PUBLICATION
+   ========================================================== */
+
 if (publishPropertyButton) {
-  publishPropertyButton.disabled = true;
+  publishPropertyButton.disabled = false;
 }
+
 
 /* ==========================================================
    ACTIONS
