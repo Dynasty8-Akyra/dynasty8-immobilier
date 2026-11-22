@@ -679,25 +679,21 @@ export async function onRequest(context) {
       });
     }
 
-    return json(405, {
-      error: "Méthode non autorisée."
+    
+  } catch (error) {
+    console.error("DYNASTY 8 — Erreur API sécurisée", {
+      status: error?.status ?? null,
+      message: error?.message ?? "Erreur inconnue"
     });
 
- 
-} catch (error) {
-  console.error("DYNASTY 8 — Erreur API sécurisée", {
-    status: error?.status ?? null,
-    message: error?.message ?? "Erreur inconnue"
-  });
-
-  return json(
-    error?.status === 401 ? 401 : 503,
-    {
-      error:
-        error?.status === 401
-          ? "Session expirée. Reconnectez-vous."
-          : "Vérification sécurisée indisponible. Réessayez plus tard."
-    }
-  );
+    return json(
+      error?.status === 401 ? 401 : 503,
+      {
+        error:
+          error?.status === 401
+            ? "Session expirée. Reconnectez-vous."
+            : "Vérification sécurisée indisponible. Réessayez plus tard."
+      }
+    );
   }
 }
