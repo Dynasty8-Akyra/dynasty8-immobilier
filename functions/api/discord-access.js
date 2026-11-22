@@ -1,16 +1,20 @@
 
-import editorSource from "../_lib/carte-editeur.txt";
-
 /* ==========================================================
    DYNASTY 8 — API SÉCURISÉE
    NEON MAX — PRESTIGE
+   Cloudflare Pages Functions
+   ========================================================== */
+
+import editorSource from "../_lib/carte-editeur.txt";
+
+/* ==========================================================
+   CONFIGURATION DISCORD
    ========================================================== */
 
 const GUILD = "1567889374836957286";
 const DIRECTOR = "1567889789569728583";
 const CONFIRMED = "1567889964639723631";
 const PRESTIGE = "1568940978008760340";
-
 
 const PROPERTY_TYPES = [
   "Appartement",
@@ -25,9 +29,8 @@ const PROPERTY_TYPES = [
   "Autre"
 ];
 
-
 /* ==========================================================
-   RÉPONSES ET APPELS API
+   RÉPONSES JSON
    ========================================================== */
 
 function json(status, data) {
@@ -40,17 +43,22 @@ function json(status, data) {
   });
 }
 
+/* ==========================================================
+   COMMUNICATION AVEC LES SERVICES EXTERNES
+   ========================================================== */
+
 async function api(url, options = {}) {
   const response = await fetch(url, options);
+
   const text = await response.text();
 
-  let data;
+  let data = null;
 
   try {
     data = text ? JSON.parse(text) : null;
   } catch {
     data = {
-      message: "Réponse du service invalide"
+      message: "Réponse du service invalide."
     };
   }
 
@@ -58,15 +66,20 @@ async function api(url, options = {}) {
     const error = new Error(
       data?.message ||
       data?.error ||
-      "Service indisponible"
+      "Service externe indisponible."
     );
 
     error.status = response.status;
+
     throw error;
   }
 
   return data;
 }
+
+/* ==========================================================
+   VALIDATION DES DONNÉES
+   ========================================================== */
 
 function validId(value) {
   return (
@@ -96,7 +109,10 @@ function validNumber(value, integer = false) {
 }
 
 function validImageUrl(value) {
-  if (typeof value !== "string" || value.length > 2000) {
+  if (
+    typeof value !== "string" ||
+    value.length > 2000
+  ) {
     return false;
   }
 
@@ -206,6 +222,71 @@ function validateProperty(property) {
 }
 
 /* ==========================================================
+   VALIDATION DES QUARTIERS
+   ========================================================== */
+
+function validateZone(zone) {
+  if (
+    !zone ||
+    typeof zone !== "object" ||
+    Array.isArray(zone)
+  ) {
+    return null;
+  }
+
+  const valid =
+    validId(zone.id) &&
+
+    validText(zone.name, 100, true) &&
+    validText(zone.type, 100) &&
+
+    [
+      "lux",
+      "res",
+      "rural",
+      "ind",
+      "excluded"
+    ].includes(zone.category) &&
+
+    validText(zone.description, 2000) &&
+
+    Array.isArray(zone.interiors) &&
+    zone.interiors.length <= 30 &&
+
+    zone.interiors.every(item =>
+      validText(item, 100)
+    ) &&
+
+    Array.isArray(zone.points) &&
+    zone.points.length >= 3 &&
+    zone.points.length <= 5000 &&
+
+    zone.points.every(point =>
+      Array.isArray(point) &&
+      point.length === 2 &&
+      point.every(value =>
+        Number.isFinite(value) &&
+        value >= 0 &&
+        value <= 8192
+      )
+    );
+
+  if (!valid) {
+    return null;
+  }
+
+  return {
+    id: zone.id,
+    name: zone.name.trim(),
+    type: zone.type,
+    category: zone.category,
+    description: zone.description,
+    interiors: zone.interiors,
+    points: zone.points
+  };
+}
+
+/* ==========================================================
    POINT D'ENTRÉE CLOUDFLARE
    ========================================================== */
 
@@ -247,7 +328,13 @@ export async function onRequest(context) {
 
       return json(200, { zones });
 
-    } catch {
+    } catch (error) {
+      console.error(
+        "DYNASTY 8 — Lecture quartiers",
+        error?.status ?? null,
+        error?.message ?? "Erreur inconnue"
+      );
+
       return json(503, {
         error: "Impossible de charger les quartiers."
       });
@@ -268,24 +355,42 @@ export async function onRequest(context) {
     });
   }
 
+  let stage = "authentication";
+
   try {
-    const user = await api(url + "/auth/v1/user", {
-      headers: {
-        apikey: publicKey,
-        authorization: "Bearer " + token
+    /* ======================================================
+       1. VÉRIFICATION DE LA SESSION SUPABASE
+       ====================================================== */
+
+    const user = await api(
+      url + "/auth/v1/user",
+      {
+        headers: {
+          apikey: publicKey,
+          authorization: "Bearer " + token
+        }
       }
-    });
+    );
 
     const discord = (user.identities || [])
       .find(identity => identity.provider === "discord");
 
     const discordId = discord?.id;
 
-    if (!discordId || !/^\d{17,22}$/.test(discordId)) {
+    if (
+      !discordId ||
+      !/^\d{17,22}$/.test(discordId)
+    ) {
       return json(403, {
         error: "Compte non lié à Discord."
       });
     }
+
+    /* ======================================================
+       2. VÉRIFICATION DU MEMBRE DISCORD
+       ====================================================== */
+
+    stage = "discord-member";
 
     let member;
 
@@ -313,7 +418,7 @@ export async function onRequest(context) {
     const roles = member.roles || [];
 
     /* ======================================================
-       RÔLES DYNASTY 8
+       3. RÔLES ET AUTORISATIONS
        ====================================================== */
 
     const role = roles.includes(DIRECTOR)
@@ -342,13 +447,14 @@ export async function onRequest(context) {
       canWrite || role === "formation";
 
     /* ======================================================
-       PRESTIGE CIRCLE
+       4. PRESTIGE CIRCLE
        ====================================================== */
 
     const isPrestige = roles.includes(PRESTIGE);
 
     const isPrestigeDirection =
-      roles.includes(DIRECTOR) && isPrestige;
+      roles.includes(DIRECTOR) &&
+      isPrestige;
 
     const isPrestigeAgent =
       !roles.includes(DIRECTOR) &&
@@ -371,10 +477,13 @@ export async function onRequest(context) {
       );
 
     /* ======================================================
-       STATUT ET AUTORISATIONS
+       5. STATUT DE CONNEXION
        ====================================================== */
 
-    if (action === "status" && method === "GET") {
+    if (
+      action === "status" &&
+      method === "GET"
+    ) {
       return json(200, {
         role,
         canWrite,
@@ -393,10 +502,13 @@ export async function onRequest(context) {
     }
 
     /* ======================================================
-       ÉDITEUR DE CARTE — DIRECTION
+       6. ÉDITEUR DE CARTE — DIRECTION
        ====================================================== */
 
-    if (action === "zone-editor" && method === "GET") {
+    if (
+      action === "zone-editor" &&
+      method === "GET"
+    ) {
       if (!canEditZones) {
         return json(403, {
           error: "Accès réservé à la Direction."
@@ -415,7 +527,7 @@ export async function onRequest(context) {
     }
 
     /* ======================================================
-       GESTION DES QUARTIERS
+       7. GESTION DES QUARTIERS
        ====================================================== */
 
     if (
@@ -437,9 +549,12 @@ export async function onRequest(context) {
         "content-type": "application/json"
       };
 
-      /* ENREGISTREMENT D'UN QUARTIER */
+      /* ENREGISTRER UN QUARTIER */
 
-      if (action === "zones-save" && method === "POST") {
+      if (
+        action === "zones-save" &&
+        method === "POST"
+      ) {
         const raw = await request.text();
 
         if (raw.length > 200000) {
@@ -458,69 +573,16 @@ export async function onRequest(context) {
           });
         }
 
-        if (
-          !zone ||
-          typeof zone !== "object" ||
-          Array.isArray(zone)
-        ) {
-          return json(400, {
-            error: "Quartier invalide."
-          });
-        }
+        const clean = validateZone(zone);
 
-        const valid =
-          validId(zone.id) &&
-
-          validText(zone.name, 100, true) &&
-          validText(zone.type, 100) &&
-
-          [
-            "lux",
-            "res",
-            "rural",
-            "ind",
-            "excluded"
-          ].includes(zone.category) &&
-
-          validText(zone.description, 2000) &&
-
-          Array.isArray(zone.interiors) &&
-          zone.interiors.length <= 30 &&
-
-          zone.interiors.every(item =>
-            validText(item, 100)
-          ) &&
-
-          Array.isArray(zone.points) &&
-          zone.points.length >= 3 &&
-          zone.points.length <= 5000 &&
-
-          zone.points.every(point =>
-            Array.isArray(point) &&
-            point.length === 2 &&
-            point.every(value =>
-              Number.isFinite(value) &&
-              value >= 0 &&
-              value <= 8192
-            )
-          );
-
-        if (!valid) {
+        if (!clean) {
           return json(400, {
             error:
               "Vérifiez les informations et les points du quartier."
           });
         }
 
-        const clean = {
-          id: zone.id,
-          name: zone.name.trim(),
-          type: zone.type,
-          category: zone.category,
-          description: zone.description,
-          interiors: zone.interiors,
-          points: zone.points
-        };
+        stage = "zones-save";
 
         await api(
           zoneEndpoint + "?on_conflict=id",
@@ -535,10 +597,12 @@ export async function onRequest(context) {
           }
         );
 
-        return json(200, { ok: true });
+        return json(200, {
+          ok: true
+        });
       }
 
-      /* SUPPRESSION D'UN QUARTIER */
+      /* SUPPRIMER UN QUARTIER */
 
       if (
         action === "zones-delete" &&
@@ -552,6 +616,8 @@ export async function onRequest(context) {
           });
         }
 
+        stage = "zones-delete";
+
         await api(
           zoneEndpoint +
           "?id=eq." + encodeURIComponent(id),
@@ -561,7 +627,9 @@ export async function onRequest(context) {
           }
         );
 
-        return json(200, { ok: true });
+        return json(200, {
+          ok: true
+        });
       }
 
       return json(405, {
@@ -570,7 +638,7 @@ export async function onRequest(context) {
     }
 
     /* ======================================================
-       PROPRIÉTÉS — DIRECTION UNIQUEMENT
+       8. GESTION DES PROPRIÉTÉS
        ====================================================== */
 
     if (
@@ -599,10 +667,13 @@ export async function onRequest(context) {
     };
 
     /* ======================================================
-       ENREGISTRER OU MODIFIER UNE PROPRIÉTÉ
+       9. ENREGISTRER OU MODIFIER UNE PROPRIÉTÉ
        ====================================================== */
 
-    if (action === "save" && method === "POST") {
+    if (
+      action === "save" &&
+      method === "POST"
+    ) {
       const raw = await request.text();
 
       if (raw.length > 30000) {
@@ -630,6 +701,10 @@ export async function onRequest(context) {
         });
       }
 
+      /* ENREGISTREMENT SUPABASE */
+
+      stage = "property-save";
+
       await api(
         endpoint + "?on_conflict=id",
         {
@@ -650,7 +725,7 @@ export async function onRequest(context) {
     }
 
     /* ======================================================
-       SUPPRIMER UNE PROPRIÉTÉ
+       10. SUPPRIMER UNE PROPRIÉTÉ
        ====================================================== */
 
     if (
@@ -664,6 +739,8 @@ export async function onRequest(context) {
           error: "Identifiant de propriété invalide."
         });
       }
+
+      stage = "property-delete";
 
       await api(
         endpoint +
@@ -679,21 +756,35 @@ export async function onRequest(context) {
       });
     }
 
-    
+    /* ======================================================
+       11. MÉTHODE NON AUTORISÉE
+       ====================================================== */
+
+    return json(405, {
+      error: "Méthode non autorisée."
+    });
+
+  /* ========================================================
+     12. GESTION CENTRALISÉE DES ERREURS
+     ======================================================== */
+
   } catch (error) {
     console.error("DYNASTY 8 — Erreur API sécurisée", {
+      stage,
       status: error?.status ?? null,
       message: error?.message ?? "Erreur inconnue"
     });
 
-    return json(
-      error?.status === 401 ? 401 : 503,
-      {
-        error:
-          error?.status === 401
-            ? "Session expirée. Reconnectez-vous."
-            : "Vérification sécurisée indisponible. Réessayez plus tard."
-      }
-    );
+    if (error?.status === 401) {
+      return json(401, {
+        error: "Session expirée. Reconnectez-vous."
+      });
+    }
+
+    return json(503, {
+      error:
+        "Vérification sécurisée indisponible. Réessayez plus tard."
+    });
   }
 }
+
