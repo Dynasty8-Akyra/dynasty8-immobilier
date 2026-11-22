@@ -1052,3 +1052,14 @@ body {
     padding: 7px;
   }
 }
+/* DYNASTY 8 — TEST AFFICHAGE DES BOUTONS */
+
+#form > .wizard-actions {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 10;
+  flex-wrap: wrap;
+  gap: 12px;
+}
