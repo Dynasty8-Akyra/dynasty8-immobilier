@@ -11,14 +11,20 @@ const DIRECTOR = "1567889789569728583";
 const CONFIRMED = "1567889964639723631";
 const PRESTIGE = "1568940978008760340";
 
+
 const PROPERTY_TYPES = [
-  "Villa",
   "Appartement",
+  "Studio",
+  "Maison",
+  "Villa",
+  "Loft",
   "Commerce",
   "Garage",
   "Entrepôt",
-  "Terrain"
+  "Terrain",
+  "Autre"
 ];
+
 
 /* ==========================================================
    RÉPONSES ET APPELS API
