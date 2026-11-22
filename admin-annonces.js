@@ -2,7 +2,7 @@
 /* ==========================================================
    DYNASTY 8 — GESTION DES PROPRIÉTÉS
    NEON MAX — PRESTIGE
-   Accès : Direction uniquement
+   Galerie modifiable et prévisualisation
    ========================================================== */
 
 const $ = id => document.getElementById(id);
@@ -11,7 +11,10 @@ let items = [];
 let selected = null;
 let currentPropertyStep = 1;
 let previewGalleryIndex = 0;
-let previewImageUrls = [];
+let previewImages = [];
+let galleryPhotos = [];
+let thumbnailPhoto = null;
+let previewThumbnailUrl = null;
 
 /* ==========================================================
    OUTILS
@@ -49,6 +52,42 @@ function setStatus(message) {
   if ($('status')) $('status').textContent = message;
 }
 
+function setField(id, value) {
+  const element = $(id);
+  if (!element || element.type === 'file') return;
+  element.value = value ?? '';
+}
+
+function validateImage(file) {
+  const types = ['image/jpeg', 'image/png', 'image/webp'];
+
+  if (!types.includes(file.type)) {
+    throw new Error('Formats acceptés : JPG, PNG et WEBP.');
+  }
+
+  if (!file.size || file.size > 5 * 1024 * 1024) {
+    throw new Error('Chaque image doit faire moins de 5 Mo.');
+  }
+}
+
+function releasePhoto(photo) {
+  if (photo?.file && photo.url) {
+    URL.revokeObjectURL(photo.url);
+  }
+}
+
+function clearPhotoState() {
+  galleryPhotos.forEach(releasePhoto);
+  galleryPhotos = [];
+
+  releasePhoto(thumbnailPhoto);
+  thumbnailPhoto = null;
+
+  previewImages = [];
+  previewThumbnailUrl = null;
+  previewGalleryIndex = 0;
+}
+
 /* ==========================================================
    LISTE DES PROPRIÉTÉS
    ========================================================== */
@@ -70,25 +109,13 @@ function paint() {
   `).join('') || '<p>Aucune annonce.</p>';
 }
 
-function setField(id, value) {
-  const element = $(id);
-  if (!element || element.type === 'file') return;
-
-  element.value = value ?? '';
-}
-
 function choose(id) {
   selected = id;
-
   const property = items.find(item => item.id === id);
 
   [
-    'id',
-    'name',
-    'type',
-    'area',
-    'surface',
-    'description'
+    'id', 'name', 'type', 'area',
+    'surface', 'description'
   ].forEach(key => setField(key, property?.[key]));
 
   setField('price', property?.price);
@@ -96,24 +123,41 @@ function choose(id) {
   setField('rentalPrice', property?.rental_price);
   setField('storageKg', property?.storage_kg);
   setField('rooms', property?.rooms);
-
-  setField(
-    'exterior',
-    property ? String(property.exterior === true) : 'false'
-  );
-
-  setField(
-    'garage',
-    property ? String(property.garage === true) : 'false'
-  );
+  setField('exterior', String(property?.exterior === true));
+  setField('garage', String(property?.garage === true));
 
   if ($('thumbnail')) $('thumbnail').value = '';
   if ($('gallery')) $('gallery').value = '';
 
-  clearPreviewImages();
-  previewGalleryIndex = 0;
+  clearPhotoState();
+
+  if (property) {
+    const existingGallery = Array.isArray(property.gallery_urls)
+      ? property.gallery_urls
+      : [];
+
+    galleryPhotos = existingGallery
+      .filter(url => typeof url === 'string' && url)
+      .map(url => ({
+        url,
+        file: null,
+        key: crypto.randomUUID()
+      }));
+
+    const existingThumbnail =
+      property.thumbnail_url || property.photo || null;
+
+    if (existingThumbnail) {
+      thumbnailPhoto = {
+        url: existingThumbnail,
+        file: null
+      };
+    }
+  }
 
   paint();
+  renderGalleryManager();
+  renderThumbnailManager();
   setStatus('');
   showPropertyStep(1);
 }
@@ -158,7 +202,7 @@ async function gate() {
 }
 
 /* ==========================================================
-   NAVIGATION — FORMULAIRE EN 3 ÉTAPES
+   FORMULAIRE EN TROIS ÉTAPES
    ========================================================== */
 
 const propertyPages = [
@@ -178,9 +222,7 @@ function showPropertyStep(step) {
   currentPropertyStep = Math.max(1, Math.min(3, step));
 
   propertyPages.forEach((page, index) => {
-    if (page) {
-      page.hidden = index + 1 !== currentPropertyStep;
-    }
+    if (page) page.hidden = index + 1 !== currentPropertyStep;
   });
 
   propertyStepIndicators.forEach((indicator, index) => {
@@ -206,18 +248,19 @@ function showPropertyStep(step) {
 function validateFirstStep() {
   const name = $('name');
   const area = $('area');
+  const surface = $('surface');
 
-  if (!name.reportValidity() || !area.reportValidity()) {
-    return false;
-  }
+  if (
+    !name.reportValidity() ||
+    !area.reportValidity() ||
+    !surface.reportValidity()
+  ) return false;
 
   const purchase = fieldValue('purchasePrice');
   const rental = fieldValue('rentalPrice');
 
   if (purchase === '' && rental === '') {
-    setStatus(
-      "Renseignez au moins un prix : achat ou location."
-    );
+    setStatus('Renseignez au moins un prix : achat ou location.');
     return false;
   }
 
@@ -257,7 +300,214 @@ previousStepButton?.addEventListener('click', () => {
 });
 
 /* ==========================================================
-   PRÉPARATION DES DONNÉES SUPABASE
+   MINIATURE INDÉPENDANTE
+   ========================================================== */
+
+function renderThumbnailManager() {
+  let container = $('propertyThumbnailManager');
+
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'propertyThumbnailManager';
+    container.className = 'property-photo-manager';
+
+    $('thumbnail')?.closest('label')?.after(container);
+  }
+
+  if (!container) return;
+
+  container.innerHTML = `
+    <h4>Miniature actuelle</h4>
+    ${
+      thumbnailPhoto
+        ? `
+          <div class="property-photo-grid">
+            <div class="property-photo-card">
+              <img
+                src="${escapeHtml(thumbnailPhoto.url)}"
+                alt="Miniature actuelle"
+              >
+              <div class="property-photo-actions">
+                <button
+                  type="button"
+                  data-thumbnail-remove
+                  aria-label="Retirer la miniature"
+                >
+                  Retirer
+                </button>
+              </div>
+            </div>
+          </div>
+        `
+        : `
+          <div class="property-photo-empty">
+            Aucune miniature sélectionnée.
+          </div>
+        `
+    }
+  `;
+}
+
+$('thumbnail')?.addEventListener('change', event => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  try {
+    validateImage(file);
+
+    releasePhoto(thumbnailPhoto);
+
+    thumbnailPhoto = {
+      url: URL.createObjectURL(file),
+      file
+    };
+
+    renderThumbnailManager();
+    setStatus('');
+
+  } catch (error) {
+    event.target.value = '';
+    setStatus(error.message);
+  }
+});
+
+document.addEventListener('click', event => {
+  if (!event.target.closest('[data-thumbnail-remove]')) return;
+
+  releasePhoto(thumbnailPhoto);
+  thumbnailPhoto = null;
+
+  if ($('thumbnail')) $('thumbnail').value = '';
+
+  renderThumbnailManager();
+});
+
+/* ==========================================================
+   GALERIE MODIFIABLE
+   ========================================================== */
+
+function renderGalleryManager() {
+  const container = $('propertyGalleryManager');
+  if (!container) return;
+
+  if (!galleryPhotos.length) {
+    container.innerHTML = `
+      <div class="property-photo-empty">
+        Aucune photo dans la galerie.
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = galleryPhotos.map((photo, index) => `
+    <div class="property-photo-card">
+      <img
+        src="${escapeHtml(photo.url)}"
+        alt="Photo ${index + 1} de la galerie"
+      >
+
+      <div class="property-photo-actions">
+        <button
+          type="button"
+          data-photo-action="left"
+          data-photo-key="${escapeHtml(photo.key)}"
+          ${index === 0 ? 'disabled' : ''}
+          aria-label="Déplacer vers la gauche"
+        >←</button>
+
+        <button
+          type="button"
+          data-photo-action="right"
+          data-photo-key="${escapeHtml(photo.key)}"
+          ${index === galleryPhotos.length - 1 ? 'disabled' : ''}
+          aria-label="Déplacer vers la droite"
+        >→</button>
+
+        <button
+          type="button"
+          data-photo-action="remove"
+          data-photo-key="${escapeHtml(photo.key)}"
+          aria-label="Retirer cette photo"
+        >✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+$('gallery')?.addEventListener('change', event => {
+  const files = Array.from(event.target.files || []);
+
+  if (!files.length) return;
+
+  try {
+    if (galleryPhotos.length + files.length > 30) {
+      throw new Error('La galerie est limitée à 30 photos.');
+    }
+
+    files.forEach(validateImage);
+
+    files.forEach(file => {
+      galleryPhotos.push({
+        url: URL.createObjectURL(file),
+        file,
+        key: crypto.randomUUID()
+      });
+    });
+
+    renderGalleryManager();
+    setStatus('');
+
+  } catch (error) {
+    setStatus(error.message);
+  }
+
+  // Permet de sélectionner à nouveau les mêmes fichiers.
+  event.target.value = '';
+});
+
+$('propertyGalleryManager')?.addEventListener('click', event => {
+  const button = event.target.closest('[data-photo-action]');
+  if (!button) return;
+
+  const index = galleryPhotos.findIndex(
+    photo => photo.key === button.dataset.photoKey
+  );
+
+  if (index < 0) return;
+
+  const action = button.dataset.photoAction;
+
+  if (action === 'remove') {
+    const removed = galleryPhotos.splice(index, 1)[0];
+    releasePhoto(removed);
+  }
+
+  if (action === 'left' && index > 0) {
+    [
+      galleryPhotos[index - 1],
+      galleryPhotos[index]
+    ] = [
+      galleryPhotos[index],
+      galleryPhotos[index - 1]
+    ];
+  }
+
+  if (action === 'right' && index < galleryPhotos.length - 1) {
+    [
+      galleryPhotos[index],
+      galleryPhotos[index + 1]
+    ] = [
+      galleryPhotos[index + 1],
+      galleryPhotos[index]
+    ];
+  }
+
+  renderGalleryManager();
+  setStatus('');
+});
+
+/* ==========================================================
+   DONNÉES DE LA PROPRIÉTÉ
    ========================================================== */
 
 function buildPropertyData() {
@@ -275,101 +525,42 @@ function buildPropertyData() {
 
     purchase_price: purchasePrice,
     rental_price: rentalPrice,
-
-    // Compatibilité avec l'ancienne structure.
     price: purchasePrice ?? rentalPrice,
     surface: optionalNumber('surface') ?? 0,
 
     storage_kg: optionalNumber('storageKg'),
     rooms: optionalNumber('rooms'),
-
     exterior: fieldValue('exterior') === 'true',
     garage: fieldValue('garage') === 'true',
-
     description: fieldValue('description'),
 
     photo: existingProperty?.photo ||
       'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1000',
 
-    thumbnail_url: existingProperty?.thumbnail_url || null,
-    gallery_urls: existingProperty?.gallery_urls || []
+    thumbnail_url:
+      thumbnailPhoto && !thumbnailPhoto.file
+        ? thumbnailPhoto.url
+        : null,
+
+    gallery_urls: galleryPhotos
+      .filter(photo => !photo.file)
+      .map(photo => photo.url)
   };
 }
 
 /* ==========================================================
-   PUBLICATION — EN ATTENTE DE L'API ET DU STORAGE
-   ========================================================== */
-
-$('form').onsubmit = event => {
-  event.preventDefault();
-
-  if (!validateFirstStep()) {
-    showPropertyStep(1);
-    return;
-  }
-
-  const property = buildPropertyData();
-
-  const values = [
-    property.storage_kg,
-    property.rooms
-  ];
-
-  if (values.some(value =>
-    value !== null &&
-    (!Number.isInteger(value) || value < 0)
-  )) {
-    setStatus('Vérifiez les caractéristiques.');
-    showPropertyStep(2);
-    return;
-  }
-
-  console.log(
-    'DYNASTY 8 — Propriété préparée :',
-    property
-  );
-
-  setStatus(
-    'Informations préparées. Publication bientôt disponible.'
-  );
-};
-
-// Publication désactivée jusqu'à la connexion sécurisée.
-if (publishPropertyButton) {
-  publishPropertyButton.disabled = true;
-}
-
-/* ==========================================================
-   PRÉVISUALISATION — GESTION DES IMAGES
-   ========================================================== */
-
-function clearPreviewImages() {
-  previewImageUrls.forEach(url => URL.revokeObjectURL(url));
-  previewImageUrls = [];
-}
-
-function createPreviewUrl(file) {
-  const url = URL.createObjectURL(file);
-  previewImageUrls.push(url);
-  return url;
-}
-
-/* ==========================================================
-   PRÉVISUALISATION IMMOBILIÈRE
+   PRÉVISUALISATION
    ========================================================== */
 
 function renderPropertyPreview() {
   const preview = $('propertyPreview');
   if (!preview) return;
 
-  clearPreviewImages();
-
   const name = fieldValue('name') || 'Propriété sans nom';
   const type = fieldValue('type');
 
-  const areaElement = $('area');
   const areaName =
-    areaElement?.selectedOptions?.[0]?.textContent || 'Quartier';
+    $('area')?.selectedOptions?.[0]?.textContent || 'Quartier';
 
   const purchase =
     formatPropertyPrice(fieldValue('purchasePrice'));
@@ -377,19 +568,9 @@ function renderPropertyPreview() {
   const rental =
     formatPropertyPrice(fieldValue('rentalPrice'));
 
-  const thumbnail = $('thumbnail')?.files?.[0];
-
-  const gallery = Array.from(
-    $('gallery')?.files || []
-  );
-
-  const images = gallery.map(createPreviewUrl);
-
-  const thumbnailUrl = thumbnail
-    ? createPreviewUrl(thumbnail)
-    : null;
-
-  /* FICHE REPLIÉE */
+  previewImages = galleryPhotos.map(photo => photo.url);
+  previewThumbnailUrl = thumbnailPhoto?.url || null;
+  previewGalleryIndex = 0;
 
   const collapsedPreviewHtml = `
     <div class="preview-collapsed-section">
@@ -399,9 +580,14 @@ function renderPropertyPreview() {
 
       <div class="preview-collapsed-card">
         <div class="preview-thumbnail">
-          ${thumbnailUrl
-            ? `<img src="${thumbnailUrl}" alt="Miniature de la propriété">`
-            : '<span>Aucune miniature</span>'}
+          ${
+            previewThumbnailUrl
+              ? `<img
+                   src="${escapeHtml(previewThumbnailUrl)}"
+                   alt="Miniature de la propriété"
+                 >`
+              : '<span>Aucune miniature</span>'
+          }
         </div>
 
         <div class="preview-collapsed-info">
@@ -419,14 +605,12 @@ function renderPropertyPreview() {
     </div>
   `;
 
-  /* GALERIE — FICHE DÉPLIÉE */
-
-  const imageHtml = images.length
+  const imageHtml = previewImages.length
     ? `
       <div class="preview-gallery">
         <img
           id="previewGalleryImage"
-          src="${images[0]}"
+          src="${escapeHtml(previewImages[0])}"
           alt="Photo 1 de la propriété"
         >
 
@@ -438,7 +622,7 @@ function renderPropertyPreview() {
           >‹</button>
 
           <span id="previewGalleryCounter">
-            1 / ${images.length}
+            1 / ${previewImages.length}
           </span>
 
           <button
@@ -451,7 +635,7 @@ function renderPropertyPreview() {
     `
     : `
       <div class="preview-no-image">
-        Aucune photo de galerie sélectionnée
+        Aucune photo dans la galerie
       </div>
     `;
 
@@ -527,7 +711,7 @@ function renderPropertyPreview() {
 }
 
 /* ==========================================================
-   CARROUSEL — PHOTOS DE GALERIE
+   CARROUSEL
    ========================================================== */
 
 $('propertyPreview')?.addEventListener('click', event => {
@@ -538,31 +722,65 @@ $('propertyPreview')?.addEventListener('click', event => {
     event.target.closest('#previewGalleryNext');
 
   if (!previous && !next) return;
-
-  const files = Array.from($('gallery')?.files || []);
-  if (!files.length) return;
+  if (!previewImages.length) return;
 
   previewGalleryIndex = (
     previewGalleryIndex +
     (next ? 1 : -1) +
-    files.length
-  ) % files.length;
+    previewImages.length
+  ) % previewImages.length;
 
   const image = $('previewGalleryImage');
   const counter = $('previewGalleryCounter');
 
   if (!image || !counter) return;
 
-  image.src = previewImageUrls[previewGalleryIndex];
+  image.src = previewImages[previewGalleryIndex];
   image.alt =
     `Photo ${previewGalleryIndex + 1} de la propriété`;
 
   counter.textContent =
-    `${previewGalleryIndex + 1} / ${files.length}`;
+    `${previewGalleryIndex + 1} / ${previewImages.length}`;
 });
 
 /* ==========================================================
-   ACTIONS — LISTE ET OUTILS
+   PUBLICATION — PROCHAINE ÉTAPE
+   ========================================================== */
+
+$('form').onsubmit = event => {
+  event.preventDefault();
+
+  if (!validateFirstStep()) {
+    showPropertyStep(1);
+    return;
+  }
+
+  const property = buildPropertyData();
+
+  if (
+    [property.storage_kg, property.rooms].some(value =>
+      value !== null &&
+      (!Number.isInteger(value) || value < 0)
+    )
+  ) {
+    setStatus('Vérifiez les caractéristiques.');
+    showPropertyStep(2);
+    return;
+  }
+
+  setStatus(
+    'Prévisualisation prête. La publication sera activée ' +
+    'après connexion de l’enregistrement sécurisé.'
+  );
+};
+
+// Ne pas activer avant la connexion des uploads et de la sauvegarde.
+if (publishPropertyButton) {
+  publishPropertyButton.disabled = true;
+}
+
+/* ==========================================================
+   ACTIONS
    ========================================================== */
 
 $('entries').onclick = event => {
@@ -574,7 +792,6 @@ $('new').onclick = () => choose(null);
 
 $('delete').onclick = async () => {
   if (!selected) return;
-
   if (!confirm('Supprimer cette annonce ?')) return;
 
   try {
