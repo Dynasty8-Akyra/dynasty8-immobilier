@@ -1707,6 +1707,267 @@ function renderAvailableProperties() {
 
     </div>
   `;
+// =====================================
+// DYNASTY 8 — CATÉGORIES IMMOBILIÈRES
+// LISTINGS DÉROULANTS PAR TYPE DE BIEN
+// =====================================
+
+const categoryLabels = new Map([
+  ["Maison", "Maisons"],
+  ["Appartement", "Appartements"],
+  ["Studio", "Studios"],
+  ["Villa", "Villas"],
+  ["Loft", "Lofts"],
+  ["Commerce", "Commerces"],
+  ["Garage", "Garages"],
+  ["Entrepôt", "Entrepôts"],
+  ["Terrain", "Terrains"],
+  ["Ferme", "Fermes"],
+  ["Autre", "Autres propriétés"]
+]);
+
+const categoryIcons = {
+  "Maisons": "⌂",
+  "Appartements": "▥",
+  "Studios": "▥",
+  "Villas": "♛",
+  "Lofts": "▥",
+  "Commerces": "▣",
+  "Garages": "▣",
+  "Entrepôts": "▣",
+  "Terrains": "❀",
+  "Fermes": "❀"
+};
+
+const propertyList =
+  interieurContent.querySelector(".d8-interior-list");
+
+if (propertyList && !excluded) {
+
+  const groups = new Map();
+
+  // Conserver les catégories propres au quartier.
+
+  for (const category of interiors) {
+
+    const label = String(category).trim();
+
+    if (label && !groups.has(label)) {
+      groups.set(label, []);
+    }
+
+  }
+
+  // Récupérer les fiches déjà construites.
+
+  const propertyCards = Array.from(
+    propertyList.querySelectorAll(".d8-real-property")
+  );
+
+  // Classer chaque annonce selon son type.
+
+  for (const propertyCard of propertyCards) {
+
+    const property =
+      listings[Number(propertyCard.dataset.propertyIndex)];
+
+    if (!property) continue;
+
+    const type = String(property.type || "Autre").trim();
+
+    const label =
+      categoryLabels.get(type) || type;
+
+    if (!groups.has(label)) {
+      groups.set(label, []);
+    }
+
+    groups.get(label).push(propertyCard);
+
+  }
+
+  // Construire les catégories déroulantes.
+
+  if (groups.size > 0) {
+
+    propertyList.replaceChildren();
+
+    for (const [label, cards] of groups) {
+
+      const categorySection =
+        document.createElement("details");
+
+      categorySection.className =
+        "d8-property-category";
+
+      categorySection.style.cssText = `
+        margin:12px 0;
+        border:1px solid #510B1A;
+        border-radius:8px;
+        background:#11090D;
+        overflow:hidden;
+        transition:border-color .25s,box-shadow .25s;
+      `;
+
+      const categoryHeader =
+        document.createElement("summary");
+
+      categoryHeader.style.cssText = `
+        display:flex;
+        align-items:center;
+        gap:12px;
+        padding:14px;
+        cursor:pointer;
+        list-style:none;
+        color:#fff;
+      `;
+
+      const symbol =
+        categoryIcons[label] || "⌂";
+
+      categoryHeader.innerHTML = `
+
+        <div style="
+          width:42px;
+          height:42px;
+          flex-shrink:0;
+          display:grid;
+          place-items:center;
+          border:1px solid #510B1A;
+          border-radius:6px;
+          background:linear-gradient(
+            135deg,#510B1A,#090608
+          );
+          color:#E11928;
+          font-size:24px;
+        ">
+          ${escapeHTML(symbol)}
+        </div>
+
+        <div style="flex:1;min-width:0;">
+
+          <strong style="
+            display:block;
+            color:#fff;
+            font-size:13px;
+            letter-spacing:1px;
+            text-transform:uppercase;
+          ">
+            ${escapeHTML(label)}
+          </strong>
+
+          <small style="
+            display:block;
+            color:#c8aeb5;
+            font-size:11px;
+            margin-top:5px;
+          ">
+            ${cards.length}
+            ${cards.length > 1
+              ? "biens disponibles"
+              : "bien disponible"}
+          </small>
+
+        </div>
+
+        <span
+          class="d8-category-arrow"
+          aria-hidden="true"
+          style="
+            color:#E11928;
+            font-size:22px;
+            transition:transform .25s;
+          "
+        >⌄</span>
+
+      `;
+
+      const categoryContent =
+        document.createElement("div");
+
+      categoryContent.className =
+        "d8-property-category-list";
+
+      categoryContent.style.cssText = `
+        padding:0 10px 10px;
+        border-top:1px solid #510B1A;
+      `;
+
+      // Afficher les véritables annonces.
+
+      if (cards.length > 0) {
+
+        for (const propertyCard of cards) {
+
+          propertyCard.style.margin = "10px 0 0";
+
+          categoryContent.appendChild(propertyCard);
+
+        }
+
+      } else {
+
+        categoryContent.innerHTML = `
+
+          <p style="
+            margin:0;
+            padding:18px 10px;
+            color:#c8aeb5;
+            text-align:center;
+            font-size:12px;
+            line-height:1.6;
+          ">
+            Aucun bien actuellement disponible
+            dans cette catégorie.
+          </p>
+
+        `;
+
+      }
+
+      categorySection.append(
+        categoryHeader,
+        categoryContent
+      );
+
+      // Animation de la catégorie ouverte.
+
+      categorySection.addEventListener("toggle", () => {
+
+        const active = categorySection.open;
+
+        categorySection.style.borderColor =
+          active ? "#A5092C" : "#510B1A";
+
+        categorySection.style.boxShadow =
+          active
+            ? "0 0 14px rgba(225,25,40,.12)"
+            : "none";
+
+        const arrow =
+          categoryHeader.querySelector(
+            ".d8-category-arrow"
+          );
+
+        if (arrow) {
+
+          arrow.style.transform =
+            active
+              ? "rotate(180deg)"
+              : "rotate(0deg)";
+
+        }
+
+      });
+
+      propertyList.appendChild(categorySection);
+
+    }
+
+  }
+
+}
+
 
   // Navigation dans les galeries photos.
 
