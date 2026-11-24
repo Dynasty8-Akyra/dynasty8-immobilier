@@ -993,7 +993,66 @@ console.log("Zoom :", map.getZoom());
 
   // Données d'intérieurs à compléter avec les biens réellement proposés sur le serveur.
   // La carte reste utilisable même si aucun intérieur n'est encore configuré.
-  const interiorListings = {};
+ // =====================================
+// DYNASTY 8 — ANNONCES IMMOBILIÈRES
+// CONNEXION SUPABASE
+// =====================================
+
+const interiorListings = {};
+
+async function loadInteriorListings() {
+  if (!window.D8Cloud || !D8Cloud.ready()) {
+    throw new Error("Connexion Supabase indisponible.");
+  }
+
+  const properties = await D8Cloud.list();
+
+  if (!Array.isArray(properties)) {
+    throw new Error("Liste des propriétés invalide.");
+  }
+
+  for (const key of Object.keys(interiorListings)) {
+    delete interiorListings[key];
+  }
+
+  for (const property of properties) {
+    const zoneId = String(property.area || "").trim();
+
+    if (!zoneId) continue;
+
+    if (!interiorListings[zoneId]) {
+      interiorListings[zoneId] = [];
+    }
+
+    interiorListings[zoneId].push({
+      ...property,
+      photos: Array.isArray(property.gallery_urls)
+        ? property.gallery_urls
+        : []
+    });
+  }
+
+  console.log(
+    "DYNASTY 8 — Propriétés chargées :",
+    properties.length
+  );
+
+  console.log(
+    "DYNASTY 8 — Annonces par quartier :",
+    interiorListings
+  );
+
+  return interiorListings;
+}
+
+if (document.body.dataset.mapMode === "public") {
+  loadInteriorListings().catch(error => {
+    console.error(
+      "DYNASTY 8 — Erreur chargement des annonces :",
+      error
+    );
+  });
+}
 
   function render(id) {
   if (!panel || !zones[id]) return;
