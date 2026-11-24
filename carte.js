@@ -1308,124 +1308,470 @@ if (document.body.dataset.mapMode === "public") {
     interieurContent.hidden = true;
 
     
-    interieurContent.innerHTML = `
-      <div class="d8-luxury-section">
-        <div class="d8-luxury-heading">
-          <span>01</span>
-          INTÉRIEURS DISPONIBLES
-        </div>
+    // =====================================
+// DYNASTY 8 — AFFICHAGE DES ANNONCES
+// NEON MAX — PRESTIGE
+// =====================================
 
-        <p>
-          Découvrez les différents types d'intérieurs
-          proposés dans le quartier de ${escapeHTML(z.name)}.
-        </p>
+function renderAvailableProperties() {
 
-        <div class="d8-interior-list">
-          ${
-            interiors.length
-              ? interiors.map((item, index) => `
-                <details style="
-                  margin:12px 0;
-                  border:1px solid #510B1A;
-                  border-radius:8px;
-                  background:#11090D;
-                  overflow:hidden;
-                ">
+  const listings = interiorListings[id] || [];
+
+  const formatPrice = value => {
+    if (value === null || value === undefined || value === "") {
+      return null;
+    }
+
+    const amount = Number(value);
+
+    return Number.isFinite(amount)
+      ? amount.toLocaleString("fr-FR") + " $"
+      : null;
+  };
+
+  const safeImage = value => {
+    if (typeof value !== "string") return "";
+
+    try {
+      const url = new URL(value);
+
+      return url.protocol === "https:"
+        ? url.href
+        : "";
+    } catch {
+      return "";
+    }
+  };
+
+  interieurContent.innerHTML = `
+    <div class="d8-luxury-section">
+
+      <div class="d8-luxury-heading">
+        <span>01</span>
+        INTÉRIEURS DISPONIBLES
+      </div>
+
+      <p>
+        ${excluded
+          ? "Aucun bien proposé dans cette zone."
+          : `${listings.length} propriété(s) disponible(s)
+             dans le quartier de ${escapeHTML(z.name)}.`
+        }
+      </p>
+
+      <div class="d8-interior-list">
+
+        ${excluded ? "" : listings.length
+
+          ? listings.map((property, index) => {
+
+              const thumbnail =
+                safeImage(property.thumbnail_url) ||
+                safeImage(property.photo);
+
+              const photos = [...new Set([
+                thumbnail,
+                ...(Array.isArray(property.photos)
+                  ? property.photos.map(safeImage)
+                  : [])
+              ].filter(Boolean))];
+
+              const purchasePrice =
+                formatPrice(property.purchase_price);
+
+              const rentalPrice =
+                formatPrice(property.rental_price);
+
+              const characteristics = [
+                ["Surface", property.surface == null
+                  ? "Non renseignée"
+                  : property.surface + " m²"],
+
+                ["Stockage", property.storage_kg == null
+                  ? "Non renseigné"
+                  : property.storage_kg + " kg"],
+
+                ["Pièces", property.rooms ?? "Non renseigné"],
+
+                ["Extérieur", property.exterior == null
+                  ? "Non renseigné"
+                  : property.exterior ? "Oui" : "Non"],
+
+                ["Garage", property.garage == null
+                  ? "Non renseigné"
+                  : property.garage ? "Oui" : "Non"]
+              ];
+
+              return `
+
+                <details
+                  class="d8-real-property"
+                  data-property-index="${index}"
+                  style="
+                    margin:12px 0;
+                    border:1px solid #510B1A;
+                    border-radius:8px;
+                    background:#11090D;
+                    overflow:hidden;
+                  "
+                >
+
                   <summary style="
                     display:flex;
                     align-items:center;
                     gap:12px;
                     padding:12px;
                     cursor:pointer;
+                    list-style:none;
                     color:#fff;
                   ">
+
                     <div style="
-                      width:76px;
-                      height:60px;
+                      width:85px;
+                      height:72px;
                       flex-shrink:0;
                       display:grid;
                       place-items:center;
-                      background:linear-gradient(135deg,#510B1A,#090608);
+                      overflow:hidden;
+                      background:linear-gradient(
+                        135deg,#510B1A,#090608
+                      );
                       border:1px solid #A5092C;
                       border-radius:5px;
                       color:#E11928;
-                      font-size:27px;
-                    ">⌂</div>
+                    ">
+
+                      ${thumbnail
+                        ? `<img
+                            src="${escapeHTML(thumbnail)}"
+                            alt="${escapeHTML(property.name)}"
+                            loading="lazy"
+                            style="
+                              width:100%;
+                              height:100%;
+                              object-fit:cover;
+                            "
+                          >`
+                        : "⌂"
+                      }
+
+                    </div>
 
                     <div style="flex:1;min-width:0;">
+
                       <small style="
                         display:block;
                         color:#E11928;
                         letter-spacing:1px;
                         margin-bottom:5px;
-                      ">INTÉRIEUR ${String(index + 1).padStart(2, "0")}</small>
+                      ">
+                        ${escapeHTML(property.type || "PROPRIÉTÉ")}
+                      </small>
 
                       <strong style="font-size:14px;">
-                        ${escapeHTML(item)}
+                        ${escapeHTML(property.name)}
                       </strong>
+
+                      ${purchasePrice ? `
+                        <div style="
+                          color:#E11928;
+                          font-weight:700;
+                          margin-top:6px;
+                        ">
+                          ${purchasePrice}
+                        </div>
+                      ` : ""}
+
+                      ${rentalPrice ? `
+                        <small style="
+                          display:block;
+                          color:#d8c8cc;
+                          margin-top:4px;
+                        ">
+                          Location : ${rentalPrice}
+                        </small>
+                      ` : ""}
+
                     </div>
 
-                    <span style="color:#E11928;">⌄</span>
+                    <span style="
+                      color:#E11928;
+                      font-size:20px;
+                    ">⌄</span>
+
                   </summary>
 
                   <div style="padding:0 14px 16px;">
-                    <div class="d8-gallery-placeholder">
-                      <div class="d8-gallery-content">
-                        <div class="d8-gallery-symbol">▧</div>
-                        <strong>Photos à venir</strong>
-                        <small>Galerie de cet intérieur</small>
+
+                    ${photos.length ? `
+
+                      <div
+                        class="d8-real-gallery"
+                        data-photo="0"
+                        style="
+                          position:relative;
+                          overflow:hidden;
+                          border:1px solid #510B1A;
+                          border-radius:6px;
+                          background:#090608;
+                        "
+                      >
+
+                        <img
+                          class="d8-real-gallery-image"
+                          src="${escapeHTML(photos[0])}"
+                          alt="${escapeHTML(property.name)}"
+                          loading="lazy"
+                          style="
+                            display:block;
+                            width:100%;
+                            height:180px;
+                            object-fit:cover;
+                          "
+                        >
+
+                        <div class="d8-gallery-navigation">
+
+                          <button
+                            type="button"
+                            class="d8-gallery-arrow d8-real-prev"
+                            aria-label="Photo précédente"
+                            ${photos.length < 2 ? "disabled" : ""}
+                          >‹</button>
+
+                          <span class="d8-gallery-counter d8-real-counter">
+                            01 / ${String(photos.length).padStart(2,"0")}
+                          </span>
+
+                          <button
+                            type="button"
+                            class="d8-gallery-arrow d8-real-next"
+                            aria-label="Photo suivante"
+                            ${photos.length < 2 ? "disabled" : ""}
+                          >›</button>
+
+                        </div>
+
                       </div>
 
-                      <div class="d8-gallery-navigation">
-                        <button type="button"
-                          class="d8-gallery-arrow"
-                          disabled
-                          aria-label="Photo précédente">‹</button>
+                    ` : `
 
-                        <span class="d8-gallery-counter">
-                          00 / 00
-                        </span>
-
-                        <button type="button"
-                          class="d8-gallery-arrow"
-                          disabled
-                          aria-label="Photo suivante">›</button>
+                      <div class="d8-gallery-placeholder">
+                        <div class="d8-gallery-content">
+                          <div class="d8-gallery-symbol">▧</div>
+                          <strong>Photos à venir</strong>
+                        </div>
                       </div>
+
+                    `}
+
+                    <div style="margin-top:18px;">
+
+                      <small style="
+                        color:#E11928;
+                        letter-spacing:1px;
+                        font-weight:700;
+                      ">
+                        CARACTÉRISTIQUES
+                      </small>
+
+                      <div style="
+                        display:grid;
+                        grid-template-columns:1fr 1fr;
+                        gap:8px;
+                        margin-top:10px;
+                      ">
+
+                        ${characteristics.map(([label, value]) => `
+
+                          <div style="
+                            padding:10px;
+                            background:#090608;
+                            border:1px solid #510B1A;
+                            border-radius:5px;
+                          ">
+
+                            <small style="
+                              display:block;
+                              color:#c8aeb5;
+                              margin-bottom:5px;
+                            ">
+                              ${escapeHTML(label)}
+                            </small>
+
+                            <strong style="
+                              color:#fff;
+                              font-size:12px;
+                            ">
+                              ${escapeHTML(value)}
+                            </strong>
+
+                          </div>
+
+                        `).join("")}
+
+                      </div>
+
                     </div>
 
-                    <p style="margin-top:16px;">
-                      Description de cet intérieur à venir.
-                    </p>
+                    <div style="margin-top:18px;">
 
-                    <p style="color:#E11928;font-weight:700;">
-                      Prix à définir
-                    </p>
+                      <small style="
+                        color:#E11928;
+                        letter-spacing:1px;
+                        font-weight:700;
+                      ">
+                        DESCRIPTION DU BIEN
+                      </small>
 
-                    <button type="button" disabled style="
-                      width:100%;
-                      padding:13px;
-                      margin-top:10px;
-                      border:1px solid #A5092C;
-                      border-radius:5px;
-                      background:#510B1A;
-                      color:#fff;
-                      opacity:.65;
-                      cursor:not-allowed;
-                    ">
-                      Contacter l'agent pour ce bien
+                      <p style="
+                        line-height:1.6;
+                        white-space:pre-wrap;
+                        overflow-wrap:anywhere;
+                      ">
+                        ${escapeHTML(
+                          property.description ||
+                          "Description à venir."
+                        )}
+                      </p>
+
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled
+                      style="
+                        width:100%;
+                        padding:13px;
+                        margin-top:10px;
+                        border:1px solid #A5092C;
+                        border-radius:5px;
+                        background:#510B1A;
+                        color:#fff;
+                        opacity:.65;
+                        cursor:not-allowed;
+                      "
+                    >
+                      ✦ DEMANDER UNE VISITE
                     </button>
+
+                    <small style="
+                      display:block;
+                      text-align:center;
+                      margin-top:8px;
+                      color:#bca7ad;
+                    ">
+                      Service de réservation bientôt disponible
+                    </small>
+
                   </div>
+
                 </details>
-              `).join("")
-              : `
-                <p>
-                  Aucun intérieur renseigné pour ce quartier.
-                </p>
-              `
-          }
-        </div>
+
+              `;
+
+            }).join("")
+
+          : `
+
+            <div style="
+              padding:24px 14px;
+              text-align:center;
+              border:1px solid #510B1A;
+              border-radius:8px;
+              background:#090608;
+            ">
+
+              <div style="
+                color:#E11928;
+                font-size:30px;
+                margin-bottom:10px;
+              ">⌂</div>
+
+              <strong>Aucun bien disponible</strong>
+
+              <p style="
+                color:#c8aeb5;
+                font-size:12px;
+              ">
+                De nouvelles propriétés seront prochainement
+                disponibles dans ce quartier.
+              </p>
+
+            </div>
+
+          `
+        }
+
       </div>
-    `;
+
+    </div>
+  `;
+
+  // Navigation dans les galeries photos.
+
+  interieurContent
+    .querySelectorAll(".d8-real-property")
+    .forEach(details => {
+
+      const property =
+        listings[Number(details.dataset.propertyIndex)];
+
+      if (!property) return;
+
+      const thumbnail =
+        safeImage(property.thumbnail_url) ||
+        safeImage(property.photo);
+
+      const photos = [...new Set([
+        thumbnail,
+        ...(Array.isArray(property.photos)
+          ? property.photos.map(safeImage)
+          : [])
+      ].filter(Boolean))];
+
+      const gallery =
+        details.querySelector(".d8-real-gallery");
+
+      if (!gallery || !photos.length) return;
+
+      const image =
+        gallery.querySelector(".d8-real-gallery-image");
+
+      const counter =
+        gallery.querySelector(".d8-real-counter");
+
+      let photoIndex = 0;
+
+      function changePhoto(delta) {
+
+        photoIndex = (
+          photoIndex + delta + photos.length
+        ) % photos.length;
+
+        image.src = photos[photoIndex];
+
+        gallery.dataset.photo = String(photoIndex);
+
+        counter.textContent =
+          String(photoIndex + 1).padStart(2, "0") +
+          " / " +
+          String(photos.length).padStart(2, "0");
+
+      }
+
+      gallery.querySelector(".d8-real-prev")
+        ?.addEventListener("click", () => changePhoto(-1));
+
+      gallery.querySelector(".d8-real-next")
+        ?.addEventListener("click", () => changePhoto(1));
+
+    });
+
+}
+
+renderAvailableProperties();
+
 
 
     tabs.append(quartierBtn, interieurBtn);
@@ -1449,7 +1795,35 @@ if (document.body.dataset.mapMode === "public") {
     }
 
     quartierBtn.addEventListener("click", () => selectTab(false));
-    interieurBtn.addEventListener("click", () => selectTab(true));
+   interieurBtn.addEventListener("click", async () => {
+
+  selectTab(true);
+
+  try {
+
+    await loadInteriorListings();
+
+    renderAvailableProperties();
+
+  } catch (error) {
+
+    console.error(
+      "DYNASTY 8 — Erreur catalogue :",
+      error
+    );
+
+    interieurContent.innerHTML = `
+      <div class="d8-luxury-section">
+        <p>
+          Impossible de charger les propriétés.
+          Veuillez réessayer.
+        </p>
+      </div>
+    `;
+
+  }
+
+});
     selectTab(false);
   }
 
