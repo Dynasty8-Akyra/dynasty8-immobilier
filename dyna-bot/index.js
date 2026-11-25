@@ -993,7 +993,8 @@ async function publishServicePanel() {
 // ==========================================
 
 let serviceSyncRunning = false;
-
+let serviceMembersInitialized = false;
+let serviceMembersRetryAt = 0;
 async function synchronizeServicePresence() {
 
   if (
@@ -1019,23 +1020,66 @@ async function synchronizeServicePresence() {
 
     }
 
-    const guild = await client.guilds.fetch(
+    const guild = client.guilds.cache.get(
       GUILD_ID
     );
 
-    const members = await guild.members.fetch();
+    if (!guild || !guild.available) {
 
-    // RETRAIT DU RÔLE VERT AUX MEMBRES
-    // QUI NE SONT PLUS AUTORISÉS
+      throw new Error(
+        "Serveur Dynasty 8 indisponible."
+      );
 
-    for (const member of members.values()) {
+    }
+
+    // ======================================
+    // INITIALISATION DU CACHE DES MEMBRES
+    // ======================================
+
+    if (
+      !serviceMembersInitialized ||
+      guild.members.cache.size < guild.memberCount
+    ) {
+
+      if (Date.now() < serviceMembersRetryAt) {
+        return;
+      }
+
+      serviceMembersRetryAt = Date.now() + 120000;
+
+      console.log(
+        "[DYNA] Synchronisation initiale des membres..."
+      );
+
+      await guild.members.fetch();
 
       if (
+        guild.members.cache.size < guild.memberCount
+      ) {
 
+        throw new Error(
+          "Synchronisation des membres incomplète."
+        );
+
+      }
+
+      serviceMembersInitialized = true;
+
+      console.log(
+        `[DYNA] Cache initialisé : ${guild.members.cache.size} membres.`
+      );
+
+    }
+
+    // ======================================
+    // CONTRÔLE DES RÔLES PROFESSIONNELS
+    // ======================================
+
+    for (const member of guild.members.cache.values()) {
+
+      if (
         member.roles.cache.has(SERVICE_ROLE_ID) &&
-
         !isProfessional(member)
-
       ) {
 
         try {
@@ -1058,7 +1102,9 @@ async function synchronizeServicePresence() {
 
     }
 
-    // ACTUALISATION DU COMPTEUR PUBLIC
+    // ======================================
+    // ACTUALISATION DU COMPTEUR
+    // ======================================
 
     await updateServiceCounter(client);
 
