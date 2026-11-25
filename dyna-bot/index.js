@@ -58,7 +58,7 @@ const CONFIRMED_ROLE_ID =
 const TRAINING_ROLE_ID =
   process.env.DISCORD_TRAINING_ROLE_ID;
 
-const SERVICE_ENABLED = false;
+const SERVICE_ENABLED = true;
 
 let serviceRefreshTimer = null;
 let serviceRefreshInterval = null;
