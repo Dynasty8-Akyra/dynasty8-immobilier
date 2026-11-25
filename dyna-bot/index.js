@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const { createBienvenue } = require("./embeds/bienvenue");
+const { createReglement } = require("./embeds/reglement");
 const {
   Client,
   GatewayIntentBits,
@@ -83,12 +84,88 @@ client.once(Events.ClientReady, (readyClient) => {
   });
 
   publishBienvenue();
+publishReglement();
 
 });
 
 client.on(Events.Error, () => {
   console.error("[DYNA] Erreur de connexion Discord.");
 });
+// ==========================================
+// PUBLICATION OFFICIELLE — RÈGLEMENT
+// ==========================================
+
+async function publishReglement() {
+
+  const channelId = process.env.RULES_CHANNEL_ID;
+
+  if (!channelId) {
+    console.log("[DYNA] Salon règlement non configuré.");
+    return;
+  }
+
+  try {
+
+    const channel = await client.channels.fetch(channelId);
+
+    if (
+      !channel ||
+      !channel.isTextBased() ||
+      channel.isDMBased() ||
+      typeof channel.send !== "function"
+    ) {
+      console.error("[DYNA] Salon règlement invalide.");
+      return;
+    }
+
+    // Recherche du règlement existant
+
+    let before;
+
+    while (true) {
+
+      const messages = await channel.messages.fetch({
+        limit: 100,
+        ...(before ? { before } : {})
+      });
+
+      const existing = messages.find(message =>
+        message.author.id === client.user.id &&
+        message.embeds.some(embed =>
+          embed.title === "♛ Règlement officiel de Dynasty 8"
+        )
+      );
+
+      if (existing) {
+        console.log("[DYNA] Règlement déjà publié.");
+        return;
+      }
+
+      if (messages.size < 100) {
+        break;
+      }
+
+      before = messages.last().id;
+
+    }
+
+    // Publication du règlement officiel
+
+    await channel.send(createReglement());
+
+    console.log("[DYNA] Règlement officiel publié.");
+
+  } catch (error) {
+
+    console.error(
+      "[DYNA] Erreur de publication règlement :",
+      error.code || error.name
+    );
+
+  }
+
+}
+
 // ==========================================
 // PUBLICATION OFFICIELLE — BIENVENUE
 // ==========================================
