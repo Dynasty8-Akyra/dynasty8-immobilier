@@ -6,14 +6,21 @@ const { createBienvenue } = require("./embeds/bienvenue");
 const { createReglement } = require("./embeds/reglement");
 const { createCentreDyna } = require("./embeds/centre-dyna");
 const { createTicketsPanel } = require("./embeds/tickets");
+
 const { handleAnnonceInteraction } = require("./interactions/annonces");
+const { handleTicketInteraction } = require("./interactions/tickets");
 
 const {
   Client,
   GatewayIntentBits,
   Events,
   ActivityType,
-  ChannelType
+  ChannelType,
+  MessageFlags,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  SlashCommandBuilder
 } = require("discord.js");
 
 // ==========================================
@@ -23,6 +30,14 @@ const {
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const PORT = process.env.PORT || 3000;
+
+const GUILD_ID = "1567889374836957286";
+const DIRECTION_ROLE_ID = "1567889789569728583";
+const TICKETS_CHANNEL_ID = "1575184319104942090";
+
+// MODE TEST — DIRECTION UNIQUEMENT
+
+const TICKETS_TEST_MODE = true;
 
 if (!TOKEN) {
   console.error("[DYNA] Token Discord manquant.");
@@ -57,11 +72,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
+
   const ready = client.isReady();
 
   res.status(ready ? 200 : 503).json({
     status: ready ? "healthy" : "unavailable"
   });
+
 });
 
 const server = app.listen(PORT, "0.0.0.0", () => {
@@ -94,6 +111,8 @@ client.once(Events.ClientReady, (readyClient) => {
   publishCentreDyna();
   publishTicketsPanel();
 
+  registerTestCommand();
+
 });
 
 client.on(Events.Error, () => {
@@ -101,12 +120,268 @@ client.on(Events.Error, () => {
 });
 
 // ==========================================
-// INTERACTIONS — CENTRE DE COMMUNICATION
+// COMMANDE TEMPORAIRE — TEST TICKET
+// ==========================================
+
+async function registerTestCommand() {
+
+  try {
+
+    const guild = await client.guilds.fetch(GUILD_ID);
+
+    const commands = await guild.commands.fetch();
+
+    const existing = commands.find(command =>
+      command.name === "test-ticket"
+    );
+
+    if (!TICKETS_TEST_MODE) {
+
+      if (existing) {
+        await guild.commands.delete(existing.id);
+      }
+
+      return;
+
+    }
+
+    const command = new SlashCommandBuilder()
+      .setName("test-ticket")
+      .setDescription(
+        "Tester le formulaire immobilier — Direction uniquement"
+      );
+
+    if (existing) {
+
+      await guild.commands.edit(
+        existing.id,
+        command.toJSON()
+      );
+
+    } else {
+
+      await guild.commands.create(command.toJSON());
+
+    }
+
+    console.log(
+      "[DYNA] Commande /test-ticket enregistrée."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "[DYNA] Erreur commande test-ticket :",
+      error.code || error.name
+    );
+
+  }
+
+}
+
+// ==========================================
+// VÉRIFICATION DU RÔLE DIRECTION
+// ==========================================
+
+function isDirection(interaction) {
+
+  if (
+    !interaction.inGuild() ||
+    interaction.guildId !== GUILD_ID
+  ) {
+    return false;
+  }
+
+  const roles = interaction.member?.roles;
+
+  if (Array.isArray(roles)) {
+    return roles.includes(DIRECTION_ROLE_ID);
+  }
+
+  return roles?.cache?.has(DIRECTION_ROLE_ID) === true;
+
+}
+
+// ==========================================
+// VÉRIFICATION DU SALON DE TEST
+// ==========================================
+
+function isTicketTestChannel(interaction) {
+
+  return (
+    interaction.guildId === GUILD_ID &&
+    interaction.channelId === TICKETS_CHANNEL_ID &&
+    process.env.TICKETS_CHANNEL_ID === TICKETS_CHANNEL_ID
+  );
+
+}
+
+// ==========================================
+// RÉPONSE PRIVÉE
+// ==========================================
+
+async function replyPrivate(interaction, content) {
+
+  const payload = {
+    content,
+    allowedMentions: {
+      parse: []
+    }
+  };
+
+  if (interaction.deferred) {
+
+    await interaction.editReply({
+      ...payload,
+      embeds: [],
+      components: []
+    });
+
+  } else if (interaction.replied) {
+
+    await interaction.followUp({
+      ...payload,
+      flags: MessageFlags.Ephemeral
+    });
+
+  } else {
+
+    await interaction.reply({
+      ...payload,
+      flags: MessageFlags.Ephemeral
+    });
+
+  }
+
+}
+
+// ==========================================
+// LANCEMENT DU TEST PRIVÉ
+// ==========================================
+
+async function handleTestCommand(interaction) {
+
+  if (!TICKETS_TEST_MODE) {
+
+    await replyPrivate(
+      interaction,
+      "Le mode test est désactivé."
+    );
+
+    return;
+
+  }
+
+  if (!isDirection(interaction)) {
+
+    await replyPrivate(
+      interaction,
+      "Cette commande est réservée à la Direction Dynasty 8."
+    );
+
+    return;
+
+  }
+
+  if (!isTicketTestChannel(interaction)) {
+
+    await replyPrivate(
+      interaction,
+      `Veuillez utiliser cette commande dans <#${TICKETS_CHANNEL_ID}>.`
+    );
+
+    return;
+
+  }
+
+  const row = new ActionRowBuilder()
+    .addComponents(
+
+      new ButtonBuilder()
+        .setCustomId("dyna_ticket_create")
+        .setLabel("Tester le formulaire immobilier")
+        .setEmoji("🎫")
+        .setStyle(ButtonStyle.Danger)
+
+    );
+
+  await interaction.reply({
+
+    content: [
+      "**♛ DYNASTY 8 — MODE TEST**",
+      "",
+      "Bienvenue dans le mode de préparation du service immobilier.",
+      "",
+      "Vous pouvez tester les différentes étapes du formulaire.",
+      "",
+      "Utilisez uniquement des données RP fictives.",
+      "",
+      "Aucun ticket ne sera créé et aucune donnée RP ne sera enregistrée."
+    ].join("\n"),
+
+    components: [row],
+
+    flags: MessageFlags.Ephemeral,
+
+    allowedMentions: {
+      parse: []
+    }
+
+  });
+
+}
+
+// ==========================================
+// INTERACTIONS — DYNA
 // ==========================================
 
 client.on(Events.InteractionCreate, async (interaction) => {
 
   try {
+
+    // Commande de test immobilier
+
+    if (
+      interaction.isChatInputCommand() &&
+      interaction.commandName === "test-ticket"
+    ) {
+
+      await handleTestCommand(interaction);
+
+      return;
+
+    }
+
+    // Interactions immobilières
+    // Réservées à la Direction pendant les tests
+
+    if (
+      interaction.customId &&
+      interaction.customId.startsWith("dyna_ticket_")
+    ) {
+
+      if (
+        !TICKETS_TEST_MODE ||
+        !isDirection(interaction) ||
+        !isTicketTestChannel(interaction)
+      ) {
+
+        await replyPrivate(
+          interaction,
+          "Le service immobilier est actuellement en préparation."
+        );
+
+        return;
+
+      }
+
+      await handleTicketInteraction(interaction);
+
+      return;
+
+    }
+
+    // Centre de communication et annonces
 
     await handleAnnonceInteraction(interaction);
 
@@ -116,6 +391,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
       "[DYNA] Erreur interaction :",
       error.code || error.name
     );
+
+    if (interaction.isRepliable()) {
+
+      await replyPrivate(
+        interaction,
+        "Une erreur est survenue. Veuillez réessayer."
+      ).catch(() => {});
+
+    }
 
   }
 
@@ -165,8 +449,11 @@ async function publishReglement() {
       );
 
       if (existing) {
+
         console.log("[DYNA] Règlement déjà publié.");
+
         return;
+
       }
 
       if (messages.size < 100) {
@@ -294,7 +581,7 @@ async function publishCentreDyna() {
       !channel.isTextBased() ||
       channel.isDMBased() ||
       typeof channel.send !== "function" ||
-      channel.guildId !== "1567889374836957286"
+      channel.guildId !== GUILD_ID
     ) {
       console.error("[DYNA] Salon Centre Dyna invalide.");
       return;
@@ -310,10 +597,13 @@ async function publishCentreDyna() {
       !everyonePermissions ||
       everyonePermissions.has("ViewChannel")
     ) {
+
       console.error(
         "[DYNA] Publication refusée : salon Centre Dyna accessible à @everyone."
       );
+
       return;
+
     }
 
     // Recherche du panneau officiel existant
@@ -348,7 +638,9 @@ async function publishCentreDyna() {
           }
         });
 
-        console.log("[DYNA] Centre de communication actualisé intégralement.");
+        console.log(
+          "[DYNA] Centre de communication actualisé intégralement."
+        );
 
         return;
 
@@ -387,8 +679,13 @@ async function publishTicketsPanel() {
   const channelId = process.env.TICKETS_CHANNEL_ID;
 
   if (!channelId) {
-    console.log("[DYNA] Salon Service clientèle non configuré.");
+
+    console.log(
+      "[DYNA] Salon Service clientèle non configuré."
+    );
+
     return;
+
   }
 
   try {
@@ -400,11 +697,16 @@ async function publishTicketsPanel() {
     if (
       !channel ||
       channel.type !== ChannelType.GuildText ||
-      channel.guildId !== "1567889374836957286" ||
-      channel.id !== "1575184319104942090"
+      channel.guildId !== GUILD_ID ||
+      channel.id !== TICKETS_CHANNEL_ID
     ) {
-      console.error("[DYNA] Salon Service clientèle invalide.");
+
+      console.error(
+        "[DYNA] Salon Service clientèle invalide."
+      );
+
       return;
+
     }
 
     // Recherche du panneau existant
@@ -430,7 +732,6 @@ async function publishTicketsPanel() {
         const updated = createTicketsPanel();
 
         // Actualisation du panneau existant
-        // Remplacement des anciennes pièces jointes
 
         await existing.edit({
           embeds: updated.embeds,
@@ -482,6 +783,7 @@ async function publishTicketsPanel() {
 // ==========================================
 
 function shutdown() {
+
   console.log("[DYNA] Arrêt du service.");
 
   client.destroy();
@@ -491,6 +793,7 @@ function shutdown() {
   });
 
   setTimeout(() => process.exit(0), 5000).unref();
+
 }
 
 process.once("SIGTERM", shutdown);
@@ -501,6 +804,9 @@ process.once("SIGINT", shutdown);
 // ==========================================
 
 client.login(TOKEN).catch(() => {
+
   console.error("[DYNA] Échec de connexion Discord.");
+
   process.exit(1);
+
 });
