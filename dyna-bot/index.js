@@ -5,13 +5,15 @@ const express = require("express");
 const { createBienvenue } = require("./embeds/bienvenue");
 const { createReglement } = require("./embeds/reglement");
 const { createCentreDyna } = require("./embeds/centre-dyna");
+const { createTicketsPanel } = require("./embeds/tickets");
 const { handleAnnonceInteraction } = require("./interactions/annonces");
 
 const {
   Client,
   GatewayIntentBits,
   Events,
-  ActivityType
+  ActivityType,
+  ChannelType
 } = require("discord.js");
 
 // ==========================================
@@ -90,6 +92,7 @@ client.once(Events.ClientReady, (readyClient) => {
   publishBienvenue();
   publishReglement();
   publishCentreDyna();
+  publishTicketsPanel();
 
 });
 
@@ -335,10 +338,6 @@ async function publishCentreDyna() {
 
         const updated = createCentreDyna();
 
-        // Actualisation complète du panneau existant
-        // Remplacement des anciennes pièces jointes
-        // Conservation du même message Discord
-
         await existing.edit({
           embeds: updated.embeds,
           components: updated.components,
@@ -363,8 +362,6 @@ async function publishCentreDyna() {
 
     }
 
-    // Publication du panneau permanent
-
     await channel.send(createCentreDyna());
 
     console.log("[DYNA] Centre de communication publié.");
@@ -373,6 +370,106 @@ async function publishCentreDyna() {
 
     console.error(
       "[DYNA] Erreur de publication Centre Dyna :",
+      error.code || error.name
+    );
+
+  }
+
+}
+
+// ==========================================
+// PUBLICATION OFFICIELLE — SERVICE CLIENTÈLE
+// TICKETS IMMOBILIERS
+// ==========================================
+
+async function publishTicketsPanel() {
+
+  const channelId = process.env.TICKETS_CHANNEL_ID;
+
+  if (!channelId) {
+    console.log("[DYNA] Salon Service clientèle non configuré.");
+    return;
+  }
+
+  try {
+
+    const channel = await client.channels.fetch(channelId);
+
+    // Vérification du salon officiel
+
+    if (
+      !channel ||
+      channel.type !== ChannelType.GuildText ||
+      channel.guildId !== "1567889374836957286" ||
+      channel.id !== "1575184319104942090"
+    ) {
+      console.error("[DYNA] Salon Service clientèle invalide.");
+      return;
+    }
+
+    // Recherche du panneau existant
+
+    let before;
+
+    while (true) {
+
+      const messages = await channel.messages.fetch({
+        limit: 100,
+        ...(before ? { before } : {})
+      });
+
+      const existing = messages.find(message =>
+        message.author.id === client.user.id &&
+        message.embeds.some(embed =>
+          embed.title === "♛ Votre projet immobilier commence ici"
+        )
+      );
+
+      if (existing) {
+
+        const updated = createTicketsPanel();
+
+        // Actualisation du panneau existant
+        // Remplacement des anciennes pièces jointes
+
+        await existing.edit({
+          embeds: updated.embeds,
+          components: updated.components,
+          attachments: [],
+          files: updated.files,
+          allowedMentions: {
+            parse: []
+          }
+        });
+
+        console.log(
+          "[DYNA] Panneau Service clientèle actualisé."
+        );
+
+        return;
+
+      }
+
+      if (messages.size < 100) {
+        break;
+      }
+
+      before = messages.last().id;
+
+    }
+
+    // Première publication du panneau
+
+    await channel.send(createTicketsPanel());
+
+    console.log(
+      "[DYNA] Panneau Service clientèle publié."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "[DYNA] Erreur de publication Service clientèle :",
       error.code || error.name
     );
 
