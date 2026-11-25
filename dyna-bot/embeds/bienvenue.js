@@ -1,6 +1,9 @@
 const {
   EmbedBuilder,
-  AttachmentBuilder
+  AttachmentBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle
 } = require("discord.js");
 
 const path = require("node:path");
@@ -59,9 +62,41 @@ function createBienvenue() {
     ].join("\n"))
     .setImage("attachment://signature.png");
 
+  // BOUTONS DE NAVIGATION
+
+  const buttons = new ActionRowBuilder()
+    .addComponents(
+
+      new ButtonBuilder()
+        .setLabel("Site immobilier")
+        .setEmoji("🏠")
+        .setStyle(ButtonStyle.Link)
+        .setURL(
+          "https://dynasty8-immobilier.pages.dev/"
+        ),
+
+      new ButtonBuilder()
+        .setLabel("Règlement")
+        .setEmoji("📜")
+        .setStyle(ButtonStyle.Link)
+        .setURL(
+          "https://discord.com/channels/1567889374836957286/1575184135947944026"
+        ),
+
+      new ButtonBuilder()
+        .setLabel("Contacter Dyna")
+        .setEmoji("💬")
+        .setStyle(ButtonStyle.Link)
+        .setURL(
+          "https://discord.com/channels/1567889374836957286/1575184319104942090"
+        )
+
+    );
+
   return {
     embeds: [header, welcome],
     files: [banner, signature],
+    components: [buttons],
     allowedMentions: { parse: [] }
   };
 
