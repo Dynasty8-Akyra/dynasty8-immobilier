@@ -44,22 +44,24 @@ function createCentreDyna() {
     .setDescription([
       "**ESPACE PRIVÉ — DIRECTION**",
       "",
-      "Bienvenue dans votre centre de communication professionnel.",
+      "Bienvenue dans votre centre de communication officiel.",
       "",
       "Je suis **Dyna**, votre assistante officielle.",
       "",
-      "Depuis cet espace, vous pouvez gérer les communications officielles de Dynasty 8 et transmettre vos informations aux citoyens ainsi qu'à vos agents immobiliers.",
+      "Depuis cet espace, vous pouvez rédiger, prévisualiser et publier les communications officielles de Dynasty 8 à destination des citoyens.",
       "",
       "━━━━━━━━━━━━━━━━━━━━",
       "",
       "**📢 ANNONCES OFFICIELLES**",
-      "Publier une communication publique dans le salon des annonces de l'agence.",
       "",
-      "**👥 NOTIFICATIONS GÉNÉRALES**",
-      "Transmettre une information à l'ensemble des agents ou à une sélection d'agents.",
+      "• Informations générales",
+      "• Horaires et fermetures",
+      "• Recrutement",
+      "• Offres promotionnelles",
+      "• Événements immobiliers",
+      "• Informations importantes",
       "",
-      "**👤 NOTIFICATIONS INDIVIDUELLES**",
-      "Adresser une communication personnalisée dans le bureau privé d'un agent.",
+      "Les annonces sont publiées dans le salon officiel de l'agence après validation de la Direction.",
       "",
       "━━━━━━━━━━━━━━━━━━━━",
       "",
@@ -67,32 +69,16 @@ function createCentreDyna() {
     ].join("\n"))
     .setImage("attachment://signature.png");
 
-  // BOUTONS DE COMMUNICATION
+  // BOUTON DE COMMUNICATION
 
   const buttons = new ActionRowBuilder()
     .addComponents(
-
-    new ButtonBuilder()
-  .setCustomId("dyna_annonce_create")
-  .setLabel("Annonce officielle")
-  .setEmoji("📢")
-  .setStyle(ButtonStyle.Danger)
-  .setDisabled(false),
-
       new ButtonBuilder()
-        .setCustomId("dyna_notification_generale")
-        .setLabel("Notification générale")
-        .setEmoji("👥")
-        .setStyle(ButtonStyle.Secondary)
-        .setDisabled(true),
-
-      new ButtonBuilder()
-        .setCustomId("dyna_notification_individuelle")
-        .setLabel("Notification individuelle")
-        .setEmoji("👤")
-        .setStyle(ButtonStyle.Secondary)
-        .setDisabled(true)
-
+        .setCustomId("dyna_annonce_create")
+        .setLabel("Annonce officielle")
+        .setEmoji("📢")
+        .setStyle(ButtonStyle.Danger)
+        .setDisabled(false)
     );
 
   return {
