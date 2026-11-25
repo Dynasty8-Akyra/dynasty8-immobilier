@@ -134,10 +134,19 @@ async function publishBienvenue() {
         )
       );
 
-      if (existing) {
-        console.log("[DYNA] Message de bienvenue déjà publié.");
-        return;
-      }
+     if (existing) {
+
+  const updated = createBienvenue();
+
+  await existing.edit({
+    components: updated.components
+  });
+
+  console.log("[DYNA] Message de bienvenue actualisé.");
+
+  return;
+
+}
 
       if (messages.size < 100) {
         break;
