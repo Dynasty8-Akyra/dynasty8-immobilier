@@ -1,8 +1,11 @@
 require("dotenv").config();
 
 const express = require("express");
+
 const { createBienvenue } = require("./embeds/bienvenue");
 const { createReglement } = require("./embeds/reglement");
+const { createCentreDyna } = require("./embeds/centre-dyna");
+
 const {
   Client,
   GatewayIntentBits,
@@ -80,17 +83,19 @@ client.once(Events.ClientReady, (readyClient) => {
         type: ActivityType.Watching
       }
     ],
-      status: "online"
+    status: "online"
   });
 
   publishBienvenue();
-publishReglement();
+  publishReglement();
+  publishCentreDyna();
 
 });
 
 client.on(Events.Error, () => {
   console.error("[DYNA] Erreur de connexion Discord.");
 });
+
 // ==========================================
 // PUBLICATION OFFICIELLE — RÈGLEMENT
 // ==========================================
@@ -117,8 +122,6 @@ async function publishReglement() {
       console.error("[DYNA] Salon règlement invalide.");
       return;
     }
-
-    // Recherche du règlement existant
 
     let before;
 
@@ -148,8 +151,6 @@ async function publishReglement() {
       before = messages.last().id;
 
     }
-
-    // Publication du règlement officiel
 
     await channel.send(createReglement());
 
@@ -193,8 +194,6 @@ async function publishBienvenue() {
       return;
     }
 
-    // Recherche du message officiel existant
-
     let before;
 
     while (true) {
@@ -211,19 +210,19 @@ async function publishBienvenue() {
         )
       );
 
-     if (existing) {
+      if (existing) {
 
-  const updated = createBienvenue();
+        const updated = createBienvenue();
 
-  await existing.edit({
-    components: updated.components
-  });
+        await existing.edit({
+          components: updated.components
+        });
 
-  console.log("[DYNA] Message de bienvenue actualisé.");
+        console.log("[DYNA] Message de bienvenue actualisé.");
 
-  return;
+        return;
 
-}
+      }
 
       if (messages.size < 100) {
         break;
@@ -233,8 +232,6 @@ async function publishBienvenue() {
 
     }
 
-    // Publication du message officiel
-
     await channel.send(createBienvenue());
 
     console.log("[DYNA] Message de bienvenue publié.");
@@ -243,6 +240,107 @@ async function publishBienvenue() {
 
     console.error(
       "[DYNA] Erreur de publication bienvenue :",
+      error.code || error.name
+    );
+
+  }
+
+}
+
+// ==========================================
+// PUBLICATION OFFICIELLE — CENTRE DYNA
+// ==========================================
+
+async function publishCentreDyna() {
+
+  const channelId = process.env.CENTER_CHANNEL_ID;
+
+  if (!channelId) {
+    console.log("[DYNA] Salon Centre Dyna non configuré.");
+    return;
+  }
+
+  try {
+
+    const channel = await client.channels.fetch(channelId);
+
+    if (
+      !channel ||
+      !channel.isTextBased() ||
+      channel.isDMBased() ||
+      typeof channel.send !== "function" ||
+      channel.guildId !== "1567889374836957286"
+    ) {
+      console.error("[DYNA] Salon Centre Dyna invalide.");
+      return;
+    }
+
+    // Vérification de la confidentialité du salon
+
+    const everyonePermissions = channel.permissionsFor(
+      channel.guild.roles.everyone
+    );
+
+    if (
+      !everyonePermissions ||
+      everyonePermissions.has("ViewChannel")
+    ) {
+      console.error(
+        "[DYNA] Publication refusée : salon Centre Dyna accessible à @everyone."
+      );
+      return;
+    }
+
+    // Recherche du panneau officiel existant
+
+    let before;
+
+    while (true) {
+
+      const messages = await channel.messages.fetch({
+        limit: 100,
+        ...(before ? { before } : {})
+      });
+
+      const existing = messages.find(message =>
+        message.author.id === client.user.id &&
+        message.embeds.some(embed =>
+          embed.title === "♛ Centre de communication Dyna"
+        )
+      );
+
+      if (existing) {
+
+        const updated = createCentreDyna();
+
+        await existing.edit({
+          components: updated.components
+        });
+
+        console.log("[DYNA] Centre de communication actualisé.");
+
+        return;
+
+      }
+
+      if (messages.size < 100) {
+        break;
+      }
+
+      before = messages.last().id;
+
+    }
+
+    // Publication du panneau permanent
+
+    await channel.send(createCentreDyna());
+
+    console.log("[DYNA] Centre de communication publié.");
+
+  } catch (error) {
+
+    console.error(
+      "[DYNA] Erreur de publication Centre Dyna :",
       error.code || error.name
     );
 
