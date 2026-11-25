@@ -6,6 +6,7 @@ const { createBienvenue } = require("./embeds/bienvenue");
 const { createReglement } = require("./embeds/reglement");
 const { createCentreDyna } = require("./embeds/centre-dyna");
 const { handleAnnonceInteraction } = require("./interactions/annonces");
+
 const {
   Client,
   GatewayIntentBits,
@@ -95,6 +96,7 @@ client.once(Events.ClientReady, (readyClient) => {
 client.on(Events.Error, () => {
   console.error("[DYNA] Erreur de connexion Discord.");
 });
+
 // ==========================================
 // INTERACTIONS — CENTRE DE COMMUNICATION
 // ==========================================
@@ -115,6 +117,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 
 });
+
 // ==========================================
 // PUBLICATION OFFICIELLE — RÈGLEMENT
 // ==========================================
@@ -332,11 +335,21 @@ async function publishCentreDyna() {
 
         const updated = createCentreDyna();
 
+        // Actualisation complète du panneau existant
+        // Remplacement des anciennes pièces jointes
+        // Conservation du même message Discord
+
         await existing.edit({
-          components: updated.components
+          embeds: updated.embeds,
+          components: updated.components,
+          attachments: [],
+          files: updated.files,
+          allowedMentions: {
+            parse: []
+          }
         });
 
-        console.log("[DYNA] Centre de communication actualisé.");
+        console.log("[DYNA] Centre de communication actualisé intégralement.");
 
         return;
 
