@@ -3,7 +3,9 @@ const {
   PermissionFlagsBits
 } = require("discord.js");
 
-// CONFIGURATION DYNASTY 8
+// ==========================================
+// DYNASTY 8 — COMPTEUR DE PRÉSENCE
+// ==========================================
 
 const GUILD_ID = "1567889374836957286";
 
@@ -13,63 +15,111 @@ const SERVICE_ROLE_ID =
 const SERVICE_COUNTER_CHANNEL_ID =
   process.env.SERVICE_COUNTER_CHANNEL_ID;
 
-// PROTECTION CONTRE LES ACTUALISATIONS SIMULTANÉES
+const PROFESSIONAL_ROLES = [
+  "1567889789569728583",
+  "1567889964639723631",
+  process.env.DISCORD_TRAINING_ROLE_ID
+].filter(Boolean);
 
 let updateQueue = Promise.resolve();
 
-// ACTUALISATION DU COMPTEUR PUBLIC
+// ==========================================
+// CALCUL DES AGENTS EN SERVICE
+// ==========================================
 
 async function refreshServiceCounter(client) {
 
-  if (!SERVICE_ROLE_ID || !SERVICE_COUNTER_CHANNEL_ID) {
+  if (
+    !SERVICE_ROLE_ID ||
+    !SERVICE_COUNTER_CHANNEL_ID
+  ) {
+
     throw new Error(
-      "Configuration du compteur de service manquante."
+      "Configuration du compteur manquante."
     );
+
   }
 
-  const guild = await client.guilds.fetch(GUILD_ID);
+  const guild = client.guilds.cache.get(GUILD_ID);
 
-  // RÉCUPÉRATION DU RÔLE DE SERVICE
+  if (!guild || !guild.available) {
 
-  const role = await guild.roles.fetch(
+    throw new Error(
+      "Serveur Dynasty 8 indisponible."
+    );
+
+  }
+
+  // Vérification de la liste des membres
+
+  if (guild.members.cache.size < guild.memberCount) {
+
+    throw new Error(
+      "Liste des membres non synchronisée."
+    );
+
+  }
+
+  // Vérification du rôle de service
+
+  const role = guild.roles.cache.get(
     SERVICE_ROLE_ID
   );
 
   if (!role) {
+
     throw new Error(
       "Rôle de service introuvable."
     );
+
   }
 
-  // RÉCUPÉRATION DES MEMBRES DU SERVEUR
+  // Comptage depuis le cache Discord
 
-  const members = await guild.members.fetch();
+  const count = guild.members.cache.filter(member =>
 
-  // COMPTAGE DES AGENTS EN SERVICE
-
-  const count = members.filter(member =>
     !member.user.bot &&
-    member.roles.cache.has(SERVICE_ROLE_ID)
+
+    member.roles.cache.has(SERVICE_ROLE_ID) &&
+
+    PROFESSIONAL_ROLES.some(roleId =>
+      member.roles.cache.has(roleId)
+    )
+
   ).size;
 
-  // RÉCUPÉRATION DU SALON VOCAL
+  // ========================================
+  // VÉRIFICATION DU SALON VOCAL
+  // ========================================
 
-  const channel = await guild.channels.fetch(
-    SERVICE_COUNTER_CHANNEL_ID,
-    { force: true }
-  );
+  let channel;
+
+  try {
+
+    channel = await guild.channels.fetch(
+      SERVICE_COUNTER_CHANNEL_ID,
+      { force: true }
+    );
+
+  } catch (error) {
+
+    throw new Error(
+      `Accès au salon compteur impossible : ${error.message}`
+    );
+
+  }
 
   if (
     !channel ||
     channel.type !== ChannelType.GuildVoice ||
     channel.guild.id !== GUILD_ID
   ) {
-    throw new Error(
-      "Salon compteur invalide ou introuvable."
-    );
-  }
 
-  // VÉRIFICATION DES PERMISSIONS DE DYNA
+    throw new Error(
+      "Salon vocal compteur invalide."
+    );
+
+  }
 
   const botMember = await guild.members.fetchMe();
 
@@ -79,24 +129,31 @@ async function refreshServiceCounter(client) {
 
   if (
     !permissions ||
-    !permissions.has(
-      PermissionFlagsBits.ManageChannels
-    )
+    !permissions.has(PermissionFlagsBits.ViewChannel) ||
+    !permissions.has(PermissionFlagsBits.ManageChannels)
   ) {
+
     throw new Error(
-      "Dyna ne peut pas modifier le salon compteur."
+      "Permissions insuffisantes sur le salon compteur."
     );
+
   }
 
-  // FORMAT OFFICIEL DU COMPTEUR
+  // ========================================
+  // ACTUALISATION DU COMPTEUR PUBLIC
+  // ========================================
 
   const newName = count > 0
     ? `🟢 : ${count}`
     : "🔴 : 0";
 
-  // MODIFICATION UNIQUEMENT SI NÉCESSAIRE
+  if (channel.name === newName) {
 
-  if (channel.name !== newName) {
+    return count;
+
+  }
+
+  try {
 
     await channel.setName(
       newName,
@@ -107,13 +164,21 @@ async function refreshServiceCounter(client) {
       `[DYNA] Compteur actualisé : ${newName}`
     );
 
+  } catch (error) {
+
+    throw new Error(
+      `Renommage du compteur impossible : ${error.message}`
+    );
+
   }
 
   return count;
 
 }
 
-// MISE EN FILE DES ACTUALISATIONS
+// ==========================================
+// FILE D'ATTENTE DES ACTUALISATIONS
+// ==========================================
 
 function updateServiceCounter(client) {
 
@@ -133,8 +198,6 @@ function updateServiceCounter(client) {
   return task;
 
 }
-
-// EXPORTATION
 
 module.exports = {
   updateServiceCounter
