@@ -5,7 +5,7 @@ const express = require("express");
 const { createBienvenue } = require("./embeds/bienvenue");
 const { createReglement } = require("./embeds/reglement");
 const { createCentreDyna } = require("./embeds/centre-dyna");
-
+const { handleAnnonceInteraction } = require("./interactions/annonces");
 const {
   Client,
   GatewayIntentBits,
@@ -95,7 +95,26 @@ client.once(Events.ClientReady, (readyClient) => {
 client.on(Events.Error, () => {
   console.error("[DYNA] Erreur de connexion Discord.");
 });
+// ==========================================
+// INTERACTIONS — CENTRE DE COMMUNICATION
+// ==========================================
 
+client.on(Events.InteractionCreate, async (interaction) => {
+
+  try {
+
+    await handleAnnonceInteraction(interaction);
+
+  } catch (error) {
+
+    console.error(
+      "[DYNA] Erreur interaction :",
+      error.code || error.name
+    );
+
+  }
+
+});
 // ==========================================
 // PUBLICATION OFFICIELLE — RÈGLEMENT
 // ==========================================
