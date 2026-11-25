@@ -9,7 +9,11 @@ const { createTicketsPanel } = require("./embeds/tickets");
 
 const { handleAnnonceInteraction } = require("./interactions/annonces");
 const { handleTicketInteraction } = require("./interactions/tickets");
+const { createServicePanel } = require("./embeds/service");
 
+const { handleServiceInteraction } = require("./interactions/service");
+
+const { updateServiceCounter } = require("./services/presence");
 const {
   Client,
   GatewayIntentBits,
@@ -38,7 +42,40 @@ const TICKETS_CHANNEL_ID = "1575184319104942090";
 // MODE TEST — DIRECTION UNIQUEMENT
 
 const TICKETS_TEST_MODE = true;
+// ==========================================
+// CONFIGURATION — PRISE DE SERVICE
+// ==========================================
 
+const SERVICE_CHANNEL_ID =
+  process.env.SERVICE_CHANNEL_ID;
+
+const SERVICE_ROLE_ID =
+  process.env.SERVICE_ROLE_ID;
+
+const CONFIRMED_ROLE_ID =
+  "1567889964639723631";
+
+const TRAINING_ROLE_ID =
+  process.env.DISCORD_TRAINING_ROLE_ID;
+
+const SERVICE_ENABLED = false;
+
+let serviceRefreshTimer = null;
+let serviceRefreshInterval = null;
+
+function isProfessional(member) {
+
+  return !member.user.bot && [
+
+    DIRECTION_ROLE_ID,
+    CONFIRMED_ROLE_ID,
+    TRAINING_ROLE_ID
+
+  ].filter(Boolean).some(roleId =>
+    member.roles.cache.has(roleId)
+  );
+
+}
 if (!TOKEN) {
   console.error("[DYNA] Token Discord manquant.");
   process.exit(1);
@@ -50,10 +87,10 @@ if (!TOKEN) {
 
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers
   ]
 });
-
 // ==========================================
 // SERVEUR WEB — RENDER
 // ==========================================
@@ -112,6 +149,21 @@ client.once(Events.ClientReady, (readyClient) => {
   publishTicketsPanel();
 
   registerTestCommand();
+
+  publishServicePanel();
+
+  if (SERVICE_ENABLED) {
+
+    synchronizeServicePresence();
+
+    serviceRefreshInterval = setInterval(
+      synchronizeServicePresence,
+      120000
+    );
+
+    serviceRefreshInterval.unref();
+
+  }
 
 });
 
@@ -376,6 +428,32 @@ client.on(Events.InteractionCreate, async (interaction) => {
       }
 
       await handleTicketInteraction(interaction);
+
+      return;
+
+    }
+
+       // ======================================
+    // INTERACTIONS — PRISE DE SERVICE
+    // ======================================
+
+    if (
+      interaction.customId &&
+      interaction.customId.startsWith("dyna_service_")
+    ) {
+
+      if (!SERVICE_ENABLED) {
+
+        await replyPrivate(
+          interaction,
+          "Le système de prise de service est actuellement en préparation."
+        );
+
+        return;
+
+      }
+
+      await handleServiceInteraction(interaction);
 
       return;
 
@@ -777,7 +855,307 @@ async function publishTicketsPanel() {
   }
 
 }
+// ==========================================
+// PUBLICATION OFFICIELLE — PRISE DE SERVICE
+// ==========================================
 
+async function publishServicePanel() {
+
+  if (
+    SERVICE_CHANNEL_ID !== "1575184647845842944"
+  ) {
+
+    console.error(
+      "[DYNA] Salon prise de service non configuré ou invalide."
+    );
+
+    return;
+
+  }
+
+  try {
+
+    const channel = await client.channels.fetch(
+      SERVICE_CHANNEL_ID
+    );
+
+    if (
+      !channel ||
+      channel.type !== ChannelType.GuildText ||
+      channel.guildId !== GUILD_ID
+    ) {
+
+      throw new Error(
+        "Salon prise de service invalide."
+      );
+
+    }
+
+    const everyonePermissions =
+      channel.permissionsFor(
+        channel.guild.roles.everyone
+      );
+
+    if (
+      !everyonePermissions ||
+      everyonePermissions.has("ViewChannel")
+    ) {
+
+      throw new Error(
+        "Le salon prise de service doit rester privé."
+      );
+
+    }
+
+    const panel = createServicePanel();
+
+    // ACTIVATION SELON LE MODE CONFIGURÉ
+
+    for (const row of panel.components) {
+
+      for (const button of row.components) {
+
+        button.setDisabled(!SERVICE_ENABLED);
+
+      }
+
+    }
+
+    // RECHERCHE DU PANNEAU EXISTANT
+
+    let before;
+
+    while (true) {
+
+      const messages = await channel.messages.fetch({
+        limit: 100,
+        ...(before ? { before } : {})
+      });
+
+      const existing = messages.find(message =>
+
+        message.author.id === client.user.id &&
+
+        message.embeds.some(embed =>
+          embed.title ===
+          "♛ Gestion des prises de service"
+        )
+
+      );
+
+      if (existing) {
+
+        await existing.edit({
+          embeds: panel.embeds,
+          components: panel.components,
+          attachments: [],
+          files: panel.files,
+          allowedMentions: {
+            parse: []
+          }
+        });
+
+        console.log(
+          "[DYNA] Panneau prise de service actualisé."
+        );
+
+        return;
+
+      }
+
+      if (messages.size < 100) {
+        break;
+      }
+
+      before = messages.last().id;
+
+    }
+
+    await channel.send(panel);
+
+    console.log(
+      "[DYNA] Panneau prise de service publié."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "[DYNA] Erreur panneau prise de service :",
+      error.code || error.message
+    );
+
+  }
+
+}
+
+// ==========================================
+// SYNCHRONISATION DES AGENTS EN SERVICE
+// ==========================================
+
+let serviceSyncRunning = false;
+
+async function synchronizeServicePresence() {
+
+  if (
+    !SERVICE_ENABLED ||
+    !client.isReady() ||
+    serviceSyncRunning
+  ) {
+    return;
+  }
+
+  serviceSyncRunning = true;
+
+  try {
+
+    if (
+      SERVICE_ROLE_ID !== "1575252825473032303" ||
+      TRAINING_ROLE_ID !== "1567890089172926597"
+    ) {
+
+      throw new Error(
+        "Configuration des rôles de service invalide."
+      );
+
+    }
+
+    const guild = await client.guilds.fetch(
+      GUILD_ID
+    );
+
+    const members = await guild.members.fetch();
+
+    // RETRAIT DU RÔLE VERT AUX MEMBRES
+    // QUI NE SONT PLUS AUTORISÉS
+
+    for (const member of members.values()) {
+
+      if (
+
+        member.roles.cache.has(SERVICE_ROLE_ID) &&
+
+        !isProfessional(member)
+
+      ) {
+
+        try {
+
+          await member.roles.remove(
+            SERVICE_ROLE_ID,
+            "Fin de service : membre non autorisé"
+          );
+
+        } catch (error) {
+
+          console.error(
+            "[DYNA] Impossible de retirer un rôle de service.",
+            error.code || error.name
+          );
+
+        }
+
+      }
+
+    }
+
+    // ACTUALISATION DU COMPTEUR PUBLIC
+
+    await updateServiceCounter(client);
+
+  } catch (error) {
+
+    console.error(
+      "[DYNA] Erreur synchronisation service :",
+      error.code || error.message
+    );
+
+  } finally {
+
+    serviceSyncRunning = false;
+
+  }
+
+}
+
+// ==========================================
+// PLANIFICATION DES ACTUALISATIONS
+// ==========================================
+
+function scheduleServiceRefresh() {
+
+  if (!SERVICE_ENABLED) {
+    return;
+  }
+
+  if (serviceRefreshTimer) {
+    return;
+  }
+
+  serviceRefreshTimer = setTimeout(() => {
+
+    serviceRefreshTimer = null;
+
+    synchronizeServicePresence();
+
+  }, 5000);
+
+  serviceRefreshTimer.unref();
+
+}
+
+// ==========================================
+// DÉPART D'UN MEMBRE DU SERVEUR
+// ==========================================
+
+client.on(
+  Events.GuildMemberRemove,
+  member => {
+
+    if (member.guild.id !== GUILD_ID) {
+      return;
+    }
+
+    scheduleServiceRefresh();
+
+  }
+);
+
+// ==========================================
+// MODIFICATION DES RÔLES D'UN MEMBRE
+// ==========================================
+
+client.on(
+  Events.GuildMemberUpdate,
+  (oldMember, newMember) => {
+
+    if (newMember.guild.id !== GUILD_ID) {
+      return;
+    }
+
+    const relevantRoles = [
+
+      SERVICE_ROLE_ID,
+      DIRECTION_ROLE_ID,
+      CONFIRMED_ROLE_ID,
+      TRAINING_ROLE_ID
+
+    ].filter(Boolean);
+
+    const changed = relevantRoles.some(roleId =>
+
+      oldMember.roles.cache.has(roleId) !==
+      newMember.roles.cache.has(roleId)
+
+    );
+
+    if (changed) {
+
+      scheduleServiceRefresh();
+
+    }
+
+  }
+);
 // ==========================================
 // ARRÊT PROPRE DU SERVICE
 // ==========================================
@@ -785,6 +1163,18 @@ async function publishTicketsPanel() {
 function shutdown() {
 
   console.log("[DYNA] Arrêt du service.");
+
+  if (serviceRefreshTimer) {
+
+    clearTimeout(serviceRefreshTimer);
+
+  }
+
+  if (serviceRefreshInterval) {
+
+    clearInterval(serviceRefreshInterval);
+
+  }
 
   client.destroy();
 
