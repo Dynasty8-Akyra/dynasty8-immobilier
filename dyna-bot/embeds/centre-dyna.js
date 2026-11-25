@@ -72,12 +72,12 @@ function createCentreDyna() {
   const buttons = new ActionRowBuilder()
     .addComponents(
 
-      new ButtonBuilder()
-        .setCustomId("dyna_annonce_create")
-        .setLabel("Annonce officielle")
-        .setEmoji("📢")
-        .setStyle(ButtonStyle.Danger)
-        .setDisabled(true),
+    new ButtonBuilder()
+  .setCustomId("dyna_annonce_create")
+  .setLabel("Annonce officielle")
+  .setEmoji("📢")
+  .setStyle(ButtonStyle.Danger)
+  .setDisabled(false),
 
       new ButtonBuilder()
         .setCustomId("dyna_notification_generale")
